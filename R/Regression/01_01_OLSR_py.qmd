@@ -1,0 +1,406 @@
+---
+title: "Ordinary Least Squares Regression (OLSR)"
+subtitle: "Apuntes y anotaciones personales"
+author: "Diana Villasana Ocampo"
+format:
+  html:
+    code-fold: false
+    highlight-style: tango
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    toc-location: left
+engine: jupyter
+jupyter: python3
+execute:
+  echo: true      
+  message: false   # Suprimir mensajes generados por R/Python
+  warning: false   # Suprimir advertencias generadas por R/Python
+  error: false     # Suprimir errores (muestra la ejecución, pero no los errores)
+  execute-dir: project
+  # cache: true    # Habilitar el caché (si quieres, desactiva para depuración)
+---
+
+```{python}
+#| include: false
+#| echo: false
+#| eval: false
+import subprocess
+import os
+
+input_file = os.path.join(os.getcwd(), "\\R", "\\Regression", "\\01.01.OLSR_py.qmd")
+output_dir = os.path.join(os.getcwd(), "\\Output\\Regression\\")
+
+subprocess.run([
+    "quarto",
+    "render",
+    input_file,
+    "--output-dir", output_dir
+])
+```
+
+```{=html}
+<style type="text/css">
+body {
+text-align: justify;
+font-style: normal;
+font-family: "Montserrat";
+font-size: 12px
+}
+h1.title {
+  font-size: 40px;
+  color: #000D3B;
+}
+h1 {
+  font-size: 35px;
+  color: #B6854D;
+}
+h2 {
+  font-size: 30px;
+  color: #172984;
+}
+h3 {
+  font-size: 25px;
+  color: #172984;
+}
+h4 {
+  font-size: 22px;
+  color: #172984;
+}
+h5 {
+  ont-size: 20px;
+  color: #172984;
+}
+h6{
+  ont-size: 18px;
+  color: #1864cb;
+}
+</style>
+```
+
+```{=html}
+<style>
+.nav>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    color: #1C3BA4
+}
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li>a:focus {
+    color: #ffffff;
+    background-color: #09C2BC
+}
+</style>
+```
+
+```{=html}
+<style>
+.tile1-text {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    color: #0A6A87;
+    list-style: none;
+}
+.top1-tiles a:nth-of-type(1):hover, .top-tiles1 a:nth-of-type(1):focus{
+    color: #ffffff;
+    background: #0A6A87
+}
+</style>
+```
+
+```{=html}
+<style>
+.tile2-text {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    color: #0A6CC8;
+    list-style: none;
+}
+.top2-tiles a:nth-of-type(1):hover, .top2-tiles a:nth-of-type(1):focus{
+    color: #ffffff;
+    background: #0A6CC8
+}
+</style>
+```
+
+```{=html}
+<style>
+.math {
+  font-size: 15px;
+  color: #1e42ab;
+}
+
+.callout {
+  border: 1px solid red; /* Yellow border */
+  background-color: lightgrey; /* Light yellow background */
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 5px solid #ffcc00; /* Stronger left border */
+}
+
+</style>
+```
+
+::: {.callout-note appearance="default" icon="🎯"}
+## Este material es reproducible en código Python utilizando Quarto
+:::
+
+La Regresión por Mínimos Cuadrados Ordinarios (Ordinary Least Squares Regression, **OLSR** u **OLS**) representa una metodología estadística esencial que permite analizar la correlación entre una **variable dependiente** (también conocida como variable de respuesta) y una o más **variables independientes** (o predictoras). Este método constituye una herramienta fundamental en el campo del análisis de regresión lineal.
+
+<p align="center">
+<img src="../../img/Regression/01_image_OLSR.png" alt="Machine Learning Steps" width="40%"/>
+</p>
+
+```{python}
+#| echo: false
+#| eval: false
+import sys
+print(sys.path)
+
+```
+
+
+```{python}
+#| label: setup-python
+#| include: false # Oculta este chunk ya que es solo para configuración
+
+# Importar reticulate en Python y asegurar la inicialización del puente R
+# Esto crea el objeto 'r' en el entorno de Python
+#import rpy2.robjects as ro
+#import rpy2.situation
+#from rpy2.robjects import pandas2ri
+#from rpy2.robjects.conversion import localconverter
+
+# Activar la conversión automática de R a pandas DataFrame
+#pandas2ri.activate()
+
+# Puedes incluso hacer una pequeña prueba para asegurarte de que R está activo
+# print(ro.r('R.version.string'))
+```
+
+**Librerías que se usaron en el documento**
+
+```{python}
+#| label: load-py-pckgs
+import re
+import rpy2
+import pandas as pd
+from pathlib import Path
+import seaborn as sns
+import os # Necesario para la función os.makedirs
+```
+
+
+```{python}
+#| echo: false
+#| eval: true
+
+# Datos de la tabla
+criterios = [
+    "🔍 Tipo de modelo",
+    "🎯 Variable respuesta",
+    "🔢 Variables predictoras",
+    "📈 Relación entre variables",
+    "🧪 Normalidad de residuos",
+    "🔁 Independencia de errores",
+    "⚖️ Homoscedasticidad",
+    "❗ Sensible a outliers",
+    "🔗 Multicolinealidad entre predictores",
+    "🧠 Interpretabilidad",
+    "🚀 Velocidad y eficiencia",
+    "🧪 Validación cruzada",
+    "❌ No funciona bien si..."
+]
+
+aplica = [
+    "Supervisado",
+    "Numérica continua",
+    "Numéricas y/o categóricas",
+    "Lineal (supuesto clave)",
+    "Deseable",
+    "Necesaria",
+    "Necesaria",
+    "Sí",
+    "Problema común",
+    "Alta",
+    "Muy alta",
+    "Compatible",
+    "Relaciones no lineales, outliers severos, colinealidad"
+]
+
+detalles = [
+    "Se entrena con datos X → y",
+    "Ej. mpg, precio, ingresos",
+    "Categorías convertidas a dummies",
+    "Se asume una relación lineal entre X e Y",
+    "Importante para intervalos de confianza válidos",
+    "Errores deben ser independientes",
+    "Varianza de errores debe ser constante",
+    "Outliers pueden influir mucho en el modelo",
+    "Usar VIF para detectar problemas",
+    "Modelo fácil de explicar",
+    "Rápido incluso con datos grandes",
+    "Ayuda a prevenir overfitting",
+    "Evitar si no hay linealidad o hay muchos outliers"
+]
+
+# Crear DataFrame de Pandas
+tabla_olsr = pd.DataFrame({
+    "Criterio": criterios,
+    "Aplica": aplica,
+    "Detalles": detalles
+})
+
+# Estilizar la tabla con Pandas Styler
+# Nota: La estilización exacta como 'gt' es compleja de replicar pixel a pixel con Pandas Styler
+# pero podemos acercarnos a la mayoría de los requerimientos.
+# Para fuentes personalizadas como 'Century Gothic', puede que necesites CSS externo
+# o que el navegador del usuario tenga la fuente instalada.
+
+styled_table = (
+    tabla_olsr.style
+    .set_table_attributes("style='font-family: Century Gothic; font-size: 10pt;'")
+    .set_caption("<h2 style='text-align: left; font-weight: bold; font-size: 14pt;'>Guía rápida para elegir OLSR</h2><p style='text-align: left; font-size: 12pt;'>Fuente: Elaboración propia</p>")
+    .set_properties(subset=['Criterio', 'Aplica'], **{'width': '200px'})
+    .set_properties(subset=['Detalles'], **{'width': '500px'})
+    .set_properties(**{'text-align': 'left'}) # Alinea todo a la izquierda por defecto
+    .set_table_styles([ # Para aplicar el padding a las celdas
+        {'selector': 'td', 'props': [('padding', '1px')]}
+    ], overwrite=False)
+)
+
+styled_table
+```
+
+
+
+## Objetivo
+
+La Regresión por Mínimos Cuadrados Ordinarios (`OLSR`) busca la línea que mejor se ajusta a los datos. Para lograrlo, reduce al mínimo la suma de los cuadrados de las diferencias entre los valores reales y los valores que predice el modelo. Estas diferencias son los **residuos** o **errores**. Al trabajar con los cuadrados de los errores, este método evita que los errores positivos y negativos se anulen entre sí, y da más peso a los errores grandes durante el proceso de minimización.
+
+## Metodología
+
+La metodología de OLSR se basa en los siguientes pasos y principios:
+
+1.  **Modelo Lineal:** OLSR asume una relación lineal entre las variables. Para una regresión lineal simple (una variable independiente), la ecuación es:\
+    $$Y = \beta_0 + \beta_1X + \epsilon$$
+
+    Donde:
+
+    -   $Y$ es la variable dependiente.
+
+-   $X$ es la variable independiente.
+-   $\beta_0$ es el intercepto (el valor de $Y$ cuando $X$ es 0).
+-   $\beta_1$ es la pendiente (el cambio en $Y$ por cada unidad de cambio en $X$).
+-   $\epsilon$ es el término de error o residual, que representa la parte de $Y$ que no puede ser explicada por $X$.
+
+Para una regresión lineal múltiple (varias variables independientes), la ecuación se expande a:\
+$$Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + ... + \beta_kX_k + \epsilon$$
+
+2.  **Minimización de la Suma de Cuadrados de Residuos (SSR):** El corazón de OLS es encontrar los valores de los coeficientes ($\beta_0, \beta_1$, etc.) que minimicen la siguiente función:\
+    $$\text{Minimizar } \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$$\
+    Donde:
+    -   $y_i$ es el valor observado de la variable dependiente para la observación $i$.
+
+-   $\hat{y}_i$ es el valor predicho de la variable dependiente por el modelo para la observación $i$.
+-   $(y_i - \hat{y}_i)$ es el residual para la observación $i$.
+
+Para lograr esta minimización, se utilizan técnicas de cálculo (derivadas parciales) para encontrar los valores de los coeficientes que hacen que la pendiente de la función de suma de cuadrados sea cero.
+
+3.  **Estimación de Coeficientes:** Los valores estimados de los coeficientes, denotados como $\hat{\beta}_0, \hat{\beta}_1$, etc., son aquellos que resultan de la minimización. Estos coeficientes son los que definen la "línea de mejor ajuste".
+
+4.  **Supuestos del OLS:** Para que los estimadores de OLS sean los "mejores estimadores lineales insesgados" (según el Teorema de Gauss-Markov), se deben cumplir ciertas suposiciones:
+
+    -   **Linealidad:** La relación entre las variables es lineal.
+
+    -   **Independencia de los errores:** Los errores de una observación no están correlacionados con los errores de otra.
+
+    -   **Homocedasticidad:** La varianza de los errores es constante en todos los niveles de las variables independientes.
+
+    -   **Normalidad de los errores:** Los errores se distribuyen normalmente (aunque no es estrictamente necesario para la estimación, sí lo es para la inferencia estadística).
+
+    -   **No multicolinealidad perfecta:** Las variables independientes no están perfectamente correlacionadas entre sí.
+
+## **Pasos generales del Machine Learning supervisado**
+
+1.  **Importar y explorar los datos**
+2.  **Preprocesamiento**
+3.  **División de los datos (train/test)**
+4.  **Entrenamiento del modelo**
+5.  **Evaluación del modelo**
+6.  **Ajustes o validación cruzada (si aplica)**
+7.  **Predicción con nuevos datos**
+8.  **Interpretación de resultados**
+
+<p align="center">
+<img src="../../img/ML_Steps.png" alt="Machine Learning Steps" width="100%"/>
+</p>
+
+------------------------------------------------------------------------
+
+## Base de datos
+
+La base de datos `mtcars` es un conjunto de datos clásico en R que contiene información sobre **32 automóviles** (modelos de 1973–74), y fue extraído de la revista *Motor Trend US*. Incluye **variables técnicas** del desempeño de los autos.
+
+Aquí está una descripción de cada columna:
+
+| Variable | Significado | Tipo de dato |
+|-------------------|-----------------------------------|-------------------|
+| `mpg` | Miles per gallon (millas por galón) | Numérica |
+| `cyl` | Número de cilindros | Entero |
+| `disp` | Desplazamiento del motor (en pulgadas cúbicas) | Numérica |
+| `hp` | Caballos de fuerza | Entero |
+| `drat` | Relación del eje trasero (rear axle ratio) | Numérica |
+| `wt` | Peso del auto (en miles de libras) | Numérica |
+| `qsec` | Tiempo en 1/4 de milla (segundos) | Numérica |
+| `vs` | Tipo de motor: 0 = V-shaped, 1 = straight (en línea) | Binaria (factor) |
+| `am` | Tipo de transmisión: 0 = automática, 1 = manual | Binaria (factor) |
+| `gear` | Número de velocidades (marchas) adelante | Entero |
+| `carb` | Número de carburadores | Entero |
+
+
+
+
+```{r}
+#| echo: true
+require(reticulate)
+reticulate::repl_python() #can be used to interactively run Python code
+# 2. Cargar y se exploran los datos
+data("mtcars")
+```
+
+
+```{python}
+#| echo: true
+#| eval: false 
+
+#pip install openpyxl 
+import pandas as pd
+from pathlib import Path
+import os # Necesario para la función os.makedirs
+
+# Cargar la base de datos mtcars directamente desde el entorno de R
+# r.mtcars accede al objeto 'mtcars' que R ha puesto a disposición
+# Reticulate automáticamente lo convierte a un DataFrame de Pandas.
+mtcars_df = r.mtcars
+
+## Se guarda la base de datos en un archivo Excel  
+file = Path.cwd().parent.parent / "Data"
+
+mtcars_df.to_excel(file /"mtcars_data.xlsx", index=True)
+```
+
+
+```{python}
+mtcars_df = pd.read_excel(Path.cwd().parent.parent / "Data" / "mtcars_data.xlsx")
+
+mtcars_df.describe().transpose()
+```
+
+
+```{python}
+mtcars_df.head()
+```
+
