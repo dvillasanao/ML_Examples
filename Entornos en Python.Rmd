@@ -1,209 +1,288 @@
 ---
-title: "Untitled"
+title: "Entorno en Python"
+subtitle: "Usando reticulate"
 author: "Diana Villasana Ocampo"
-date: "2025-06-16"
-output: html_document
+output:
+   html_document:
+      code_folding: hide
+      highlight: tango
+      theme: flatly
+      toc: true
+      toc_depth: 3
+      toc_float:
+        collapsed: yes
 ---
 
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, eval = FALSE,
+                      cache.lazy = FALSE, class.source = "fold-show")
+knitr::opts_knit$set(root.dir = here::here())
+setwd(here::here())
 ```
 
 Crear un entorno en RStudio que use **Quarto**, **reticulate**, y una versión específica de **Python** (por ejemplo, `3.13.3`) implica coordinar varias herramientas. Aquí tienes una guía clara paso a paso para que funcione bien, especialmente en un entorno como **RStudio Cloud**.
 
----
 
-## ✅ Lo que necesitas saber y hacer
 
----
+## ✅ 1. Requisitos previos
 
-### 1. 📦 **Tener instaladas las bibliotecas necesarias en R**
+### Software necesario:
 
-Asegúrate de tener instalados estos paquetes:
+* [R](https://cran.r-project.org/) (versión recomendada: ≥ 4.2)
+* [RStudio](https://posit.co/download/rstudio-desktop/) (versión ≥ 2022.07)
+* [Python](https://www.python.org/) (se recomienda usar `pyenv`, `conda` o un entorno virtual)
+* [Quarto](https://quarto.org/docs/get-started/) instalado
 
-```r
-install.packages(c("reticulate", "quarto"))
-```
-
----
-
-### 2. 🐍 **Crear un entorno con reticulate + conda**
-
-`reticulate` permite crear y manejar entornos con conda. Tu línea está casi bien, pero:
-
-* La versión que mencionas, `3.13.3`, **no existe** aún. (Hasta ahora, la versión más reciente estable es Python `3.12.x`).
-* Usa mejor una versión compatible, como `3.10` o `3.11`.
-
-Ejemplo corregido:
-
-```r
-reticulate::conda_create('py-env', python_version = '3.10')
-```
-
-Esto:
-
-* Crea un entorno llamado `py-env`
-* Instala Python 3.10
-
----
-
-### 3. ✅ **Activar el entorno para tu proyecto Quarto**
-
-Después de crearlo, activa el entorno en tu sesión R:
-
-```r
-reticulate::use_condaenv('py-env', required = TRUE)
-```
-
-Puedes incluir esa línea al principio de tu documento `.qmd` o en un archivo `.Rprofile`.
-
----
-
-### 4. 🧪 **Instalar paquetes de Python necesarios**
-
-Usa `reticulate::py_install()` o `conda` directamente para instalar paquetes como `numpy`, `pandas`, `matplotlib`, etc.
-
-```r
-reticulate::py_install(c("pandas", "matplotlib"), envname = "py-env")
-```
-
----
-
-### 5. 🧾 **Ejemplo de Quarto `.qmd` con Python + R**
-
+Se puede verificar desde la consola de RStudio:
 
 ```{r}
-library(reticulate)
-use_condaenv("py-env", required = TRUE)
-reticulate::py_config()
-
-if (requireNamespace("reticulate", quietly = TRUE)) {
-  reticulate::use_condaenv("py-env", required = TRUE)
-}
-
-```
-
-
-```{python}
-import sys
-print(sys.version)
-```
-
-```{r}
-summary(cars)
-```
-
-
-
-> 🔄 Asegúrate de que Quarto detecta tu kernel Python. Si no, corre:  
-> `quarto install` desde la consola o terminal para registrarlo.
-
----
-
-### 6. 🧠 Consejo extra para RStudio Cloud
-
-En RStudio Cloud:
-
-- **Conda no siempre viene preinstalado.** Usa Miniconda con:
-
-```{r}
-reticulate::install_miniconda()
-```
-
-* Y luego crea el entorno como arriba.
-
-
-
-Muy buena pregunta. Para verificar que tu entorno conda se ha instalado correctamente y está funcionando en tu proyecto `.Rproj`, puedes hacerlo de varias maneras dentro de RStudio. Aquí te explico **cómo saber si el entorno se instaló correctamente y está activo**:
-
----
-
-## ✅ 1. **Verificar entornos conda disponibles**
-
-Primero, ejecuta este comando:
-
-```r
-reticulate::conda_list()
-```
-
-Esto te mostrará todos los entornos conda disponibles. Deberías ver una fila con el nombre del entorno que creaste (`py-env`, por ejemplo), junto con su ruta de instalación.
-
----
-
-## ✅ 2. **Verificar que el entorno se puede activar**
-
-Ahora intenta activarlo explícitamente en tu sesión R:
-
-```r
-reticulate::use_condaenv("py-env", required = TRUE)
-```
-
-Si **no da error**, significa que el entorno existe y es usable.
-
----
-
-## ✅ 3. **Verificar versión de Python activa**
-
-Después de activar el entorno, puedes confirmar que se está usando la versión de Python correcta con:
-
-```r
 reticulate::py_config()
 ```
 
-Este comando te da información como:
-
-* Ruta del ejecutable de Python
-* Versión de Python activa
-* Entorno conda en uso
-
 ---
 
-## ✅ 4. **Comprobar desde tu archivo `.Rproj` (opcional)**
+## ✅ 2. Instalar Quarto 
 
-Aunque `.Rproj` no guarda directamente qué entorno estás usando, puedes automatizar la activación del entorno añadiendo una línea en tu archivo `.Rprofile`, que se ejecuta al abrir el proyecto.
+### En RStudio:
 
-**Ejemplo de `.Rprofile` en tu carpeta del proyecto:**
-
-```r
-# .Rprofile
-if (requireNamespace("reticulate", quietly = TRUE)) {
-  reticulate::use_condaenv("py-env", required = TRUE)
-}
+```{r}
+install.packages("quarto")
+quarto::quarto_path()  # Verifica si está instalado
 ```
 
-Esto asegura que cada vez que abras el proyecto en RStudio, `reticulate` intente usar ese entorno automáticamente.
+También se puede instalar manualmente desde: [https://quarto.org/docs/get-started/](https://quarto.org/docs/get-started/)
 
----
 
-## ✅ 5. **Comprobación en un documento Quarto**
 
-Abre o crea un `.qmd` y agrega este bloque:
+## ✅ 3. Instalar y configurar reticulate
+
+```{r}
+install.packages("reticulate")
+require(reticulate)
+```
+
+
+## ✅ 4. Crear un entorno virtual de Python
+
+### Opción A: Usar `venv`
+
+```{r}
+reticulate::virtualenv_create(envname = "r-reticulate")
+reticulate::use_virtualenv("r-reticulate", required = TRUE)
+```
+
+### Opción B: Usar `conda`
+
+Si se tiene Anaconda o Miniconda instalado:
+
+Se utiliza {reticulate} para instalar miniconda con:
+
+```{r, eval=FALSE}
+reticulate::install_miniconda()
+#reticulate::install_miniconda(force = TRUE)
+```
+
+
+#### `reticulate::conda_create("r-reticulate")`
+  
+  Este comando **crea un nuevo entorno conda** llamado `"r-reticulate"` usando `reticulate`.
+
+* Usará **Miniconda** (instalado previamente por `reticulate::install_miniconda()`).
+* Instala la **última versión de Python disponible por conda**.
+* Crea el entorno en la ruta de conda local, típicamente en:
+  
+  ```
+~/AppData/Local/r-miniconda/envs/r-reticulate/
+  ```
+
+> 📌 Este entorno queda vacío (sin paquetes) salvo por Python. Puedes instalar paquetes luego con `reticulate::py_install()` o `conda install`.
+
+
+#### `reticulate::use_condaenv("r-reticulate", required = TRUE)`
+  
+  Este comando **activa el entorno** `"r-reticulate"` dentro de la sesión de R.
+
+* Hace que cualquier código Python que corras desde R (por ejemplo, en un chunk de Quarto o RMarkdown) se ejecute usando ese entorno.
+* `required = TRUE` significa: *“lanzar un error si no se encuentra el entorno”*, útil para asegurarte de que se usa el correcto.
+
+##### 🧠 ¿Cuándo se usa esto?
+  
+Esto se usa típicamente para:
+  
+  * Crear un entorno de Python controlado solo para el proyecto R o Quarto.
+* Evitar conflictos con otros entornos de Python en el sistema.
+* Asegurar reproducibilidad (especialmente útil si se agrega al `.Rprofile` o scripts de inicialización del proyecto).
+
+
+**Precaución**: Si ya se tiene  otro entorno que se está usando (como `py-env`), **no se necesita crear `r-reticulate`**, a menos que se quiera uno nuevo específicamente para este proyecto.
+
+```{r}
+reticulate::conda_create("r-reticulate")
+reticulate::use_condaenv("r-reticulate", required = TRUE)
+```
+
+
+Se visualiza la configuración de python: que tengo actualemente. 
+
+```{r, eval=FALSE}
+reticulate::py_config()
+```
+
+## ✅ 5.  Comprobar si `reticulate` ya está inicializado
+
+Se puede preguntar directamente:
+  
+
+```{r}
+reticulate::py_available()
+
+```
+
+* `TRUE` → hay un entorno activo y funcional
+* `FALSE` → no hay entorno activo o falló la inicialización
+
+**Ver entorno Conda actual (si usas conda)**
+
+Si se quiere saber cuál entorno conda se está usando, esto lo muestra en la salida de `py_config()`, pero también se puede hacer:
+  
+```{r}
+Sys.getenv("CONDA_DEFAULT_ENV")
+```
+
+* Te dará el nombre del entorno si estás usando conda
+* Si está vacío (`""`), puede que no estés en uno o lo estés manejando manualmente
+
+
+Se crea un nuevo conda environment, estableciendo la versión de python a utilizar: 
+
+```{r, eval=FALSE}
+reticulate::conda_create('r-reticulate', 
+                         # En este caso, versión de python que tenemos en RStudio cloud:
+                         python_version = '3.13.3' 
+                         )
+```
+
+### Conda desde la terminal / instalación de paquetes
+
+Para poder ejecutar comandos desde la terminal es necesario ejecutar lo siguiente. 
+Copiar el output del chunk siguiente y pegar en la terminal.   
+
+#### Terminal 
+
+- `conda env list` (muestre la lista de conda / BASE / r-reticulate/py-env)
+
+Activar otro enviroment activado para después eliminarlo.    
+
+Para activar otro enviroment:
+
+- `activate py-env`
+
+Instalar las paqueterías en un enviromente propio para que se pueda modificar
+
+```{r, eval=TRUE}
+condash <- paste0('source ',
+                   gsub('C:','',reticulate::miniconda_path()), #"C:/Users/dvill/AppData/Local/r-miniconda"
+                 '/etc/profile.d/conda.sh')
+
+condash
+```
+
+-   Se activa el environment creado:
+
+    - `conda activate py-env`
+
+-   Se listan los environments, visualizando que está seleccionado el correcto:
+
+    - `conda env list`
+
+-   Se instalan paquetes para probar que funciona correctamente
+
+    - `conda install -c conda-forge numpy`
+
+    - `conda install -c conda-forge pandas`
+
+    - `conda install -c conda-forge scikit-learn`
+
+O directamente en consola:
+
+```bash
+source r-reticulate/bin/activate  # si se usa venv
+pip install pandas matplotlib numpy
+```
+
+## ✅ 6. Configuración del environment en Rmarkdown
+
+Es necesario realizar un restart y luego configurar el env a utilizar. Esto es asì porque al ejecutar algunas cosas python antes quedó configurada otra versión. 
+
+
+Por ejemplo, desde R:
+
+```{r}
+reticulate::py_install(c("pandas", "matplotlib", "numpy"), envname = "r-reticulate")
+```
+
+Se importan las librerías python instaladas mediante conda en el environment creado:
 
 ```{python}
-import sys
-print(sys.executable)
-print(sys.version)
-```
-
-Si imprime la ruta del entorno correcto y la versión de Python esperada, todo está bien configurado.
-
----
-
-## 🚫 Si algo falla...
-
-Si ves errores como:
-
-* “Environment not found”
-* “Python version mismatch”
-* “conda not available”
-
-Es probable que necesites instalar **Miniconda** primero:
-
-```r
-reticulate::install_miniconda()
+import re
+import numpy as np
+import pandas as pd
 ```
 
 
+## ✅ 7.  Se crea un .yml de los requerimientos del conda env
 
-¿Quieres que te genere un ejemplo de `.Rprofile` + código de prueba `.qmd` como plantilla de proyecto?
+Este comando:
+  
+1. **Exporta** el contenido del entorno conda llamado `r-reticulate`.
+2. **Guarda** toda su configuración y dependencias (paquetes + versiones + canales conda) en un archivo YAML llamado `r-reticulate_requirements.yml`.
+
+
+Ver que versiones se instalaron
+
+- `conda env export --name r-reticulate \> r-reticulate_requirements.yml`
+
+```{bash}
+conda env export --name r-reticulate > r-reticulate_requirements.yml
+```
+
+**Qué incluye ese `.yml`**
+  
+El archivo `.yml` que se genera incluirá:
+  
+  * Nombre del entorno (`name: r-reticulate`)
+* Versión de Python usada
+* Lista completa de paquetes instalados y sus versiones exactas
+* Canales de instalación (`conda-forge`, `defaults`, etc.)
+
+
+````
+```yaml
+name: r-reticulate
+channels:
+  - defaults
+dependencies:
+  - python=3.10.13
+- numpy=1.24.4
+- pandas=1.5.3
+- matplotlib=3.6.2
+```
+````
+**Para qué sirve?**
+  
+  * ✅ **Reproducibilidad:** Puedes compartir ese `.yml` con otra persona o en otro proyecto y replicar exactamente el mismo entorno.
+* ✅ **Backup del entorno:** Guarda un "snapshot" de tu entorno actual.
+* ✅ **Reinstalar fácilmente:** Puedes volver a crear ese entorno en otra máquina con:
+  
+```{bash}
+conda env create -f r-reticulate_requirements.yml
+```
+
+
+Guarda el .yml en el path de getwd()
+
+```{r}
+env_req <- base::system('conda list -n r-reticulate', intern = TRUE)
+```
 

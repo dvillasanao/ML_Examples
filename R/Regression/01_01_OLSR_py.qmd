@@ -563,20 +563,22 @@ mtcars_df = mtcars.copy()
 
 
 # 1. Preparación de los datos
-tabla_py = mtcars_df.melt(id_vars=["mpg"], var_name="variable", value_name="value")
+tabla_py = mtcars_df.melt(id_vars = ["mpg"], 
+                          var_name = "variable", 
+                          value_name = "value")
 
 # 2. Crear el gráfico con plotnine
 p = (
-    ggplot(tabla_py, aes(y="mpg", x="value", color="variable"))
+    ggplot(tabla_py, aes(y = "mpg", x = "value", color = "variable"))
     + geom_point()
     + geom_smooth(method="lm", se=True, color="black")
     + theme_bw()
     + theme(
-        plot_title=element_text(size=22),
-        plot_subtitle=element_text(size=18),
-        plot_caption=element_text(size=11),
+        plot_title=element_text(size = 22),
+        plot_subtitle=element_text(size = 18),
+        plot_caption=element_text(size = 11),
         axis_text=element_text(),
-        axis_title=element_text(size=15),
+        axis_title=element_text(size = 15),
         legend_position="none"
     )
     + facet_wrap("~variable", scales="free")
