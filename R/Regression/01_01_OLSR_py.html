@@ -118,6 +118,8 @@ window.Quarto = {
   <li><a href="#metodología" id="toc-metodología" class="nav-link" data-scroll-target="#metodología">Metodología</a></li>
   <li><a href="#pasos-generales-del-machine-learning-supervisado" id="toc-pasos-generales-del-machine-learning-supervisado" class="nav-link" data-scroll-target="#pasos-generales-del-machine-learning-supervisado"><strong>Pasos generales del Machine Learning supervisado</strong></a></li>
   <li><a href="#base-de-datos" id="toc-base-de-datos" class="nav-link" data-scroll-target="#base-de-datos">Base de datos</a></li>
+  <li><a href="#entrenamiento-de-los-datos-traintest" id="toc-entrenamiento-de-los-datos-traintest" class="nav-link" data-scroll-target="#entrenamiento-de-los-datos-traintest">Entrenamiento de los datos (train/test)</a></li>
+  <li><a href="#entrenamiento-del-modelo" id="toc-entrenamiento-del-modelo" class="nav-link" data-scroll-target="#entrenamiento-del-modelo">Entrenamiento del modelo</a></li>
   </ul>
 </nav>
 </div>
@@ -266,115 +268,115 @@ Este material es reproducible en código Python utilizando Quarto
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os <span class="co"># Necesario para la función os.makedirs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="0d2a904b" class="cell" data-execution_count="5">
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div id="4c665cc1" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <style type="text/css">
-#T_3f52d td {
+#T_672b7 td {
   padding: 1px;
 }
-#T_3f52d_row0_col0, #T_3f52d_row0_col1, #T_3f52d_row1_col0, #T_3f52d_row1_col1, #T_3f52d_row2_col0, #T_3f52d_row2_col1, #T_3f52d_row3_col0, #T_3f52d_row3_col1, #T_3f52d_row4_col0, #T_3f52d_row4_col1, #T_3f52d_row5_col0, #T_3f52d_row5_col1, #T_3f52d_row6_col0, #T_3f52d_row6_col1, #T_3f52d_row7_col0, #T_3f52d_row7_col1, #T_3f52d_row8_col0, #T_3f52d_row8_col1, #T_3f52d_row9_col0, #T_3f52d_row9_col1, #T_3f52d_row10_col0, #T_3f52d_row10_col1, #T_3f52d_row11_col0, #T_3f52d_row11_col1, #T_3f52d_row12_col0, #T_3f52d_row12_col1 {
+#T_672b7_row0_col0, #T_672b7_row0_col1, #T_672b7_row1_col0, #T_672b7_row1_col1, #T_672b7_row2_col0, #T_672b7_row2_col1, #T_672b7_row3_col0, #T_672b7_row3_col1, #T_672b7_row4_col0, #T_672b7_row4_col1, #T_672b7_row5_col0, #T_672b7_row5_col1, #T_672b7_row6_col0, #T_672b7_row6_col1, #T_672b7_row7_col0, #T_672b7_row7_col1, #T_672b7_row8_col0, #T_672b7_row8_col1, #T_672b7_row9_col0, #T_672b7_row9_col1, #T_672b7_row10_col0, #T_672b7_row10_col1, #T_672b7_row11_col0, #T_672b7_row11_col1, #T_672b7_row12_col0, #T_672b7_row12_col1 {
   width: 200px;
   text-align: left;
 }
-#T_3f52d_row0_col2, #T_3f52d_row1_col2, #T_3f52d_row2_col2, #T_3f52d_row3_col2, #T_3f52d_row4_col2, #T_3f52d_row5_col2, #T_3f52d_row6_col2, #T_3f52d_row7_col2, #T_3f52d_row8_col2, #T_3f52d_row9_col2, #T_3f52d_row10_col2, #T_3f52d_row11_col2, #T_3f52d_row12_col2 {
+#T_672b7_row0_col2, #T_672b7_row1_col2, #T_672b7_row2_col2, #T_672b7_row3_col2, #T_672b7_row4_col2, #T_672b7_row5_col2, #T_672b7_row6_col2, #T_672b7_row7_col2, #T_672b7_row8_col2, #T_672b7_row9_col2, #T_672b7_row10_col2, #T_672b7_row11_col2, #T_672b7_row12_col2 {
   width: 500px;
   text-align: left;
 }
 </style>
 
-<div id="T_3f52d" class="quarto-float quarto-figure quarto-figure-center anchored" style="font-family: Century Gothic; font-size: 10pt;" data-quarto-postprocess="true">
+<div id="T_672b7" class="quarto-float quarto-figure quarto-figure-center anchored" style="font-family: Century Gothic; font-size: 10pt;" data-quarto-postprocess="true">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_3f52d-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_672b7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Fuente: Elaboración propia
 </figcaption>
-<div aria-describedby="T_3f52d-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table id="T_3f52d" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<div aria-describedby="T_672b7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="T_672b7" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_3f52d_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
-<th id="T_3f52d_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
-<th id="T_3f52d_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
+<th id="T_672b7_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
+<th id="T_672b7_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
+<th id="T_672b7_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_3f52d_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
-<td id="T_3f52d_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
-<td id="T_3f52d_row0_col1" class="data row0 col1">Supervisado</td>
-<td id="T_3f52d_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
+<td id="T_672b7_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
+<td id="T_672b7_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
+<td id="T_672b7_row0_col1" class="data row0 col1">Supervisado</td>
+<td id="T_672b7_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
 </tr>
 <tr class="even">
-<td id="T_3f52d_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
-<td id="T_3f52d_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
-<td id="T_3f52d_row1_col1" class="data row1 col1">Numérica continua</td>
-<td id="T_3f52d_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
+<td id="T_672b7_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
+<td id="T_672b7_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
+<td id="T_672b7_row1_col1" class="data row1 col1">Numérica continua</td>
+<td id="T_672b7_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
 </tr>
 <tr class="odd">
-<td id="T_3f52d_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
-<td id="T_3f52d_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
-<td id="T_3f52d_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
-<td id="T_3f52d_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
+<td id="T_672b7_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
+<td id="T_672b7_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
+<td id="T_672b7_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
+<td id="T_672b7_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
 </tr>
 <tr class="even">
-<td id="T_3f52d_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
-<td id="T_3f52d_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
-<td id="T_3f52d_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
-<td id="T_3f52d_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
+<td id="T_672b7_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
+<td id="T_672b7_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
+<td id="T_672b7_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
+<td id="T_672b7_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
 </tr>
 <tr class="odd">
-<td id="T_3f52d_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
-<td id="T_3f52d_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
-<td id="T_3f52d_row4_col1" class="data row4 col1">Deseable</td>
-<td id="T_3f52d_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
+<td id="T_672b7_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
+<td id="T_672b7_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
+<td id="T_672b7_row4_col1" class="data row4 col1">Deseable</td>
+<td id="T_672b7_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
 </tr>
 <tr class="even">
-<td id="T_3f52d_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
-<td id="T_3f52d_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
-<td id="T_3f52d_row5_col1" class="data row5 col1">Necesaria</td>
-<td id="T_3f52d_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
+<td id="T_672b7_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
+<td id="T_672b7_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
+<td id="T_672b7_row5_col1" class="data row5 col1">Necesaria</td>
+<td id="T_672b7_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
 </tr>
 <tr class="odd">
-<td id="T_3f52d_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
-<td id="T_3f52d_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
-<td id="T_3f52d_row6_col1" class="data row6 col1">Necesaria</td>
-<td id="T_3f52d_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
+<td id="T_672b7_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
+<td id="T_672b7_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
+<td id="T_672b7_row6_col1" class="data row6 col1">Necesaria</td>
+<td id="T_672b7_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
 </tr>
 <tr class="even">
-<td id="T_3f52d_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
-<td id="T_3f52d_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
-<td id="T_3f52d_row7_col1" class="data row7 col1">Sí</td>
-<td id="T_3f52d_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
+<td id="T_672b7_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
+<td id="T_672b7_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
+<td id="T_672b7_row7_col1" class="data row7 col1">Sí</td>
+<td id="T_672b7_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
 </tr>
 <tr class="odd">
-<td id="T_3f52d_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
-<td id="T_3f52d_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
-<td id="T_3f52d_row8_col1" class="data row8 col1">Problema común</td>
-<td id="T_3f52d_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
+<td id="T_672b7_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
+<td id="T_672b7_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
+<td id="T_672b7_row8_col1" class="data row8 col1">Problema común</td>
+<td id="T_672b7_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
 </tr>
 <tr class="even">
-<td id="T_3f52d_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
-<td id="T_3f52d_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
-<td id="T_3f52d_row9_col1" class="data row9 col1">Alta</td>
-<td id="T_3f52d_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
+<td id="T_672b7_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
+<td id="T_672b7_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
+<td id="T_672b7_row9_col1" class="data row9 col1">Alta</td>
+<td id="T_672b7_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
 </tr>
 <tr class="odd">
-<td id="T_3f52d_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
-<td id="T_3f52d_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
-<td id="T_3f52d_row10_col1" class="data row10 col1">Muy alta</td>
-<td id="T_3f52d_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
+<td id="T_672b7_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
+<td id="T_672b7_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
+<td id="T_672b7_row10_col1" class="data row10 col1">Muy alta</td>
+<td id="T_672b7_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
 </tr>
 <tr class="even">
-<td id="T_3f52d_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
-<td id="T_3f52d_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
-<td id="T_3f52d_row11_col1" class="data row11 col1">Compatible</td>
-<td id="T_3f52d_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
+<td id="T_672b7_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
+<td id="T_672b7_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
+<td id="T_672b7_row11_col1" class="data row11 col1">Compatible</td>
+<td id="T_672b7_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
 </tr>
 <tr class="odd">
-<td id="T_3f52d_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
-<td id="T_3f52d_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
-<td id="T_3f52d_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
-<td id="T_3f52d_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
+<td id="T_672b7_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
+<td id="T_672b7_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
+<td id="T_672b7_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
+<td id="T_672b7_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
 </tr>
 </tbody>
 </table>
@@ -523,12 +525,13 @@ Donde:
 </tr>
 </tbody>
 </table>
-<pre class="{r}"><code>#| echo: true
-require(reticulate)
-reticulate::repl_python() #can be used to interactively run Python code
-# 2. Cargar y se exploran los datos
-data("mtcars")</code></pre>
-<div id="aeac1732" class="cell" data-execution_count="6">
+<div id="768724d0" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>require(reticulate)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>reticulate::repl_python() <span class="co">#can be used to interactively run Python code</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Cargar y se exploran los datos</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data(<span class="st">"mtcars"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cfcbefde" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#pip install openpyxl </span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
@@ -544,159 +547,11 @@ data("mtcars")</code></pre>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>mtcars_df.to_excel(<span class="bu">file</span> <span class="op">/</span><span class="st">"mtcars_data.xlsx"</span>, index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="3cae2913" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mtcars_df <span class="op">=</span> pd.read_excel(Path.cwd().parent.parent <span class="op">/</span> <span class="st">"Data"</span> <span class="op">/</span> <span class="st">"mtcars_data.xlsx"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>mtcars_df.describe().transpose()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">count</th>
-<th data-quarto-table-cell-role="th">mean</th>
-<th data-quarto-table-cell-role="th">std</th>
-<th data-quarto-table-cell-role="th">min</th>
-<th data-quarto-table-cell-role="th">25%</th>
-<th data-quarto-table-cell-role="th">50%</th>
-<th data-quarto-table-cell-role="th">75%</th>
-<th data-quarto-table-cell-role="th">max</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">mpg</td>
-<td>32.0</td>
-<td>20.090625</td>
-<td>6.026948</td>
-<td>10.400</td>
-<td>15.42500</td>
-<td>19.200</td>
-<td>22.80</td>
-<td>33.900</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">cyl</td>
-<td>32.0</td>
-<td>6.187500</td>
-<td>1.785922</td>
-<td>4.000</td>
-<td>4.00000</td>
-<td>6.000</td>
-<td>8.00</td>
-<td>8.000</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">disp</td>
-<td>32.0</td>
-<td>230.721875</td>
-<td>123.938694</td>
-<td>71.100</td>
-<td>120.82500</td>
-<td>196.300</td>
-<td>326.00</td>
-<td>472.000</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">hp</td>
-<td>32.0</td>
-<td>146.687500</td>
-<td>68.562868</td>
-<td>52.000</td>
-<td>96.50000</td>
-<td>123.000</td>
-<td>180.00</td>
-<td>335.000</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">drat</td>
-<td>32.0</td>
-<td>3.596563</td>
-<td>0.534679</td>
-<td>2.760</td>
-<td>3.08000</td>
-<td>3.695</td>
-<td>3.92</td>
-<td>4.930</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">wt</td>
-<td>32.0</td>
-<td>3.217250</td>
-<td>0.978457</td>
-<td>1.513</td>
-<td>2.58125</td>
-<td>3.325</td>
-<td>3.61</td>
-<td>5.424</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">qsec</td>
-<td>32.0</td>
-<td>17.848750</td>
-<td>1.786943</td>
-<td>14.500</td>
-<td>16.89250</td>
-<td>17.710</td>
-<td>18.90</td>
-<td>22.900</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">vs</td>
-<td>32.0</td>
-<td>0.437500</td>
-<td>0.504016</td>
-<td>0.000</td>
-<td>0.00000</td>
-<td>0.000</td>
-<td>1.00</td>
-<td>1.000</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">am</td>
-<td>32.0</td>
-<td>0.406250</td>
-<td>0.498991</td>
-<td>0.000</td>
-<td>0.00000</td>
-<td>0.000</td>
-<td>1.00</td>
-<td>1.000</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">gear</td>
-<td>32.0</td>
-<td>3.687500</td>
-<td>0.737804</td>
-<td>3.000</td>
-<td>3.00000</td>
-<td>4.000</td>
-<td>4.00</td>
-<td>5.000</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">carb</td>
-<td>32.0</td>
-<td>2.812500</td>
-<td>1.615200</td>
-<td>1.000</td>
-<td>2.00000</td>
-<td>2.000</td>
-<td>4.00</td>
-<td>8.000</td>
-</tr>
-</tbody>
-</table>
-
+<div id="680ccf02" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mtcars_df <span class="op">=</span> pd.read_excel(Path.cwd().parent.parent <span class="op">/</span> <span class="st">"Data"</span> <span class="op">/</span> <span class="st">"mtcars_data.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-</div>
-<div id="49cf83c4" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mtcars_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div id="5a00bfdf" class="cell" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 
 
@@ -794,10 +649,224 @@ data("mtcars")</code></pre>
 <td>3</td>
 <td>2</td>
 </tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>Valiant</td>
+<td>18.1</td>
+<td>6</td>
+<td>225.0</td>
+<td>105</td>
+<td>2.76</td>
+<td>3.460</td>
+<td>20.22</td>
+<td>1</td>
+<td>0</td>
+<td>3</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>Duster 360</td>
+<td>14.3</td>
+<td>8</td>
+<td>360.0</td>
+<td>245</td>
+<td>3.21</td>
+<td>3.570</td>
+<td>15.84</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>Merc 240D</td>
+<td>24.4</td>
+<td>4</td>
+<td>146.7</td>
+<td>62</td>
+<td>3.69</td>
+<td>3.190</td>
+<td>20.00</td>
+<td>1</td>
+<td>0</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>Merc 230</td>
+<td>22.8</td>
+<td>4</td>
+<td>140.8</td>
+<td>95</td>
+<td>3.92</td>
+<td>3.150</td>
+<td>22.90</td>
+<td>1</td>
+<td>0</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>Merc 280</td>
+<td>19.2</td>
+<td>6</td>
+<td>167.6</td>
+<td>123</td>
+<td>3.92</td>
+<td>3.440</td>
+<td>18.30</td>
+<td>1</td>
+<td>0</td>
+<td>4</td>
+<td>4</td>
+</tr>
 </tbody>
 </table>
 
 </div>
+</div>
+</div>
+</section>
+<section id="entrenamiento-de-los-datos-traintest" class="level2">
+<h2 class="anchored" data-anchor-id="entrenamiento-de-los-datos-traintest">Entrenamiento de los datos (train/test)</h2>
+<p>La división de datos en conjuntos de <strong>entrenamiento (train)</strong> y <strong>prueba (test)</strong> es una práctica fundamental en el aprendizaje automático y la modelización predictiva. Su importancia radica en la necesidad de obtener una evaluación <strong>realista y no sesgada</strong> del rendimiento de un modelo, y de asegurar que el modelo sea capaz de <strong>generalizar</strong> a datos nuevos y no vistos.</p>
+<ul>
+<li>En Python, <code>train_test_split()</code> devuelve directamente los cuatro conjuntos de datos:
+<ul>
+<li><code>X_train</code>: Predictoras para entrenamiento.</li>
+</ul></li>
+<li><code>X_test</code>: Predictoras para prueba.</li>
+<li><code>y_train</code>: Variable objetivo para entrenamiento.</li>
+<li><code>y_test</code>: Variable objetivo para prueba.</li>
+</ul>
+<div id="split-data" class="cell" data-message="false" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np <span class="co"># Necesario si necesitas setear una semilla para numpy/pandas</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Definir la variable objetivo (dependiente)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>target_variable <span class="op">=</span> <span class="st">'mpg'</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># X contendrá todas las variables predictoras (features)</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Y contendrá la variable objetivo</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> mtcars_df.drop(columns<span class="op">=</span>[target_variable])</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> mtcars_df[target_variable]</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Dividir los datos en entrenamiento y prueba</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># random_state es el equivalente a set.seed() para reproducibilidad</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># test_size=0.2 significa que el 20% de los datos irán al conjunto de prueba (80% para entrenamiento)</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Esto es importante para asegurar que las proporciones de 'mpg' sean similares en ambos conjuntos,</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># especialmente útil para variables categóricas o si la distribución de 'mpg' es importante.</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">123</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de entrenamiento (X_train): </span><span class="sc">{</span>X_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de prueba (X_test): </span><span class="sc">{</span>X_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de entrenamiento (y_train): </span><span class="sc">{</span>y_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de prueba (y_test): </span><span class="sc">{</span>y_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tamaño del conjunto de entrenamiento (X_train): (25, 11)
+Tamaño del conjunto de prueba (X_test): (7, 11)
+Tamaño del conjunto de entrenamiento (y_train): (25,)
+Tamaño del conjunto de prueba (y_test): (7,)</code></pre>
+</div>
+</div>
+<ul>
+<li>Particionar los datos, evita el <strong>overfitting</strong> (cuando el modelo memoriza los datos de entrenamiento).</li>
+<li>Permite una <strong>evaluación honesta</strong> del modelo al probarlo en datos que no vio durante el entrenamiento.</li>
+<li>Es una práctica estándar en cualquier pipeline de aprendizaje automático.</li>
+</ul>
+</section>
+<section id="entrenamiento-del-modelo" class="level2">
+<h2 class="anchored" data-anchor-id="entrenamiento-del-modelo">Entrenamiento del modelo</h2>
+<p>El <strong>entrenamiento de un modelo</strong> es el paso más importante en el aprendizaje automático. Usando un conjunto de datos de entrenamiento (<code>train_data</code>), el modelo aprende a reconocer patrones para hacer predicciones confiables con datos nuevos. Este proceso es esencial por estas razones:</p>
+<ul>
+<li>Durante el entrenamiento, el modelo <strong>identifica patrones específicos</strong> en los datos.</li>
+<li>Separamos los datos en grupos de entrenamiento y prueba para asegurar que el modelo funcione bien no solo con datos conocidos, sino también con <strong>datos nuevos y no vistos</strong>.</li>
+<li>Después del entrenamiento con <code>train_data</code>, usamos el <strong>conjunto de prueba (<code>test_data</code>)</strong> para medir el rendimiento. Las métricas (MAE, RMSE, <span class="math inline">\(R^2\)</span>) nos muestran qué tan bien el modelo <strong>maneja datos nuevos</strong>.</li>
+<li>Un rendimiento peor en <code>test_data</code> que en <code>train_data</code> indica que el modelo está sobreajustado.</li>
+<li>Con estos resultados, podemos decidir si el modelo está listo para usar o necesita ajustes.</li>
+</ul>
+<p><strong>Función de entrenamiento</strong></p>
+<ul>
+<li><code>modelo_ols_py = smf.ols(formula=formula, data=train_data_combined).fit()</code>:</li>
+<li><code>smf.ols()</code>: Es la función para ajustar un modelo de Mínimos Cuadrados Ordinarios (Ordinary Least Squares - OLS).</li>
+<li><code>formula=formula</code>: Le pasamos la cadena de fórmula que definimos.</li>
+<li><code>data=train_data_combined</code>: Le indicamos de qué DataFrame debe tomar las variables.</li>
+<li><code>.fit()</code>: Este método entrena el modelo sobre los datos.</li>
+</ul>
+<div id="train-ols-model" class="cell" data-message="false" data-results="as-is" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf <span class="co"># Para la sintaxis tipo R de fórmulas</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Asumiendo que X_train, X_test, y_train, y_test ya están definidos</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># por el chunk de división de datos anterior.</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Para asegurar que X_train y y_train se combinen correctamente para statsmodels</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># statsmodels prefiere un solo DataFrame que contenga todas las variables</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Esto es similar a cómo `lm` en R usa `data = train_data`</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Combinar X_train y y_train en un solo DataFrame para statsmodels</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>train_data_combined <span class="op">=</span> pd.concat([X_train, y_train], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Definir la fórmula del modelo (similar a R)</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># mpg ~ . significa "mpg en función de todas las demás variables en el DataFrame"</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Para statsmodels, es mejor listar explícitamente las columnas si X_train tiene muchas</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># O si quieres un subconjunto específico, lo especificas aquí.</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Aquí construimos la fórmula dinámicamente para incluir todas las variables de X_train</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>y_train<span class="sc">.</span>name<span class="sc">}</span><span class="ss"> ~ "</span> <span class="op">+</span> <span class="st">" + "</span>.join(X_train.columns)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Entrenar el modelo de regresión lineal (OLS)</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># statsmodels.formula.api permite usar la sintaxis de fórmula similar a R</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>modelo_ols_py <span class="op">=</span> smf.ols(formula<span class="op">=</span>formula, data<span class="op">=</span>train_data_combined).fit()</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Revisar resumen del modelo (similar a summary() en R)</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Resumen del Modelo OLS en Python:"</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(modelo_ols_py.summary()) <span class="co"># .as_html() para una salida bonita en Quarto</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Resumen del Modelo OLS en Python:
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                    mpg   R-squared:                       0.896
+Model:                            OLS   Adj. R-squared:                  0.821
+Method:                 Least Squares   F-statistic:                     12.00
+Date:                Sun, 15 Jun 2025   Prob (F-statistic):           3.06e-05
+Time:                        01:35:19   Log-Likelihood:                -52.439
+No. Observations:                  25   AIC:                             126.9
+Df Residuals:                      14   BIC:                             140.3
+Df Model:                          10                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P&gt;|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept    -19.2700     31.016     -0.621      0.544     -85.792      47.252
+cyl            1.0972      1.593      0.689      0.502      -2.319       4.513
+disp           0.0062      0.020      0.307      0.764      -0.037       0.049
+hp            -0.0053      0.025     -0.212      0.835      -0.059       0.048
+drat           1.8203      2.101      0.866      0.401      -2.687       6.327
+wt            -3.6682      2.289     -1.603      0.131      -8.577       1.241
+qsec           2.1398      1.379      1.552      0.143      -0.817       5.097
+vs             0.8514      4.586      0.186      0.855      -8.985      10.688
+am             5.8806      3.918      1.501      0.156      -2.523      14.285
+gear          -1.0928      2.698     -0.405      0.692      -6.879       4.694
+carb           0.0325      0.975      0.033      0.974      -2.060       2.125
+==============================================================================
+Omnibus:                        2.342   Durbin-Watson:                   1.335
+Prob(Omnibus):                  0.310   Jarque-Bera (JB):                1.544
+Skew:                           0.374   Prob(JB):                        0.462
+Kurtosis:                       2.040   Cond. No.                     1.94e+04
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.94e+04. This might indicate that there are
+strong multicollinearity or other numerical problems.</code></pre>
 </div>
 </div>
 </section>

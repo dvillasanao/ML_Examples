@@ -19,6 +19,7 @@ execute:
   error: false     # Suprimir errores (muestra la ejecución, pero no los errores)
   execute-dir: project
   # cache: true    # Habilitar el caché (si quieres, desactiva para depuración)
+output-dir: ../../Output/Regression
 ---
 
 ```{python}
@@ -363,8 +364,9 @@ Aquí está una descripción de cada columna:
 
 
 
-```{r}
-#| echo: true
+
+```{python}
+#| eval: false
 require(reticulate)
 reticulate::repl_python() #can be used to interactively run Python code
 # 2. Cargar y se exploran los datos
@@ -395,12 +397,116 @@ mtcars_df.to_excel(file /"mtcars_data.xlsx", index=True)
 
 ```{python}
 mtcars_df = pd.read_excel(Path.cwd().parent.parent / "Data" / "mtcars_data.xlsx")
-
-mtcars_df.describe().transpose()
 ```
 
 
 ```{python}
-mtcars_df.head()
+#| echo: false
+mtcars_df.head(10)
 ```
 
+
+## Entrenamiento de los datos (train/test)
+
+La división de datos en conjuntos de **entrenamiento (train)** y **prueba (test)** es una práctica fundamental en el aprendizaje automático y la modelización predictiva. Su importancia radica en la necesidad de obtener una evaluación **realista y no sesgada** del rendimiento de un modelo, y de asegurar que el modelo sea capaz de **generalizar** a datos nuevos y no vistos.
+
+* En Python, `train_test_split()` devuelve directamente los cuatro conjuntos de datos:
+  * `X_train`: Predictoras para entrenamiento.
+* `X_test`: Predictoras para prueba.
+* `y_train`: Variable objetivo para entrenamiento.
+* `y_test`: Variable objetivo para prueba.
+
+```{python}
+#| label: split-data
+#| echo: true
+#| message: false
+#| warning: false
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import numpy as np # Necesario si necesitas setear una semilla para numpy/pandas
+
+# Definir la variable objetivo (dependiente)
+target_variable = 'mpg'
+
+# X contendrá todas las variables predictoras (features)
+# Y contendrá la variable objetivo
+X = mtcars_df.drop(columns=[target_variable])
+y = mtcars_df[target_variable]
+
+# 3. Dividir los datos en entrenamiento y prueba
+# random_state es el equivalente a set.seed() para reproducibilidad
+# test_size=0.2 significa que el 20% de los datos irán al conjunto de prueba (80% para entrenamiento)
+# Esto es importante para asegurar que las proporciones de 'mpg' sean similares en ambos conjuntos,
+# especialmente útil para variables categóricas o si la distribución de 'mpg' es importante.
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=123
+)
+
+
+print(f"Tamaño del conjunto de entrenamiento (X_train): {X_train.shape}")
+print(f"Tamaño del conjunto de prueba (X_test): {X_test.shape}")
+print(f"Tamaño del conjunto de entrenamiento (y_train): {y_train.shape}")
+print(f"Tamaño del conjunto de prueba (y_test): {y_test.shape}")
+```
+
+
+-   Particionar los datos, evita el **overfitting** (cuando el modelo memoriza los datos de entrenamiento).
+-   Permite una **evaluación honesta** del modelo al probarlo en datos que no vio durante el entrenamiento.
+-   Es una práctica estándar en cualquier pipeline de aprendizaje automático.
+
+## Entrenamiento del modelo
+
+El **entrenamiento de un modelo** es el paso más importante en el aprendizaje automático. Usando un conjunto de datos de entrenamiento (`train_data`), el modelo aprende a reconocer patrones para hacer predicciones confiables con datos nuevos. Este proceso es esencial por estas razones:
+
+-   Durante el entrenamiento, el modelo **identifica patrones específicos** en los datos.
+-   Separamos los datos en grupos de entrenamiento y prueba para asegurar que el modelo funcione bien no solo con datos conocidos, sino también con **datos nuevos y no vistos**.
+-   Después del entrenamiento con `train_data`, usamos el **conjunto de prueba (`test_data`)** para medir el rendimiento. Las métricas (MAE, RMSE, $R^2$) nos muestran qué tan bien el modelo **maneja datos nuevos**.
+-   Un rendimiento peor en `test_data` que en `train_data` indica que el modelo está sobreajustado.
+-   Con estos resultados, podemos decidir si el modelo está listo para usar o necesita ajustes.
+
+**Función de entrenamiento**
+
+  * `modelo_ols_py = smf.ols(formula=formula, data=train_data_combined).fit()`:
+  * `smf.ols()`: Es la función para ajustar un modelo de Mínimos Cuadrados Ordinarios (Ordinary Least Squares - OLS).
+* `formula=formula`: Le pasamos la cadena de fórmula que definimos.
+* `data=train_data_combined`: Le indicamos de qué DataFrame debe tomar las variables.
+* `.fit()`: Este método entrena el modelo sobre los datos.
+
+    
+```{python}
+#| label: train-ols-model
+#| echo: true
+#| message: false
+#| warning: false
+#| results: as-is # Importante para mostrar el resumen del modelo como HTML
+
+import pandas as pd
+import statsmodels.formula.api as smf # Para la sintaxis tipo R de fórmulas
+
+# Asumiendo que X_train, X_test, y_train, y_test ya están definidos
+# por el chunk de división de datos anterior.
+
+# Para asegurar que X_train y y_train se combinen correctamente para statsmodels
+# statsmodels prefiere un solo DataFrame que contenga todas las variables
+# Esto es similar a cómo `lm` en R usa `data = train_data`
+
+# Combinar X_train y y_train en un solo DataFrame para statsmodels
+train_data_combined = pd.concat([X_train, y_train], axis=1)
+
+# Definir la fórmula del modelo (similar a R)
+# mpg ~ . significa "mpg en función de todas las demás variables en el DataFrame"
+# Para statsmodels, es mejor listar explícitamente las columnas si X_train tiene muchas
+# O si quieres un subconjunto específico, lo especificas aquí.
+# Aquí construimos la fórmula dinámicamente para incluir todas las variables de X_train
+formula = f"{y_train.name} ~ " + " + ".join(X_train.columns)
+
+# 4. Entrenar el modelo de regresión lineal (OLS)
+# statsmodels.formula.api permite usar la sintaxis de fórmula similar a R
+modelo_ols_py = smf.ols(formula=formula, data=train_data_combined).fit()
+
+# Revisar resumen del modelo (similar a summary() en R)
+print("Resumen del Modelo OLS en Python:")
+print(modelo_ols_py.summary()) # .as_html() para una salida bonita en Quarto
+```
+    
