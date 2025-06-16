@@ -119,9 +119,12 @@ window.Quarto = {
   <li><a href="#pasos-generales-del-machine-learning-supervisado" id="toc-pasos-generales-del-machine-learning-supervisado" class="nav-link" data-scroll-target="#pasos-generales-del-machine-learning-supervisado"><strong>Pasos generales del Machine Learning supervisado</strong></a></li>
   <li><a href="#base-de-datos" id="toc-base-de-datos" class="nav-link" data-scroll-target="#base-de-datos">Base de datos</a></li>
   <li><a href="#entrenamiento-de-los-datos-traintest" id="toc-entrenamiento-de-los-datos-traintest" class="nav-link" data-scroll-target="#entrenamiento-de-los-datos-traintest">Entrenamiento de los datos (train/test)</a></li>
-  <li><a href="#entrenamiento-del-modelo" id="toc-entrenamiento-del-modelo" class="nav-link" data-scroll-target="#entrenamiento-del-modelo">Entrenamiento del modelo</a>
+  <li><a href="#entrenamiento-del-modelo" id="toc-entrenamiento-del-modelo" class="nav-link" data-scroll-target="#entrenamiento-del-modelo">Entrenamiento del modelo</a></li>
+  <li><a href="#selección-de-variables" id="toc-selección-de-variables" class="nav-link" data-scroll-target="#selección-de-variables">Selección de variables</a>
   <ul class="collapse">
-  <li><a href="#observaciones-generales" id="toc-observaciones-generales" class="nav-link" data-scroll-target="#observaciones-generales">📌 <strong>Observaciones generales</strong></a></li>
+  <li><a href="#criterio-de-información-de-akaike" id="toc-criterio-de-información-de-akaike" class="nav-link" data-scroll-target="#criterio-de-información-de-akaike">Criterio de Información de Akaike</a></li>
+  <li><a href="#interpretación-final" id="toc-interpretación-final" class="nav-link" data-scroll-target="#interpretación-final">Interpretación Final</a></li>
+  <li><a href="#forward-or-backward-stepwise" id="toc-forward-or-backward-stepwise" class="nav-link" data-scroll-target="#forward-or-backward-stepwise">Forward or backward stepwise</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -275,115 +278,115 @@ Este material es reproducible en código Python utilizando Quarto
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os <span class="co"># Necesario para la función os.makedirs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="9459225e" class="cell" data-execution_count="5">
+<div id="d7ab80b0" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display" data-execution_count="3">
 <style type="text/css">
-#T_df4c2 td {
+#T_e64a7 td {
   padding: 1px;
 }
-#T_df4c2_row0_col0, #T_df4c2_row0_col1, #T_df4c2_row1_col0, #T_df4c2_row1_col1, #T_df4c2_row2_col0, #T_df4c2_row2_col1, #T_df4c2_row3_col0, #T_df4c2_row3_col1, #T_df4c2_row4_col0, #T_df4c2_row4_col1, #T_df4c2_row5_col0, #T_df4c2_row5_col1, #T_df4c2_row6_col0, #T_df4c2_row6_col1, #T_df4c2_row7_col0, #T_df4c2_row7_col1, #T_df4c2_row8_col0, #T_df4c2_row8_col1, #T_df4c2_row9_col0, #T_df4c2_row9_col1, #T_df4c2_row10_col0, #T_df4c2_row10_col1, #T_df4c2_row11_col0, #T_df4c2_row11_col1, #T_df4c2_row12_col0, #T_df4c2_row12_col1 {
+#T_e64a7_row0_col0, #T_e64a7_row0_col1, #T_e64a7_row1_col0, #T_e64a7_row1_col1, #T_e64a7_row2_col0, #T_e64a7_row2_col1, #T_e64a7_row3_col0, #T_e64a7_row3_col1, #T_e64a7_row4_col0, #T_e64a7_row4_col1, #T_e64a7_row5_col0, #T_e64a7_row5_col1, #T_e64a7_row6_col0, #T_e64a7_row6_col1, #T_e64a7_row7_col0, #T_e64a7_row7_col1, #T_e64a7_row8_col0, #T_e64a7_row8_col1, #T_e64a7_row9_col0, #T_e64a7_row9_col1, #T_e64a7_row10_col0, #T_e64a7_row10_col1, #T_e64a7_row11_col0, #T_e64a7_row11_col1, #T_e64a7_row12_col0, #T_e64a7_row12_col1 {
   width: 200px;
   text-align: left;
 }
-#T_df4c2_row0_col2, #T_df4c2_row1_col2, #T_df4c2_row2_col2, #T_df4c2_row3_col2, #T_df4c2_row4_col2, #T_df4c2_row5_col2, #T_df4c2_row6_col2, #T_df4c2_row7_col2, #T_df4c2_row8_col2, #T_df4c2_row9_col2, #T_df4c2_row10_col2, #T_df4c2_row11_col2, #T_df4c2_row12_col2 {
+#T_e64a7_row0_col2, #T_e64a7_row1_col2, #T_e64a7_row2_col2, #T_e64a7_row3_col2, #T_e64a7_row4_col2, #T_e64a7_row5_col2, #T_e64a7_row6_col2, #T_e64a7_row7_col2, #T_e64a7_row8_col2, #T_e64a7_row9_col2, #T_e64a7_row10_col2, #T_e64a7_row11_col2, #T_e64a7_row12_col2 {
   width: 500px;
   text-align: left;
 }
 </style>
 
-<div id="T_df4c2" class="quarto-float quarto-figure quarto-figure-center anchored" data-quarto-postprocess="true" style="font-family: Century Gothic; font-size: 10pt;">
+<div id="T_e64a7" class="quarto-float quarto-figure quarto-figure-center anchored" data-quarto-postprocess="true" style="font-family: Century Gothic; font-size: 10pt;">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_df4c2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_e64a7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Fuente: Elaboración propia
 </figcaption>
-<div aria-describedby="T_df4c2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table id="T_df4c2" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<div aria-describedby="T_e64a7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="T_e64a7" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_df4c2_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
-<th id="T_df4c2_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
-<th id="T_df4c2_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
+<th id="T_e64a7_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
+<th id="T_e64a7_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
+<th id="T_e64a7_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_df4c2_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
-<td id="T_df4c2_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
-<td id="T_df4c2_row0_col1" class="data row0 col1">Supervisado</td>
-<td id="T_df4c2_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
+<td id="T_e64a7_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
+<td id="T_e64a7_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
+<td id="T_e64a7_row0_col1" class="data row0 col1">Supervisado</td>
+<td id="T_e64a7_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
 </tr>
 <tr class="even">
-<td id="T_df4c2_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
-<td id="T_df4c2_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
-<td id="T_df4c2_row1_col1" class="data row1 col1">Numérica continua</td>
-<td id="T_df4c2_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
+<td id="T_e64a7_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
+<td id="T_e64a7_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
+<td id="T_e64a7_row1_col1" class="data row1 col1">Numérica continua</td>
+<td id="T_e64a7_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
 </tr>
 <tr class="odd">
-<td id="T_df4c2_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
-<td id="T_df4c2_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
-<td id="T_df4c2_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
-<td id="T_df4c2_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
+<td id="T_e64a7_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
+<td id="T_e64a7_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
+<td id="T_e64a7_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
+<td id="T_e64a7_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
 </tr>
 <tr class="even">
-<td id="T_df4c2_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
-<td id="T_df4c2_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
-<td id="T_df4c2_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
-<td id="T_df4c2_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
+<td id="T_e64a7_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
+<td id="T_e64a7_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
+<td id="T_e64a7_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
+<td id="T_e64a7_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
 </tr>
 <tr class="odd">
-<td id="T_df4c2_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
-<td id="T_df4c2_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
-<td id="T_df4c2_row4_col1" class="data row4 col1">Deseable</td>
-<td id="T_df4c2_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
+<td id="T_e64a7_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
+<td id="T_e64a7_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
+<td id="T_e64a7_row4_col1" class="data row4 col1">Deseable</td>
+<td id="T_e64a7_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
 </tr>
 <tr class="even">
-<td id="T_df4c2_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
-<td id="T_df4c2_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
-<td id="T_df4c2_row5_col1" class="data row5 col1">Necesaria</td>
-<td id="T_df4c2_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
+<td id="T_e64a7_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
+<td id="T_e64a7_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
+<td id="T_e64a7_row5_col1" class="data row5 col1">Necesaria</td>
+<td id="T_e64a7_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
 </tr>
 <tr class="odd">
-<td id="T_df4c2_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
-<td id="T_df4c2_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
-<td id="T_df4c2_row6_col1" class="data row6 col1">Necesaria</td>
-<td id="T_df4c2_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
+<td id="T_e64a7_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
+<td id="T_e64a7_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
+<td id="T_e64a7_row6_col1" class="data row6 col1">Necesaria</td>
+<td id="T_e64a7_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
 </tr>
 <tr class="even">
-<td id="T_df4c2_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
-<td id="T_df4c2_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
-<td id="T_df4c2_row7_col1" class="data row7 col1">Sí</td>
-<td id="T_df4c2_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
+<td id="T_e64a7_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
+<td id="T_e64a7_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
+<td id="T_e64a7_row7_col1" class="data row7 col1">Sí</td>
+<td id="T_e64a7_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
 </tr>
 <tr class="odd">
-<td id="T_df4c2_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
-<td id="T_df4c2_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
-<td id="T_df4c2_row8_col1" class="data row8 col1">Problema común</td>
-<td id="T_df4c2_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
+<td id="T_e64a7_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
+<td id="T_e64a7_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
+<td id="T_e64a7_row8_col1" class="data row8 col1">Problema común</td>
+<td id="T_e64a7_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
 </tr>
 <tr class="even">
-<td id="T_df4c2_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
-<td id="T_df4c2_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
-<td id="T_df4c2_row9_col1" class="data row9 col1">Alta</td>
-<td id="T_df4c2_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
+<td id="T_e64a7_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
+<td id="T_e64a7_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
+<td id="T_e64a7_row9_col1" class="data row9 col1">Alta</td>
+<td id="T_e64a7_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
 </tr>
 <tr class="odd">
-<td id="T_df4c2_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
-<td id="T_df4c2_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
-<td id="T_df4c2_row10_col1" class="data row10 col1">Muy alta</td>
-<td id="T_df4c2_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
+<td id="T_e64a7_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
+<td id="T_e64a7_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
+<td id="T_e64a7_row10_col1" class="data row10 col1">Muy alta</td>
+<td id="T_e64a7_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
 </tr>
 <tr class="even">
-<td id="T_df4c2_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
-<td id="T_df4c2_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
-<td id="T_df4c2_row11_col1" class="data row11 col1">Compatible</td>
-<td id="T_df4c2_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
+<td id="T_e64a7_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
+<td id="T_e64a7_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
+<td id="T_e64a7_row11_col1" class="data row11 col1">Compatible</td>
+<td id="T_e64a7_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
 </tr>
 <tr class="odd">
-<td id="T_df4c2_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
-<td id="T_df4c2_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
-<td id="T_df4c2_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
-<td id="T_df4c2_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
+<td id="T_e64a7_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
+<td id="T_e64a7_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
+<td id="T_e64a7_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
+<td id="T_e64a7_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
 </tr>
 </tbody>
 </table>
@@ -453,8 +456,8 @@ Donde:
 <li><strong>Interpretación de resultados</strong></li>
 </ol>
 <p align="center">
-</p><p><img src="../../img/ML_Steps.png" alt="Machine Learning Steps" width="100%"></p>
-<p></p>
+<img src="../../img/ML_Steps.png" alt="Machine Learning Steps" width="100%">
+</p>
 <hr>
 </section>
 <section id="base-de-datos" class="level2">
@@ -532,13 +535,13 @@ Donde:
 </tr>
 </tbody>
 </table>
-<div id="348ad022" class="cell" data-execution_count="6">
+<div id="65bf5e19" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>require(reticulate)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>reticulate::repl_python() <span class="co">#can be used to interactively run Python code</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Cargar y se exploran los datos</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data(<span class="st">"mtcars"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="33ff0ccc" class="cell" data-execution_count="7">
+<div id="de872c2f" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#pip install openpyxl </span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
@@ -554,10 +557,10 @@ Donde:
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>mtcars_df.to_excel(<span class="bu">file</span> <span class="op">/</span><span class="st">"mtcars_data.xlsx"</span>, index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="94bc19f4" class="cell" data-execution_count="8">
+<div id="41fd1a9d" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mtcars_df <span class="op">=</span> pd.read_excel(Path.cwd().parent.parent <span class="op">/</span> <span class="st">"Data"</span> <span class="op">/</span> <span class="st">"mtcars_data.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="6dc1ae89" class="cell" data-execution_count="9">
+<div id="ff43862c" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 
@@ -772,11 +775,10 @@ Donde:
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">123</span></span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de entrenamiento (X_train): </span><span class="sc">{</span>X_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de prueba (X_test): </span><span class="sc">{</span>X_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de entrenamiento (y_train): </span><span class="sc">{</span>y_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de prueba (y_test): </span><span class="sc">{</span>y_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de entrenamiento (X_train): </span><span class="sc">{</span>X_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de prueba (X_test): </span><span class="sc">{</span>X_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de entrenamiento (y_train): </span><span class="sc">{</span>y_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tamaño del conjunto de prueba (y_test): </span><span class="sc">{</span>y_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Tamaño del conjunto de entrenamiento (X_train): (25, 11)
 Tamaño del conjunto de prueba (X_test): (7, 11)
@@ -844,7 +846,7 @@ Dep. Variable:                    mpg   R-squared:                       0.896
 Model:                            OLS   Adj. R-squared:                  0.821
 Method:                 Least Squares   F-statistic:                     12.00
 Date:                Mon, 16 Jun 2025   Prob (F-statistic):           3.06e-05
-Time:                        01:19:41   Log-Likelihood:                -52.439
+Time:                        15:02:31   Log-Likelihood:                -52.439
 No. Observations:                  25   AIC:                             126.9
 Df Residuals:                      14   BIC:                             140.3
 Df Model:                          10                                         
@@ -904,8 +906,8 @@ strong multicollinearity or other numerical problems.</code></pre>
 </ul>
 <p><strong>¿Por qué los resultados de R y Python son diferentes a pesar de usar la misma lógica?</strong></p>
 <p>La razón principal por la que obtienes resultados ligeramente diferentes en R y Python para los coeficientes, errores estándar y p-valores (aunque las métricas generales como R-cuadrado y F-estadístico son muy similares) es debido a la <strong>naturaleza aleatoria de la división de los datos en entrenamiento y prueba</strong>.</p>
-<section id="observaciones-generales" class="level3">
-<h3 class="anchored" data-anchor-id="observaciones-generales">📌 <strong>Observaciones generales</strong></h3>
+<section id="observaciones-generales" class="level4">
+<h4 class="anchored" data-anchor-id="observaciones-generales">📌 <strong>Observaciones generales</strong></h4>
 <ul>
 <li><p>El modelo tiene un <strong>muy buen R²</strong> (89.6%) ⇒ explica bien la variabilidad en <code>mpg</code>.</p></li>
 <li><p><strong>El modelo completo es estadísticamente significativo</strong>, pero <strong>ninguna variable individual lo es</strong>, lo que probablemente se deba a <strong>multicolinealidad</strong>.</p></li>
@@ -917,6 +919,8 @@ strong multicollinearity or other numerical problems.</code></pre>
 </ul></li>
 </ul>
 <div id="cell-scatter-plots-faceted" class="cell" data-fig-height="8" data-fig-width="10" data-message="false" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> (</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    ggplot, aes, geom_point, geom_smooth, facet_wrap,</span>
@@ -929,34 +933,38 @@ strong multicollinearity or other numerical problems.</code></pre>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Preparación de los datos</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>tabla_py <span class="op">=</span> mtcars_df.melt(id_vars <span class="op">=</span> [<span class="st">"mpg"</span>], </span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                          var_name <span class="op">=</span> <span class="st">"variable"</span>, </span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                          value_name <span class="op">=</span> <span class="st">"value"</span>)</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Crear el gráfico con plotnine</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    ggplot(tabla_py, aes(y <span class="op">=</span> <span class="st">"mpg"</span>, x <span class="op">=</span> <span class="st">"value"</span>, color <span class="op">=</span> <span class="st">"variable"</span>))</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_smooth(method<span class="op">=</span><span class="st">"lm"</span>, se<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_bw()</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme(</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        plot_title<span class="op">=</span>element_text(size <span class="op">=</span> <span class="dv">22</span>),</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        plot_subtitle<span class="op">=</span>element_text(size <span class="op">=</span> <span class="dv">18</span>),</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        plot_caption<span class="op">=</span>element_text(size <span class="op">=</span> <span class="dv">11</span>),</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        axis_text<span class="op">=</span>element_text(),</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        axis_title<span class="op">=</span>element_text(size <span class="op">=</span> <span class="dv">15</span>),</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        legend_position<span class="op">=</span><span class="st">"none"</span></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> facet_wrap(<span class="st">"~variable"</span>, scales<span class="op">=</span><span class="st">"free"</span>)</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Diagramas de dispersión"</span>,</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="st">""</span>,</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">""</span></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el gráfico</span></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>tabla_py <span class="op">=</span> (</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>            mtcars_df</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>           .drop(columns <span class="op">=</span> [<span class="st">'name'</span>], errors <span class="op">=</span> <span class="st">'ignore'</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>           .melt(id_vars <span class="op">=</span> [<span class="st">"mpg"</span>], var_name <span class="op">=</span> <span class="st">"variable"</span>, value_name <span class="op">=</span> <span class="st">"value"</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Crear el gráfico con plotnine</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    ggplot(tabla_py, aes(y <span class="op">=</span> <span class="st">"mpg"</span>, x <span class="op">=</span> <span class="st">"value"</span>, color <span class="op">=</span> <span class="st">"variable"</span>))</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_smooth(method<span class="op">=</span><span class="st">"lm"</span>, se<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme(</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        plot_title<span class="op">=</span>element_text(size <span class="op">=</span> <span class="dv">22</span>),</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        plot_subtitle<span class="op">=</span>element_text(size <span class="op">=</span> <span class="dv">18</span>),</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        plot_caption<span class="op">=</span>element_text(size <span class="op">=</span> <span class="dv">11</span>),</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        axis_text<span class="op">=</span>element_text(),</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        axis_text_x <span class="op">=</span> element_text(angle <span class="op">=</span> <span class="dv">45</span>),</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        axis_title<span class="op">=</span>element_text(size <span class="op">=</span> <span class="dv">15</span>),</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        legend_position<span class="op">=</span><span class="st">"none"</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> facet_wrap(<span class="st">"~variable"</span>, scales<span class="op">=</span><span class="st">"free"</span>)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Diagramas de dispersión"</span>,</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="st">""</span>,</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">""</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el gráfico</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -965,6 +973,681 @@ strong multicollinearity or other numerical problems.</code></pre>
 </div>
 </div>
 </div>
+</section>
+</section>
+<section id="selección-de-variables" class="level2">
+<h2 class="anchored" data-anchor-id="selección-de-variables">Selección de variables</h2>
+<section id="criterio-de-información-de-akaike" class="level3">
+<h3 class="anchored" data-anchor-id="criterio-de-información-de-akaike">Criterio de Información de Akaike</h3>
+<p>El Criterio de Información de Akaike (AIC, por sus siglas en inglés, Akaike Information Criterion) es una medida de la bondad de ajuste de un modelo estadístico que penaliza la complejidad del modelo. Su objetivo es seleccionar el modelo que mejor se ajusta a los datos con la menor cantidad de parámetros, evitando así el sobreajuste (overfitting).</p>
+<p>La fórmula general para calcular el AIC es:</p>
+<p><span class="math display">\[AIC = 2k - 2\ln(L)\]</span></p>
+<p>Donde:<br>
+* <span class="math inline">\(k\)</span> es el número de parámetros del modelo. En un modelo de regresión, esto incluye el intercepto y los coeficientes de las variables predictoras, más la varianza del error si se estima (en modelos de mínimos cuadrados ordinarios, esto es a menudo el caso, por lo que <span class="math inline">\(k\)</span> a veces se cuenta como el número de coeficientes + 1 para la varianza del error, o simplemente el número de coeficientes si la varianza del error se considera implícita en la función de verosimilitud).<br>
+* <span class="math inline">\(\ln(L)\)</span> es el logaritmo natural del valor máximo de la función de verosimilitud (log-likelihood) del modelo. La función de verosimilitud mide qué tan bien el modelo reproduce los datos observados.</p>
+<section id="cómo-se-interpreta" class="level4">
+<h4 class="anchored" data-anchor-id="cómo-se-interpreta">Cómo se interpreta:</h4>
+<ul>
+<li><strong>Valores más bajos de AIC indican un mejor modelo.</strong> El AIC busca un equilibrio entre la bondad de ajuste del modelo a los datos (representada por <span class="math inline">\(\ln(L)\)</span>) y la complejidad del modelo (representada por <span class="math inline">\(2k\)</span>).<br>
+</li>
+<li>El término <span class="math inline">\(2k\)</span> es una <strong>penalización por la complejidad</strong>. Cada parámetro adicional en el modelo aumenta el valor de AIC, lo que desincentiva la inclusión de variables innecesarias que podrían sobreajustar los datos.</li>
+</ul>
+</section>
+<section id="para-modelos-de-regresión-por-mínimos-cuadrados-ordinarios-ols" class="level4">
+<h4 class="anchored" data-anchor-id="para-modelos-de-regresión-por-mínimos-cuadrados-ordinarios-ols">Para modelos de Regresión por Mínimos Cuadrados Ordinarios (OLS):</h4>
+<p>Aunque la fórmula general del AIC es la que se mencionó, para modelos de OLS con residuos normalmente distribuidos, la función de log-verosimilitud tiene una forma específica, lo que permite reescribir el AIC de una manera más práctica.</p>
+<p>Para un modelo de regresión lineal con <span class="math inline">\(n\)</span> observaciones y <span class="math inline">\(k\)</span> parámetros (incluyendo el intercepto), y asumiendo errores normales con varianza constante, el AIC se puede calcular como:</p>
+<p><span class="math display">\[AIC = n \cdot \ln\left(\frac{RSS}{n}\right) + 2k\]</span></p>
+<p>Donde:<br>
+* <span class="math inline">\(n\)</span> es el número de observaciones (tamaño de la muestra).<br>
+* <span class="math inline">\(RSS\)</span> es la Suma de Cuadrados de los Residuos (Residual Sum of Squares), que es la suma de los cuadrados de las diferencias entre los valores observados y los valores predichos por el modelo.<br>
+* <span class="math inline">\(k\)</span> es el número de parámetros del modelo (coeficientes de las variables independientes + intercepto).</p>
+<p><strong>Es importante recordar:</strong></p>
+<ul>
+<li>El AIC no es una prueba de hipótesis en el sentido tradicional; no te dice si un modelo es “bueno” o “malo” en un sentido absoluto.<br>
+</li>
+<li>Es una herramienta para la <strong>selección de modelos entre un conjunto de modelos candidatos</strong>. Siempre se compara el AIC de diferentes modelos ajustados a los <strong>mismos datos</strong>. El modelo con el AIC más bajo es el preferido.<br>
+</li>
+<li>Cuando la muestra es pequeña, a veces se prefiere el <strong>AIC corregido (AICc)</strong>, que añade una penalización adicional por el tamaño de la muestra:<br>
+<span class="math display">\[AICc = AIC + \frac{2k(k+1)}{n-k-1}\]</span></li>
+</ul>
+<p>A medida que <span class="math inline">\(n\)</span> (tamaño de la muestra) es grande, el término de corrección se vuelve insignificante y el AICc converge al AIC.</p>
+<p>Se realiza una selección automática de variables para un modelo de regresión lineal, utilizando el <strong>criterio AIC (Criterio de Información de Akaike</strong>)</p>
+<p><strong>Implementación de Selección por Pasos (Stepwise) con AIC en Python</strong></p>
+<p>Dado que <code>statsmodels</code> no tiene un <code>stepAIC</code> incorporado que funcione exactamente como en R con <code>direction="both"</code>, una forma común de lograr esto en Python es implementar la lógica de forma manual o usar una función auxiliar que la simule.</p>
+<div id="stepwise-aic" class="cell" data-message="false" data-results="as-is" data-execution_count="13">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Aunque no lo vamos a importar directamente aquí, el concepto de AIC</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># está implícito en los resultados de summary() de statsmodels</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Asumiendo que X_train, y_train y train_data_combined</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (el DataFrame combinado para statsmodels) ya están definidos</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># desde los chunks anteriores.</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Y que modelo_ols_py ya fue ajustado.</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stepwise_selection_aic(data, target_variable, initial_features<span class="op">=</span><span class="va">None</span>, verbose<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">    Realiza una selección de características por pasos (forward y backward)</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">    basada en el Criterio de Información de Akaike (AIC).</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">        data (pd.DataFrame): El DataFrame de entrenamiento combinado (X y y).</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">        target_variable (str): El nombre de la columna de la variable dependiente.</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">        initial_features (list): Lista opcional de características para empezar.</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">                                 Si es None, empieza con un modelo nulo o con todas.</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">        verbose (bool): Si es True, imprime los pasos del proceso.</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">        statsmodels.regression.linear_model.RegressionResultsWrapper: El modelo OLS final.</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    remaining_features <span class="op">=</span> <span class="bu">list</span>(data.drop(columns<span class="op">=</span>[target_variable]).columns)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    selected_features <span class="op">=</span> [] <span class="cf">if</span> initial_features <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> initial_features</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    current_score, best_new_score <span class="op">=</span> <span class="bu">float</span>(<span class="st">'inf'</span>), <span class="bu">float</span>(<span class="st">'inf'</span>)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    best_model <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    iteration <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> verbose:</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Iniciando selección de modelo por pasos con AIC (dirección 'both')..."</span>)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>        iteration <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>        model_changed <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> verbose:</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">--- Iteración </span><span class="sc">{</span>iteration<span class="sc">}</span><span class="ss"> ---"</span>)</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Características seleccionadas actualmente: </span><span class="sc">{</span>selected_features<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># --- Paso hacia adelante (Forward Selection) ---</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>        aic_candidates_forward <span class="op">=</span> {}</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> remaining_features: <span class="co"># Solo si hay características restantes para añadir</span></span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="st">"Considerando añadir características:"</span>)</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> feature <span class="kw">in</span> remaining_features:</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>                temp_features <span class="op">=</span> selected_features <span class="op">+</span> [feature]</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="kw">not</span> temp_features: <span class="co"># Asegura que al menos haya un Intercept si no hay features</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>                    formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>target_variable<span class="sc">}</span><span class="ss"> ~ 1"</span> <span class="co"># Modelo solo con intercept</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span>:</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>                    formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>target_variable<span class="sc">}</span><span class="ss"> ~ "</span> <span class="op">+</span> <span class="st">" + "</span>.join(temp_features)</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>                <span class="cf">try</span>:</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>                    model <span class="op">=</span> smf.ols(formula<span class="op">=</span>formula, data<span class="op">=</span>data).fit()</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>                    aic_candidates_forward[feature] <span class="op">=</span> model.aic</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f"  Añadiendo '</span><span class="sc">{</span>feature<span class="sc">}</span><span class="ss">': AIC = </span><span class="sc">{</span>model<span class="sc">.</span>aic<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>                <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f"  Error al probar '</span><span class="sc">{</span>feature<span class="sc">}</span><span class="ss">': </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>        <span class="co"># --- Paso hacia atrás (Backward Elimination) ---</span></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>        aic_candidates_backward <span class="op">=</span> {}</span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(selected_features) <span class="op">&gt;</span> <span class="dv">0</span>: <span class="co"># Solo si hay características para eliminar</span></span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="st">"Considerando eliminar características:"</span>)</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> feature <span class="kw">in</span> selected_features:</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>                temp_features <span class="op">=</span> [f <span class="cf">for</span> f <span class="kw">in</span> selected_features <span class="cf">if</span> f <span class="op">!=</span> feature]</span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="kw">not</span> temp_features: <span class="co"># Si eliminamos todo y solo queda el intercept</span></span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>                    formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>target_variable<span class="sc">}</span><span class="ss"> ~ 1"</span></span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span>:</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>                    formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>target_variable<span class="sc">}</span><span class="ss"> ~ "</span> <span class="op">+</span> <span class="st">" + "</span>.join(temp_features)</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>                <span class="cf">try</span>:</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>                    model <span class="op">=</span> smf.ols(formula<span class="op">=</span>formula, data<span class="op">=</span>data).fit()</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>                    aic_candidates_backward[feature] <span class="op">=</span> model.aic</span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f"  Eliminando '</span><span class="sc">{</span>feature<span class="sc">}</span><span class="ss">': AIC = </span><span class="sc">{</span>model<span class="sc">.</span>aic<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>                <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f"  Error al probar quitar '</span><span class="sc">{</span>feature<span class="sc">}</span><span class="ss">': </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>        best_aic_this_step <span class="op">=</span> current_score</span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>        feature_to_add <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>        feature_to_remove <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>        action <span class="op">=</span> <span class="va">None</span> <span class="co"># 'add' o 'remove'</span></span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Evaluar mejor movimiento: añadir o eliminar</span></span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Mejor añadir</span></span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> aic_candidates_forward:</span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>            min_aic_add_feature <span class="op">=</span> <span class="bu">min</span>(aic_candidates_forward, key<span class="op">=</span>aic_candidates_forward.get)</span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>            min_aic_add_value <span class="op">=</span> aic_candidates_forward[min_aic_add_feature]</span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> min_aic_add_value <span class="op">&lt;</span> best_aic_this_step:</span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a>                best_aic_this_step <span class="op">=</span> min_aic_add_value</span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a>                feature_to_add <span class="op">=</span> min_aic_add_feature</span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a>                action <span class="op">=</span> <span class="st">'add'</span></span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Mejor eliminar</span></span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> aic_candidates_backward:</span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>            min_aic_remove_feature <span class="op">=</span> <span class="bu">min</span>(aic_candidates_backward, key<span class="op">=</span>aic_candidates_backward.get)</span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>            min_aic_remove_value <span class="op">=</span> aic_candidates_backward[min_aic_remove_feature]</span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Solo consideramos eliminar si esto mejora el AIC *actual* del modelo</span></span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a>            <span class="co"># y también si es mejor que añadir</span></span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> min_aic_remove_value <span class="op">&lt;</span> best_aic_this_step:</span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a>                best_aic_this_step <span class="op">=</span> min_aic_remove_value</span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a>                feature_to_remove <span class="op">=</span> min_aic_remove_feature</span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a>                action <span class="op">=</span> <span class="st">'remove'</span></span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> best_aic_this_step <span class="op">&lt;</span> current_score:</span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>            model_changed <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>            current_score <span class="op">=</span> best_aic_this_step</span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> action <span class="op">==</span> <span class="st">'add'</span>:</span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a>                selected_features.append(feature_to_add)</span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a>                remaining_features.remove(feature_to_add)</span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f"-&gt; Añadiendo: '</span><span class="sc">{</span>feature_to_add<span class="sc">}</span><span class="ss">'. Nuevo AIC: </span><span class="sc">{</span>current_score<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> action <span class="op">==</span> <span class="st">'remove'</span>:</span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a>                remaining_features.append(feature_to_remove)</span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a>                selected_features.remove(feature_to_remove)</span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="ss">f"-&gt; Eliminando: '</span><span class="sc">{</span>feature_to_remove<span class="sc">}</span><span class="ss">'. Nuevo AIC: </span><span class="sc">{</span>current_score<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a>            <span class="co"># No hay mejoras en el AIC, detener el proceso</span></span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> verbose: <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">No se encontró una mejora en el AIC. Deteniendo la selección por pasos."</span>)</span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ajustar el modelo final con las características seleccionadas</span></span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> selected_features:</span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a>        final_formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>target_variable<span class="sc">}</span><span class="ss"> ~ 1"</span></span>
+<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a>        final_formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>target_variable<span class="sc">}</span><span class="ss"> ~ "</span> <span class="op">+</span> <span class="st">" + "</span>.join(selected_features)</span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a>    final_model <span class="op">=</span> smf.ols(formula<span class="op">=</span>final_formula, data<span class="op">=</span>data).fit()</span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> final_model</span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Aplicar la selección por pasos ---</span></span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a><span class="co"># train_data_combined es el DataFrame que contiene X_train y y_train</span></span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a><span class="co"># target_variable es el nombre de tu columna 'mpg'</span></span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a>modelo_step_py <span class="op">=</span> stepwise_selection_aic(</span>
+<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>train_data_combined,</span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a>    target_variable<span class="op">=</span><span class="st">'mpg'</span>,</span>
+<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a>    verbose<span class="op">=</span><span class="va">True</span></span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a><span class="co"># Revisar resumen del modelo_step final</span></span>
+<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Resumen del Modelo OLS Después de la Selección por Pasos (AIC) ---"</span>)</span>
+<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(modelo_step_py.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Iniciando selección de modelo por pasos con AIC (dirección 'both')...
+
+--- Iteración 1 ---
+Características seleccionadas actualmente: []
+Considerando añadir características:
+  Añadiendo 'Unnamed: 0': AIC = 163.35
+  Añadiendo 'cyl': AIC = 130.29
+  Añadiendo 'disp': AIC = 134.87
+  Añadiendo 'hp': AIC = 140.99
+  Añadiendo 'drat': AIC = 148.30
+  Añadiendo 'wt': AIC = 132.58
+  Añadiendo 'qsec': AIC = 155.89
+  Añadiendo 'vs': AIC = 146.77
+  Añadiendo 'am': AIC = 153.23
+  Añadiendo 'gear': AIC = 162.02
+  Añadiendo 'carb': AIC = 156.09
+-&gt; Añadiendo: 'cyl'. Nuevo AIC: 130.29
+
+--- Iteración 2 ---
+Características seleccionadas actualmente: ['cyl']
+Considerando añadir características:
+  Añadiendo 'Unnamed: 0': AIC = 130.29
+  Añadiendo 'disp': AIC = 130.63
+  Añadiendo 'hp': AIC = 130.68
+  Añadiendo 'drat': AIC = 130.98
+  Añadiendo 'wt': AIC = 124.37
+  Añadiendo 'qsec': AIC = 132.24
+  Añadiendo 'vs': AIC = 132.09
+  Añadiendo 'am': AIC = 129.94
+  Añadiendo 'gear': AIC = 132.13
+  Añadiendo 'carb': AIC = 130.25
+Considerando eliminar características:
+  Eliminando 'cyl': AIC = 163.35
+-&gt; Añadiendo: 'wt'. Nuevo AIC: 124.37
+
+--- Iteración 3 ---
+Características seleccionadas actualmente: ['cyl', 'wt']
+Considerando añadir características:
+  Añadiendo 'Unnamed: 0': AIC = 124.37
+  Añadiendo 'disp': AIC = 125.80
+  Añadiendo 'hp': AIC = 124.39
+  Añadiendo 'drat': AIC = 126.34
+  Añadiendo 'qsec': AIC = 123.27
+  Añadiendo 'vs': AIC = 126.30
+  Añadiendo 'am': AIC = 126.17
+  Añadiendo 'gear': AIC = 125.91
+  Añadiendo 'carb': AIC = 123.88
+Considerando eliminar características:
+  Eliminando 'cyl': AIC = 132.58
+  Eliminando 'wt': AIC = 130.29
+-&gt; Añadiendo: 'qsec'. Nuevo AIC: 123.27
+
+--- Iteración 4 ---
+Características seleccionadas actualmente: ['cyl', 'wt', 'qsec']
+Considerando añadir características:
+  Añadiendo 'Unnamed: 0': AIC = 123.27
+  Añadiendo 'disp': AIC = 124.67
+  Añadiendo 'hp': AIC = 125.20
+  Añadiendo 'drat': AIC = 123.52
+  Añadiendo 'vs': AIC = 124.71
+  Añadiendo 'am': AIC = 117.58
+  Añadiendo 'gear': AIC = 124.46
+  Añadiendo 'carb': AIC = 125.13
+Considerando eliminar características:
+  Eliminando 'cyl': AIC = 122.40
+  Eliminando 'wt': AIC = 132.24
+  Eliminando 'qsec': AIC = 124.37
+-&gt; Añadiendo: 'am'. Nuevo AIC: 117.58
+
+--- Iteración 5 ---
+Características seleccionadas actualmente: ['cyl', 'wt', 'qsec', 'am']
+Considerando añadir características:
+  Añadiendo 'Unnamed: 0': AIC = 117.58
+  Añadiendo 'disp': AIC = 118.87
+  Añadiendo 'hp': AIC = 119.53
+  Añadiendo 'drat': AIC = 118.30
+  Añadiendo 'vs': AIC = 119.55
+  Añadiendo 'gear': AIC = 119.19
+  Añadiendo 'carb': AIC = 119.10
+Considerando eliminar características:
+  Eliminando 'cyl': AIC = 116.52
+  Eliminando 'wt': AIC = 129.24
+  Eliminando 'qsec': AIC = 126.17
+  Eliminando 'am': AIC = 123.27
+-&gt; Eliminando: 'cyl'. Nuevo AIC: 116.52
+
+--- Iteración 6 ---
+Características seleccionadas actualmente: ['wt', 'qsec', 'am']
+Considerando añadir características:
+  Añadiendo 'Unnamed: 0': AIC = 116.52
+  Añadiendo 'disp': AIC = 117.13
+  Añadiendo 'hp': AIC = 118.47
+  Añadiendo 'drat': AIC = 118.16
+  Añadiendo 'vs': AIC = 118.39
+  Añadiendo 'gear': AIC = 117.80
+  Añadiendo 'carb': AIC = 117.53
+  Añadiendo 'cyl': AIC = 117.58
+Considerando eliminar características:
+  Eliminando 'wt': AIC = 130.13
+  Eliminando 'qsec': AIC = 134.30
+  Eliminando 'am': AIC = 122.40
+
+No se encontró una mejora en el AIC. Deteniendo la selección por pasos.
+
+--- Resumen del Modelo OLS Después de la Selección por Pasos (AIC) ---
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                    mpg   R-squared:                       0.879
+Model:                            OLS   Adj. R-squared:                  0.862
+Method:                 Least Squares   F-statistic:                     50.92
+Date:                Mon, 16 Jun 2025   Prob (F-statistic):           8.26e-10
+Time:                        15:02:33   Log-Likelihood:                -54.262
+No. Observations:                  25   AIC:                             116.5
+Df Residuals:                      21   BIC:                             121.4
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P&gt;|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     -3.0270      8.017     -0.378      0.710     -19.700      13.646
+wt            -3.1064      0.728     -4.267      0.000      -4.620      -1.592
+qsec           1.7715      0.352      5.033      0.000       1.039       2.504
+am             3.9631      1.421      2.788      0.011       1.007       6.919
+==============================================================================
+Omnibus:                        1.036   Durbin-Watson:                   1.169
+Prob(Omnibus):                  0.596   Jarque-Bera (JB):                1.008
+Skew:                           0.368   Prob(JB):                        0.604
+Kurtosis:                       2.347   Cond. No.                         314.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</code></pre>
+</div>
+</div>
+<p>El procedimiento va eliminando o agregando variables al modelo original para reducir el <strong>AIC (Criterio de Información de Akaike)</strong>. El objetivo es encontrar un modelo más <strong>parsimonioso</strong> (simple) con <strong>buena capacidad predictiva</strong>.</p>
+<ul>
+<li><p>El proceso empieza con un modelo completo:<br>
+<code>mpg ~ cyl + disp + hp + drat + wt + qsec + vs + am + gear + carb</code> y un AIC inicial, por ejemplo: <code>AIC = 57.77</code>.</p></li>
+<li><p>Luego evalúa qué pasa si <strong>quita</strong> una variable (<code>- vs</code>, <code>- cyl</code>, etc.).</p></li>
+<li><p>Si al eliminar una variable el AIC <strong>baja</strong>, se acepta ese cambio.<br>
+Ejemplo:<br>
+<code>- vs    1    2.1293  102.57  56.353</code><br>
+Significa que si quitas la variable <code>vs</code>, el AIC baja de 57.77 a 56.35 → ¡mejor!</p>
+<ul>
+<li>Se acepta esa modificación y se repite el procedimiento, ahora con el nuevo modelo.</li>
+</ul></li>
+<li><p>También puede intentar <strong>agregar</strong> variables previamente eliminadas (<code>+ vs</code>, <code>+ hp</code>, etc.) si esto mejora el AIC.</p></li>
+<li><p>Cuando <strong>ya no puede bajar más el AIC</strong> quitando o agregando variables. El modelo final es el que <strong>tiene el AIC más bajo</strong> alcanzado durante el proceso.</p></li>
+</ul>
+</section>
+</section>
+<section id="interpretación-final" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-final">Interpretación Final</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 43%">
+<col style="width: 21%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspecto</th>
+<th>Modelo Completo</th>
+<th>Modelo por AIC (reducido)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>R² ajustado</strong></td>
+<td>0.821</td>
+<td>0.862 ✅</td>
+</tr>
+<tr class="even">
+<td><strong>AIC</strong></td>
+<td>126.9</td>
+<td><strong>116.5 ✅</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Coeficientes significativos</strong></td>
+<td>Ninguno</td>
+<td>Todos ✅</td>
+</tr>
+<tr class="even">
+<td><strong>Multicolinealidad</strong></td>
+<td>Alta ⚠️</td>
+<td>Baja ✅</td>
+</tr>
+<tr class="odd">
+<td><strong>Interpretabilidad</strong></td>
+<td>Difusa</td>
+<td>Clara ✅</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conclusión del modelo reducido</strong>:</p>
+<ul>
+<li>Todas las variables son estadísticamente significativas.</li>
+<li>El modelo es más simple (3 variables vs.&nbsp;10).</li>
+<li>El AIC bajó significativamente ⇒ mejora en calidad del modelo.</li>
+<li>La interpretación es mucho más clara y robusta.</li>
+</ul>
+</section>
+<section id="forward-or-backward-stepwise" class="level3">
+<h3 class="anchored" data-anchor-id="forward-or-backward-stepwise">Forward or backward stepwise</h3>
+<p>Los modelos “forward” (hacia adelante) y “backward” (hacia atrás) son dos enfoques comunes dentro de la <strong>regresión stepwise (paso a paso)</strong>, un método de selección automática de variables para construir modelos de regresión. El objetivo de la regresión stepwise es encontrar un subconjunto óptimo de variables predictoras que expliquen la mayor parte de la varianza en la variable dependiente con la menor complejidad posible, evitando el sobreajuste y mejorando la interpretabilidad del modelo.</p>
+<p>Ambos métodos operan de manera iterativa, agregando o eliminando variables basándose en un criterio estadístico (como el p-valor, AIC, BIC, etc.).</p>
+<section id="forward-selection-selección-hacia-adelante" class="level4">
+<h4 class="anchored" data-anchor-id="forward-selection-selección-hacia-adelante"><strong>Forward Selection</strong> (Selección Hacia Adelante)</h4>
+<p>La selección hacia adelante comienza con un modelo “nulo”, es decir, un modelo que no contiene ninguna variable predictora (solo el intercepto). Luego, en cada paso, evalúa todas las variables predictoras no incluidas en el modelo y agrega aquella que, al ser incluida, produce la mejora más significativa en el ajuste del modelo. Este proceso continúa hasta que ninguna de las variables restantes cumple con el criterio de entrada preestablecido (por ejemplo, su p-valor es mayor que un umbral determinado).</p>
+</section>
+<section id="backward-elimination-eliminación-hacia-atrás" class="level4">
+<h4 class="anchored" data-anchor-id="backward-elimination-eliminación-hacia-atrás"><strong>Backward Elimination</strong> (Eliminación Hacia Atrás)</h4>
+<p>La eliminación hacia atrás comienza con un modelo “completo”, es decir, un modelo que incluye todas las variables predictoras candidatas. Luego, en cada paso, evalúa la contribución de cada variable predictora en el modelo y elimina aquella que, al ser retirada, tiene el menor impacto negativo en el ajuste del modelo (o la que es menos significativa, por ejemplo, la que tiene el p-valor más alto). Este proceso continúa hasta que todas las variables restantes en el modelo cumplen con un criterio de permanencia preestablecido (por ejemplo, su p-valor es menor que un umbral determinado).</p>
+</section>
+<section id="consideraciones-generales-sobre-la-regresión-stepwise" class="level4">
+<h4 class="anchored" data-anchor-id="consideraciones-generales-sobre-la-regresión-stepwise">Consideraciones Generales sobre la Regresión Stepwise</h4>
+<p>Es importante mencionar que, aunque los métodos forward y backward son populares por su automatización, también tienen sus <strong>críticas y desventajas</strong>:</p>
+<ul>
+<li><strong>Sobreajuste (Overfitting):</strong> Los modelos resultantes pueden ajustarse muy bien a los datos de entrenamiento, pero no generalizar bien a nuevos datos. Esto se debe a que el proceso de selección de variables se basa en los datos observados, lo que puede llevar a incluir variables que parecen importantes por puro azar en esa muestra particular.</li>
+<li><strong>P-valores y Coeficientes Sesgados:</strong> Los p-valores y los coeficientes de regresión obtenidos de un modelo stepwise pueden ser sesgados. Los p-valores tienden a ser más pequeños de lo que realmente son, lo que lleva a una falsa confianza en la significancia de las variables.</li>
+<li><strong>No considera la teoría:</strong> El proceso es puramente estadístico y no incorpora el conocimiento del dominio o la teoría subyacente sobre las relaciones entre las variables. Un modelo estadísticamente “óptimo” podría carecer de sentido teórico o práctico.</li>
+<li><strong>Dependencia del orden:</strong> La selección de variables puede ser sensible al orden en que se añaden o eliminan, especialmente en la selección hacia adelante.</li>
+</ul>
+<p><strong>Selección de Subconjuntos de Variables con <code>statsmodels</code> en Python</strong></p>
+<p>En Python, no hay una función directa que replique <code>regsubsets</code> con todos sus métodos (exhaustiva, forward, backward, etc.) en una sola llamada como en R.</p>
+<p>Explicación de la Función Genérica <code>regsubsets_exhaustive</code>:</p>
+<ol type="1">
+<li><strong>Parámetros de Entrada</strong>:</li>
+</ol>
+<ul>
+<li><code>X_train_df</code>: El DataFrame de variables predictoras de entrenamiento.</li>
+<li><code>y_train_series</code>: La Serie de la variable dependiente de entrenamiento. <strong>Es crucial que <code>y_train_series</code> tenga un <code>.name</code> (e.g., <code>'mpg'</code>) asignado</strong>, ya que <code>statsmodels</code> lo usa para construir la fórmula. Si <code>y_train</code> no tiene un nombre, se puede asignár (<code>y_train.name = 'nombre_columna'</code>).</li>
+<li><code>nvmax</code>: El número máximo de variables a considerar.</li>
+<li><code>id_column</code>: Un nuevo parámetro para especificar el nombre de cualquier columna que sea un identificador (como <code>'name'</code> o <code>'Unnamed: 0'</code>) y que <strong>no debe usarse como predictor</strong>.</li>
+</ul>
+<ol start="2" type="1">
+<li><p><strong><code>train_data_combined</code></strong>: Dentro de la función, combinamos <code>X_train_df</code> y <code>y_train_series</code> en un solo DataFrame. Esto es lo que <code>statsmodels</code> espera para la función <code>smf.ols</code> cuando se usa la sintaxis de fórmula.</p></li>
+<li><p><strong>Exclusión de <code>id_column</code></strong>: La lista <code>all_predictors</code> ahora filtra la <code>id_column</code> proporcionada. Esto te da control sobre qué columnas del <code>X_train_df</code> son realmente predictores.</p></li>
+<li><p><strong>Almacenamiento de Objetos de Modelo</strong>: Añadimos un diccionario <code>model_objects</code> que guarda cada objeto de modelo ajustado (<code>model_objects[formula] = model</code>). Esto es muy útil porque si luego se decide que un modelo específico (por ejemplo, el mejor AIC con 5 características) es el que se quiere, se puede recuperar el diccionario y acceder a su <code>.summary()</code>, <code>.predict()</code>, etc.</p></li>
+<li><p><strong>Retorno de Valores</strong>: La función devuelve un diccionario <code>best_models</code> (que contiene DataFrames para los mejores modelos por R-cuadrado ajustado, AIC y BIC) y el diccionario <code>all_model_objects</code>.</p></li>
+</ol>
+<div id="regsubsets-generic-function" class="cell" data-message="false" data-results="as-is" data-execution_count="14">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Definición de la función genérica para regsubsets (exhaustive) ---</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regsubsets_exhaustive(X_train_df, y_train_series, nvmax<span class="op">=</span><span class="va">None</span>, id_column<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Realiza una búsqueda exhaustiva de los mejores subconjuntos de variables</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">    para un modelo de regresión lineal, similar a regsubsets en R.</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">        X_train_df (pd.DataFrame): DataFrame con las variables predictoras del conjunto de entrenamiento.</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">        y_train_series (pd.Series): Serie con la variable dependiente del conjunto de entrenamiento.</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">        nvmax (int, optional): Número máximo de variables a considerar en los subconjuntos.</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">                               Si es None, se usa el número total de predictores.</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co">        id_column (str, optional): Nombre de una columna en X_train_df que es un identificador</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">                                   (como 'name' o 'Unnamed: 0') y debe excluirse de los predictores.</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co">        pd.DataFrame: Un DataFrame con los mejores modelos para cada número de características,</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co">                      ordenados por R-cuadrado ajustado, AIC y BIC.</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co">        dict: Un diccionario de los objetos de modelo ajustados para referencia,</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co">              con la fórmula como clave.</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Combine X_train and y_train into a single DataFrame for statsmodels</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    train_data_combined <span class="op">=</span> pd.concat([X_train_df, y_train_series], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure y_train_series.name is not None</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    target_variable_name <span class="op">=</span> y_train_series.name</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> target_variable_name <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"The 'y_train_series' Series must have a name assigned (e.g., y_train.name = 'mpg')"</span>)</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define available predictor variables, excluding the ID column if provided</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    all_predictors <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> X_train_df.columns <span class="cf">if</span> col <span class="op">!=</span> id_column]</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Limit nvmax if it's greater than the actual number of predictors</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> nvmax <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>        nvmax_final <span class="op">=</span> <span class="bu">len</span>(all_predictors)</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>        nvmax_final <span class="op">=</span> <span class="bu">min</span>(nvmax, <span class="bu">len</span>(all_predictors))</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> []</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>    model_objects <span class="op">=</span> {}</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Starting exhaustive subset search up to </span><span class="sc">{</span>nvmax_final<span class="sc">}</span><span class="ss"> variables..."</span>)</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, nvmax_final <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> subset_features_tuple <span class="kw">in</span> itertools.combinations(all_predictors, k):</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>            subset_features <span class="op">=</span> <span class="bu">list</span>(subset_features_tuple)</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> subset_features:</span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>                formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>target_variable_name<span class="sc">}</span><span class="ss"> ~ 1"</span></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>                formula <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>target_variable_name<span class="sc">}</span><span class="ss"> ~ "</span> <span class="op">+</span> <span class="st">" + "</span>.join(subset_features)</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>                model <span class="op">=</span> smf.ols(formula<span class="op">=</span>formula, data<span class="op">=</span>train_data_combined).fit()</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>                results.append({</span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'n_features'</span>: k,</span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'features'</span>: <span class="st">" + "</span>.join(subset_features),</span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'adj_r_squared'</span>: model.rsquared_adj,</span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'aic'</span>: model.aic,</span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'bic'</span>: model.bic,</span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'formula'</span>: formula</span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>                })</span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>                model_objects[formula] <span class="op">=</span> model</span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>                <span class="co"># We'll just print a warning for failed models, not a full debug trace</span></span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"Warning: Error fitting model with formula '</span><span class="sc">{</span>formula<span class="sc">}</span><span class="ss">': </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>    results_df <span class="op">=</span> pd.DataFrame(results)</span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> results_df.empty:</span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"No valid models could be fitted."</span>)</span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pd.DataFrame(), {}</span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>    best_models <span class="op">=</span> {}</span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> metric <span class="kw">in</span> [<span class="st">'adj_r_squared'</span>, <span class="st">'aic'</span>, <span class="st">'bic'</span>]:</span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> metric <span class="op">==</span> <span class="st">'adj_r_squared'</span>:</span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>            idx <span class="op">=</span> results_df.groupby(<span class="st">'n_features'</span>)[metric].idxmax()</span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>            idx <span class="op">=</span> results_df.groupby(<span class="st">'n_features'</span>)[metric].idxmin()</span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> idx.empty:</span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>            best_models[metric] <span class="op">=</span> results_df.loc[idx].set_index(<span class="st">'n_features'</span>)</span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>            best_models[metric] <span class="op">=</span> pd.DataFrame(columns<span class="op">=</span>results_df.columns).set_index(<span class="st">'n_features'</span>)</span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> best_models, model_objects</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="b46b68ba" class="cell" data-message="false" data-results="as-is" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This line is crucial and should be present in your actual script</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># to ensure y_train has a name.</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> y_train.name <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    y_train.name <span class="op">=</span> <span class="st">'mpg'</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Running exhaustive subset selection ---"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>best_models_results, all_model_objects <span class="op">=</span> regsubsets_exhaustive(</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                                                                X_train_df<span class="op">=</span>X_train,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                                                                y_train_series<span class="op">=</span>y_train,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>                                                                nvmax<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                                                                id_column<span class="op">=</span><span class="st">'Unnamed: 0'</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Displaying only the final summary ---</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Summary of the best global model by AIC ---"</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> best_models_results[<span class="st">'aic'</span>].empty:</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the row with the globally lowest AIC across all feature counts</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We combine all results and then find the minimum AIC</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    all_results_df_for_global <span class="op">=</span> pd.concat([best_models_results[<span class="st">'aic'</span>], </span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>                                           best_models_results[<span class="st">'bic'</span>], </span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                                           best_models_results[<span class="st">'adj_r_squared'</span>]]).drop_duplicates(subset<span class="op">=</span>[<span class="st">'formula'</span>])</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'formula'</span> <span class="kw">in</span> all_results_df_for_global.columns <span class="kw">and</span> <span class="st">'aic'</span> <span class="kw">in</span> all_results_df_for_global.columns:</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        global_best_aic_row <span class="op">=</span> all_results_df_for_global.loc[all_results_df_for_global[<span class="st">'aic'</span>].idxmin()]</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>        global_best_aic_formula <span class="op">=</span> global_best_aic_row[<span class="st">'formula'</span>]</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Model with lowest global AIC: </span><span class="sc">{</span>global_best_aic_formula<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Now, print the full statsmodels summary for this specific model</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> global_best_aic_formula <span class="kw">in</span> all_model_objects:</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(all_model_objects[global_best_aic_formula].summary())</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Error: The object for the best global AIC model was not found in 'all_model_objects'."</span>)</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Error: 'formula' or 'aic' columns not found in combined results for global best model."</span>)</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"No valid models were found for subset selection. Cannot display global best model."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>--- Running exhaustive subset selection ---
+Starting exhaustive subset search up to 10 variables...
+
+--- Summary of the best global model by AIC ---
+Model with lowest global AIC: mpg ~ wt + qsec + am
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                    mpg   R-squared:                       0.879
+Model:                            OLS   Adj. R-squared:                  0.862
+Method:                 Least Squares   F-statistic:                     50.92
+Date:                Mon, 16 Jun 2025   Prob (F-statistic):           8.26e-10
+Time:                        15:02:42   Log-Likelihood:                -54.262
+No. Observations:                  25   AIC:                             116.5
+Df Residuals:                      21   BIC:                             121.4
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P&gt;|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Intercept     -3.0270      8.017     -0.378      0.710     -19.700      13.646
+wt            -3.1064      0.728     -4.267      0.000      -4.620      -1.592
+qsec           1.7715      0.352      5.033      0.000       1.039       2.504
+am             3.9631      1.421      2.788      0.011       1.007       6.919
+==============================================================================
+Omnibus:                        1.036   Durbin-Watson:                   1.169
+Prob(Omnibus):                  0.596   Jarque-Bera (JB):                1.008
+Skew:                           0.368   Prob(JB):                        0.604
+Kurtosis:                       2.347   Cond. No.                         314.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</code></pre>
+</div>
+</div>
+<p><code>Selection Algorithm: exhaustive</code> <strong>: Esto es crucial. Significa que el algoritmo probó todas las combinaciones posibles</strong> de variables para cada tamaño de subconjunto hasta <code>nvmax = 10</code> y seleccionó el mejor para cada tamaño. Esto asegura que, para cada número de variables (1, 2, …, 10), el modelo presentado es el óptimo según el criterio interno de <code>regsubsets_exhaustive</code> (generalmente <code>AIC</code>, <span class="math inline">\(R^2\)</span> ajustado, BIC a menos que se especifique otro en la función).</p>
+<div id="d927cdba" class="cell" data-message="false" data-results="as-is" data-execution_count="16">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">### Extracción de los datos de R2 Ajustado</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#La información ya está en `best_models_results['adj_r_squared']`. Para obtenerla en un formato de DataFrame con columnas explícitas para el número de variables y el R2 ajustado, simplemente hacemos:</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener el DataFrame de los mejores R2 Ajustados por número de variables</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>adjr2_data_df <span class="op">=</span> best_models_results[<span class="st">'adj_r_squared'</span>].reset_index()</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Renombrar columnas para mayor claridad</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>adjr2_data_df.rename(columns<span class="op">=</span>{<span class="st">'n_features'</span>: <span class="st">'Numero_de_Variables'</span>, </span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                              <span class="st">'adj_r_squared'</span>: <span class="st">'R2_Ajustado'</span>}, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- DataFrame con R2 Ajustado por Número de Variables ---"</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(adjr2_data_df[[<span class="st">'Numero_de_Variables'</span>, <span class="st">'R2_Ajustado'</span>]].to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> adjr2_data_df.empty:</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">5</span>)) <span class="co"># Tamaño de la figura más compacto</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Graficar línea y puntos</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    plt.plot(adjr2_data_df[<span class="st">'Numero_de_Variables'</span>], adjr2_data_df[<span class="st">'R2_Ajustado'</span>], </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>             marker<span class="op">=</span><span class="st">'o'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, color<span class="op">=</span><span class="st">'skyblue'</span>)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Encontrar el punto de R2 ajustado máximo</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    max_adjr2_row <span class="op">=</span> adjr2_data_df.loc[adjr2_data_df[<span class="st">'R2_Ajustado'</span>].idxmax()]</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    best_num_vars <span class="op">=</span> <span class="bu">int</span>(max_adjr2_row[<span class="st">'Numero_de_Variables'</span>])</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    max_adjr2_value <span class="op">=</span> max_adjr2_row[<span class="st">'R2_Ajustado'</span>]</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Resaltar el punto máximo</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    plt.plot(best_num_vars, max_adjr2_value, <span class="st">'ro'</span>, markersize <span class="op">=</span> <span class="dv">8</span>) <span class="co"># Punto rojo grande</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    plt.axvline(x <span class="op">=</span> best_num_vars, color <span class="op">=</span> <span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, linewidth <span class="op">=</span> <span class="dv">1</span>, alpha <span class="op">=</span> <span class="fl">0.7</span>) <span class="co"># Línea vertical</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Etiquetas y título</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">"R2 Ajustado vs. Número de Variables"</span>)</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Número de Variables"</span>)</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"R2 Ajustado"</span>)</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Asegurar que los ticks del eje X sean enteros y legibles</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>    plt.xticks(<span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">max</span>(adjr2_data_df[<span class="st">'Numero_de_Variables'</span>]) <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>    plt.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">':'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>) <span class="co"># Cuadrícula ligera</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"No hay datos para generar el gráfico de R2 Ajustado."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>--- DataFrame con R2 Ajustado por Número de Variables ---
+ Numero_de_Variables  R2_Ajustado
+                   1     0.743288
+                   2     0.819335
+                   3     0.861870
+                   4     0.862840
+                   5     0.860304
+                   6     0.858462
+                   7     0.851836
+                   8     0.842908
+                   9     0.832837
+                  10     0.820912</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_01_OLSR_py_files/figure-html/cell-17-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 

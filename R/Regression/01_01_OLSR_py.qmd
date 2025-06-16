@@ -339,9 +339,7 @@ Para lograr esta minimización, se utilizan técnicas de cálculo (derivadas par
 8.  **Interpretación de resultados**
 
 <p align="center">
-
 <img src="../../img/ML_Steps.png" alt="Machine Learning Steps" width="100%"/>
-
 </p>
 
 ------------------------------------------------------------------------
@@ -440,7 +438,6 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=123
 )
 
-
 print(f"Tamaño del conjunto de entrenamiento (X_train): {X_train.shape}")
 print(f"Tamaño del conjunto de prueba (X_test): {X_test.shape}")
 print(f"Tamaño del conjunto de entrenamiento (y_train): {y_train.shape}")
@@ -530,7 +527,7 @@ Estas métricas ayudan a evaluar si el modelo cumple con los supuestos de la reg
 
 La razón principal por la que obtienes resultados ligeramente diferentes en R y Python para los coeficientes, errores estándar y p-valores (aunque las métricas generales como R-cuadrado y F-estadístico son muy similares) es debido a la **naturaleza aleatoria de la división de los datos en entrenamiento y prueba**.
 
-### 📌 **Observaciones generales**
+#### 📌 **Observaciones generales**
 
 -   El modelo tiene un **muy buen R²** (89.6%) ⇒ explica bien la variabilidad en `mpg`.
 
@@ -548,6 +545,7 @@ La razón principal por la que obtienes resultados ligeramente diferentes en R y
 #| echo: true
 #| message: false
 #| warning: false
+#| code-fold: true
 #| fig-width: 10 # Ajusta el ancho de la figura
 #| fig-height: 8  # Ajusta la altura de la figura
 
@@ -563,9 +561,11 @@ mtcars_df = mtcars.copy()
 
 
 # 1. Preparación de los datos
-tabla_py = mtcars_df.melt(id_vars = ["mpg"], 
-                          var_name = "variable", 
-                          value_name = "value")
+tabla_py = (
+            mtcars_df
+           .drop(columns = ['name'], errors = 'ignore')
+           .melt(id_vars = ["mpg"], var_name = "variable", value_name = "value")
+)
 
 # 2. Crear el gráfico con plotnine
 p = (
@@ -578,6 +578,7 @@ p = (
         plot_subtitle=element_text(size = 18),
         plot_caption=element_text(size = 11),
         axis_text=element_text(),
+        axis_text_x = element_text(angle = 45),
         axis_title=element_text(size = 15),
         legend_position="none"
     )
@@ -592,4 +593,500 @@ p = (
 # Mostrar el gráfico
 p
 ```
+
+
+## Selección de variables
+
+### Criterio de Información de Akaike
+
+El Criterio de Información de Akaike (AIC, por sus siglas en inglés, Akaike Information Criterion) es una medida de la bondad de ajuste de un modelo estadístico que penaliza la complejidad del modelo. Su objetivo es seleccionar el modelo que mejor se ajusta a los datos con la menor cantidad de parámetros, evitando así el sobreajuste (overfitting).
+
+La fórmula general para calcular el AIC es:
+
+$$AIC = 2k - 2\ln(L)$$
+
+Donde:\
+\* $k$ es el número de parámetros del modelo. En un modelo de regresión, esto incluye el intercepto y los coeficientes de las variables predictoras, más la varianza del error si se estima (en modelos de mínimos cuadrados ordinarios, esto es a menudo el caso, por lo que $k$ a veces se cuenta como el número de coeficientes + 1 para la varianza del error, o simplemente el número de coeficientes si la varianza del error se considera implícita en la función de verosimilitud).\
+\* $\ln(L)$ es el logaritmo natural del valor máximo de la función de verosimilitud (log-likelihood) del modelo. La función de verosimilitud mide qué tan bien el modelo reproduce los datos observados.
+
+#### Cómo se interpreta:
+
+-   **Valores más bajos de AIC indican un mejor modelo.** El AIC busca un equilibrio entre la bondad de ajuste del modelo a los datos (representada por $\ln(L)$) y la complejidad del modelo (representada por $2k$).\
+-   El término $2k$ es una **penalización por la complejidad**. Cada parámetro adicional en el modelo aumenta el valor de AIC, lo que desincentiva la inclusión de variables innecesarias que podrían sobreajustar los datos.
+
+#### Para modelos de Regresión por Mínimos Cuadrados Ordinarios (OLS):
+
+Aunque la fórmula general del AIC es la que se mencionó, para modelos de OLS con residuos normalmente distribuidos, la función de log-verosimilitud tiene una forma específica, lo que permite reescribir el AIC de una manera más práctica.
+
+Para un modelo de regresión lineal con $n$ observaciones y $k$ parámetros (incluyendo el intercepto), y asumiendo errores normales con varianza constante, el AIC se puede calcular como:
+
+$$AIC = n \cdot \ln\left(\frac{RSS}{n}\right) + 2k$$
+
+Donde:\
+\* $n$ es el número de observaciones (tamaño de la muestra).\
+\* $RSS$ es la Suma de Cuadrados de los Residuos (Residual Sum of Squares), que es la suma de los cuadrados de las diferencias entre los valores observados y los valores predichos por el modelo.\
+\* $k$ es el número de parámetros del modelo (coeficientes de las variables independientes + intercepto).
+
+**Es importante recordar:**
+
+-   El AIC no es una prueba de hipótesis en el sentido tradicional; no te dice si un modelo es "bueno" o "malo" en un sentido absoluto.\
+-   Es una herramienta para la **selección de modelos entre un conjunto de modelos candidatos**. Siempre se compara el AIC de diferentes modelos ajustados a los **mismos datos**. El modelo con el AIC más bajo es el preferido.\
+-   Cuando la muestra es pequeña, a veces se prefiere el **AIC corregido (AICc)**, que añade una penalización adicional por el tamaño de la muestra:\
+    $$AICc = AIC + \frac{2k(k+1)}{n-k-1}$$
+
+A medida que $n$ (tamaño de la muestra) es grande, el término de corrección se vuelve insignificante y el AICc converge al AIC.
+
+Se realiza una selección automática de variables para un modelo de regresión lineal, utilizando el **criterio AIC (Criterio de Información de Akaike**)
+
+
+**Implementación de Selección por Pasos (Stepwise) con AIC en Python**
+
+Dado que `statsmodels` no tiene un `stepAIC` incorporado que funcione exactamente como en R con `direction="both"`, una forma común de lograr esto en Python es implementar la lógica de forma manual o usar una función auxiliar que la simule. 
+
+```{python}
+#| label: stepwise-aic
+#| echo: true
+#| message: false
+#| warning: false
+#| code-fold: true
+#| results: as-is # Para mostrar el resumen del modelo final
+
+import pandas as pd
+import statsmodels.formula.api as smf
+# Aunque no lo vamos a importar directamente aquí, el concepto de AIC
+# está implícito en los resultados de summary() de statsmodels
+
+# Asumiendo que X_train, y_train y train_data_combined
+# (el DataFrame combinado para statsmodels) ya están definidos
+# desde los chunks anteriores.
+# Y que modelo_ols_py ya fue ajustado.
+
+def stepwise_selection_aic(data, target_variable, initial_features=None, verbose=True):
+    """
+    Realiza una selección de características por pasos (forward y backward)
+    basada en el Criterio de Información de Akaike (AIC).
+
+    Args:
+        data (pd.DataFrame): El DataFrame de entrenamiento combinado (X y y).
+        target_variable (str): El nombre de la columna de la variable dependiente.
+        initial_features (list): Lista opcional de características para empezar.
+                                 Si es None, empieza con un modelo nulo o con todas.
+        verbose (bool): Si es True, imprime los pasos del proceso.
+
+    Returns:
+        statsmodels.regression.linear_model.RegressionResultsWrapper: El modelo OLS final.
+    """
+    remaining_features = list(data.drop(columns=[target_variable]).columns)
+    selected_features = [] if initial_features is None else initial_features
+
+    current_score, best_new_score = float('inf'), float('inf')
+    best_model = None
+    iteration = 0
+
+    if verbose:
+        print("Iniciando selección de modelo por pasos con AIC (dirección 'both')...")
+
+    while True:
+        iteration += 1
+        model_changed = False
+        if verbose:
+            print(f"\n--- Iteración {iteration} ---")
+            print(f"Características seleccionadas actualmente: {selected_features}")
+
+        # --- Paso hacia adelante (Forward Selection) ---
+        aic_candidates_forward = {}
+        if remaining_features: # Solo si hay características restantes para añadir
+            if verbose: print("Considerando añadir características:")
+            for feature in remaining_features:
+                temp_features = selected_features + [feature]
+                if not temp_features: # Asegura que al menos haya un Intercept si no hay features
+                    formula = f"{target_variable} ~ 1" # Modelo solo con intercept
+                else:
+                    formula = f"{target_variable} ~ " + " + ".join(temp_features)
+                
+                try:
+                    model = smf.ols(formula=formula, data=data).fit()
+                    aic_candidates_forward[feature] = model.aic
+                    if verbose: print(f"  Añadiendo '{feature}': AIC = {model.aic:.2f}")
+                except Exception as e:
+                    if verbose: print(f"  Error al probar '{feature}': {e}")
+
+
+        # --- Paso hacia atrás (Backward Elimination) ---
+        aic_candidates_backward = {}
+        if len(selected_features) > 0: # Solo si hay características para eliminar
+            if verbose: print("Considerando eliminar características:")
+            for feature in selected_features:
+                temp_features = [f for f in selected_features if f != feature]
+                if not temp_features: # Si eliminamos todo y solo queda el intercept
+                    formula = f"{target_variable} ~ 1"
+                else:
+                    formula = f"{target_variable} ~ " + " + ".join(temp_features)
+                
+                try:
+                    model = smf.ols(formula=formula, data=data).fit()
+                    aic_candidates_backward[feature] = model.aic
+                    if verbose: print(f"  Eliminando '{feature}': AIC = {model.aic:.2f}")
+                except Exception as e:
+                    if verbose: print(f"  Error al probar quitar '{feature}': {e}")
+
+
+        best_aic_this_step = current_score
+        feature_to_add = None
+        feature_to_remove = None
+        action = None # 'add' o 'remove'
+
+        # Evaluar mejor movimiento: añadir o eliminar
+        # Mejor añadir
+        if aic_candidates_forward:
+            min_aic_add_feature = min(aic_candidates_forward, key=aic_candidates_forward.get)
+            min_aic_add_value = aic_candidates_forward[min_aic_add_feature]
+            if min_aic_add_value < best_aic_this_step:
+                best_aic_this_step = min_aic_add_value
+                feature_to_add = min_aic_add_feature
+                action = 'add'
+
+        # Mejor eliminar
+        if aic_candidates_backward:
+            min_aic_remove_feature = min(aic_candidates_backward, key=aic_candidates_backward.get)
+            min_aic_remove_value = aic_candidates_backward[min_aic_remove_feature]
+            # Solo consideramos eliminar si esto mejora el AIC *actual* del modelo
+            # y también si es mejor que añadir
+            if min_aic_remove_value < best_aic_this_step:
+                best_aic_this_step = min_aic_remove_value
+                feature_to_remove = min_aic_remove_feature
+                action = 'remove'
+
+
+        if best_aic_this_step < current_score:
+            model_changed = True
+            current_score = best_aic_this_step
+            if action == 'add':
+                selected_features.append(feature_to_add)
+                remaining_features.remove(feature_to_add)
+                if verbose: print(f"-> Añadiendo: '{feature_to_add}'. Nuevo AIC: {current_score:.2f}")
+            elif action == 'remove':
+                remaining_features.append(feature_to_remove)
+                selected_features.remove(feature_to_remove)
+                if verbose: print(f"-> Eliminando: '{feature_to_remove}'. Nuevo AIC: {current_score:.2f}")
+        else:
+            # No hay mejoras en el AIC, detener el proceso
+            if verbose: print("\nNo se encontró una mejora en el AIC. Deteniendo la selección por pasos.")
+            break
+
+    # Ajustar el modelo final con las características seleccionadas
+    if not selected_features:
+        final_formula = f"{target_variable} ~ 1"
+    else:
+        final_formula = f"{target_variable} ~ " + " + ".join(selected_features)
+
+    final_model = smf.ols(formula=final_formula, data=data).fit()
+    return final_model
+
+# --- Aplicar la selección por pasos ---
+# train_data_combined es el DataFrame que contiene X_train y y_train
+# target_variable es el nombre de tu columna 'mpg'
+modelo_step_py = stepwise_selection_aic(
+    data=train_data_combined,
+    target_variable='mpg',
+    verbose=True
+)
+
+# Revisar resumen del modelo_step final
+print("\n--- Resumen del Modelo OLS Después de la Selección por Pasos (AIC) ---")
+print(modelo_step_py.summary())
+```
+
+El procedimiento va eliminando o agregando variables al modelo original para reducir el **AIC (Criterio de Información de Akaike)**. El objetivo es encontrar un modelo más **parsimonioso** (simple) con **buena capacidad predictiva**.
+
+-   El proceso empieza con un modelo completo:\
+    `mpg ~ cyl + disp + hp + drat + wt + qsec + vs + am + gear + carb` y un AIC inicial, por ejemplo: `AIC = 57.77`.
+
+-   Luego evalúa qué pasa si **quita** una variable (`- vs`, `- cyl`, etc.).
+
+-   Si al eliminar una variable el AIC **baja**, se acepta ese cambio.\
+    Ejemplo:\
+    `- vs    1    2.1293  102.57  56.353`\
+    Significa que si quitas la variable `vs`, el AIC baja de 57.77 a 56.35 → ¡mejor!
+
+    -   Se acepta esa modificación y se repite el procedimiento, ahora con el nuevo modelo.
+
+-   También puede intentar **agregar** variables previamente eliminadas (`+ vs`, `+ hp`, etc.) si esto mejora el AIC.
+
+-   Cuando **ya no puede bajar más el AIC** quitando o agregando variables. El modelo final es el que **tiene el AIC más bajo** alcanzado durante el proceso.
+
+
+
+### Interpretación Final
+  
+  | Aspecto                         | Modelo Completo | Modelo por AIC (reducido) |
+  | ------------------------------- | --------------- | ------------------------- |
+  | **R² ajustado**                 | 0.821           | 0.862 ✅                   |
+  | **AIC**                         | 126.9           | **116.5 ✅**               |
+  | **Coeficientes significativos** | Ninguno         | Todos ✅                   |
+  | **Multicolinealidad**           | Alta ⚠️         | Baja ✅                    |
+  | **Interpretabilidad**           | Difusa          | Clara ✅                   |
+  
+
+**Conclusión del modelo reducido**:
+  
+  * Todas las variables son estadísticamente significativas.
+* El modelo es más simple (3 variables vs. 10).
+* El AIC bajó significativamente ⇒ mejora en calidad del modelo.
+* La interpretación es mucho más clara y robusta.
+
+
+### Forward or backward stepwise
+
+Los modelos "forward" (hacia adelante) y "backward" (hacia atrás) son dos enfoques comunes dentro de la **regresión stepwise (paso a paso)**, un método de selección automática de variables para construir modelos de regresión. El objetivo de la regresión stepwise es encontrar un subconjunto óptimo de variables predictoras que expliquen la mayor parte de la varianza en la variable dependiente con la menor complejidad posible, evitando el sobreajuste y mejorando la interpretabilidad del modelo.
+
+Ambos métodos operan de manera iterativa, agregando o eliminando variables basándose en un criterio estadístico (como el p-valor, AIC, BIC, etc.).
+
+#### **Forward Selection** (Selección Hacia Adelante)
+
+La selección hacia adelante comienza con un modelo "nulo", es decir, un modelo que no contiene ninguna variable predictora (solo el intercepto). Luego, en cada paso, evalúa todas las variables predictoras no incluidas en el modelo y agrega aquella que, al ser incluida, produce la mejora más significativa en el ajuste del modelo. Este proceso continúa hasta que ninguna de las variables restantes cumple con el criterio de entrada preestablecido (por ejemplo, su p-valor es mayor que un umbral determinado).
+
+#### **Backward Elimination** (Eliminación Hacia Atrás)
+
+La eliminación hacia atrás comienza con un modelo "completo", es decir, un modelo que incluye todas las variables predictoras candidatas. Luego, en cada paso, evalúa la contribución de cada variable predictora en el modelo y elimina aquella que, al ser retirada, tiene el menor impacto negativo en el ajuste del modelo (o la que es menos significativa, por ejemplo, la que tiene el p-valor más alto). Este proceso continúa hasta que todas las variables restantes en el modelo cumplen con un criterio de permanencia preestablecido (por ejemplo, su p-valor es menor que un umbral determinado).
+
+#### Consideraciones Generales sobre la Regresión Stepwise
+
+Es importante mencionar que, aunque los métodos forward y backward son populares por su automatización, también tienen sus **críticas y desventajas**:
+
+-   **Sobreajuste (Overfitting):** Los modelos resultantes pueden ajustarse muy bien a los datos de entrenamiento, pero no generalizar bien a nuevos datos. Esto se debe a que el proceso de selección de variables se basa en los datos observados, lo que puede llevar a incluir variables que parecen importantes por puro azar en esa muestra particular.
+-   **P-valores y Coeficientes Sesgados:** Los p-valores y los coeficientes de regresión obtenidos de un modelo stepwise pueden ser sesgados. Los p-valores tienden a ser más pequeños de lo que realmente son, lo que lleva a una falsa confianza en la significancia de las variables.
+-   **No considera la teoría:** El proceso es puramente estadístico y no incorpora el conocimiento del dominio o la teoría subyacente sobre las relaciones entre las variables. Un modelo estadísticamente "óptimo" podría carecer de sentido teórico o práctico.
+-   **Dependencia del orden:** La selección de variables puede ser sensible al orden en que se añaden o eliminan, especialmente en la selección hacia adelante.
+
+
+**Selección de Subconjuntos de Variables con `statsmodels` en Python**  
+
+En Python, no hay una función directa que replique `regsubsets` con todos sus métodos (exhaustiva, forward, backward, etc.) en una sola llamada como en R.  
+
+Explicación de la Función Genérica `regsubsets_exhaustive`:
+  
+1.  **Parámetros de Entrada**:
+  * `X_train_df`: El DataFrame de variables predictoras de entrenamiento.
+* `y_train_series`: La Serie de la variable dependiente de entrenamiento. **Es crucial que `y_train_series` tenga un `.name` (e.g., `'mpg'`) asignado**, ya que `statsmodels` lo usa para construir la fórmula. Si `y_train` no tiene un nombre, se puede asignár (`y_train.name = 'nombre_columna'`).
+* `nvmax`: El número máximo de variables a considerar.
+* `id_column`: Un nuevo parámetro para especificar el nombre de cualquier columna que sea un identificador (como `'name'` o `'Unnamed: 0'`) y que **no debe usarse como predictor**.
+
+2.  **`train_data_combined`**: Dentro de la función, combinamos `X_train_df` y `y_train_series` en un solo DataFrame. Esto es lo que `statsmodels` espera para la función `smf.ols` cuando se usa la sintaxis de fórmula.
+
+3.  **Exclusión de `id_column`**: La lista `all_predictors` ahora filtra la `id_column` proporcionada. Esto te da control sobre qué columnas del `X_train_df` son realmente predictores.
+
+4.  **Almacenamiento de Objetos de Modelo**: Añadimos un diccionario `model_objects` que guarda cada objeto de modelo ajustado (`model_objects[formula] = model`). Esto es muy útil porque si luego se decide que un modelo específico (por ejemplo, el mejor AIC con 5 características) es el que se quiere, se puede recuperar el diccionario y acceder a su `.summary()`, `.predict()`, etc.
+
+5.  **Retorno de Valores**: La función devuelve un diccionario `best_models` (que contiene DataFrames para los mejores modelos por R-cuadrado ajustado, AIC y BIC) y el diccionario `all_model_objects`.
+
+
+```{python}
+#| label: regsubsets-generic-function
+#| echo: true
+#| message: false
+#| warning: false
+#| code-fold: true
+#| results: as-is # Para mostrar la tabla de resultados
+
+
+import pandas as pd
+import statsmodels.formula.api as smf
+import itertools
+import numpy as np
+
+# --- Definición de la función genérica para regsubsets (exhaustive) ---
+def regsubsets_exhaustive(X_train_df, y_train_series, nvmax=None, id_column=None):
+    """
+    Realiza una búsqueda exhaustiva de los mejores subconjuntos de variables
+    para un modelo de regresión lineal, similar a regsubsets en R.
+
+    Args:
+        X_train_df (pd.DataFrame): DataFrame con las variables predictoras del conjunto de entrenamiento.
+        y_train_series (pd.Series): Serie con la variable dependiente del conjunto de entrenamiento.
+        nvmax (int, optional): Número máximo de variables a considerar en los subconjuntos.
+                               Si es None, se usa el número total de predictores.
+        id_column (str, optional): Nombre de una columna en X_train_df que es un identificador
+                                   (como 'name' o 'Unnamed: 0') y debe excluirse de los predictores.
+
+    Returns:
+        pd.DataFrame: Un DataFrame con los mejores modelos para cada número de características,
+                      ordenados por R-cuadrado ajustado, AIC y BIC.
+        dict: Un diccionario de los objetos de modelo ajustados para referencia,
+              con la fórmula como clave.
+    """
+    # Combine X_train and y_train into a single DataFrame for statsmodels
+    train_data_combined = pd.concat([X_train_df, y_train_series], axis=1)
+    
+    # Ensure y_train_series.name is not None
+    target_variable_name = y_train_series.name
+    if target_variable_name is None:
+        raise ValueError("The 'y_train_series' Series must have a name assigned (e.g., y_train.name = 'mpg')")
+    
+    # Define available predictor variables, excluding the ID column if provided
+    all_predictors = [col for col in X_train_df.columns if col != id_column]
+    
+    # Limit nvmax if it's greater than the actual number of predictors
+    if nvmax is None:
+        nvmax_final = len(all_predictors)
+    else:
+        nvmax_final = min(nvmax, len(all_predictors))
+
+    results = []
+    model_objects = {}
+    
+    print(f"Starting exhaustive subset search up to {nvmax_final} variables...")
+
+    for k in range(1, nvmax_final + 1):
+        for subset_features_tuple in itertools.combinations(all_predictors, k):
+            subset_features = list(subset_features_tuple)
+
+            if not subset_features:
+                formula = f"{target_variable_name} ~ 1"
+            else:
+                formula = f"{target_variable_name} ~ " + " + ".join(subset_features)
+            
+            try:
+                model = smf.ols(formula=formula, data=train_data_combined).fit()
+                
+                results.append({
+                    'n_features': k,
+                    'features': " + ".join(subset_features),
+                    'adj_r_squared': model.rsquared_adj,
+                    'aic': model.aic,
+                    'bic': model.bic,
+                    'formula': formula
+                })
+                model_objects[formula] = model
+
+            except Exception as e:
+                # We'll just print a warning for failed models, not a full debug trace
+                print(f"Warning: Error fitting model with formula '{formula}': {e}")
+
+    results_df = pd.DataFrame(results)
+
+    if results_df.empty:
+        print("No valid models could be fitted.")
+        return pd.DataFrame(), {}
+
+    best_models = {}
+    for metric in ['adj_r_squared', 'aic', 'bic']:
+        if metric == 'adj_r_squared':
+            idx = results_df.groupby('n_features')[metric].idxmax()
+        else:
+            idx = results_df.groupby('n_features')[metric].idxmin()
+        
+        if not idx.empty:
+            best_models[metric] = results_df.loc[idx].set_index('n_features')
+        else:
+            best_models[metric] = pd.DataFrame(columns=results_df.columns).set_index('n_features')
+
+    return best_models, model_objects
+
+```
+
+
+```{python}
+#| echo: true
+#| message: false
+#| warning: false
+#| results: as-is # Para mostrar la tabla de resultados
+
+# This line is crucial and should be present in your actual script
+# to ensure y_train has a name.
+if y_train.name is None:
+    y_train.name = 'mpg'
+
+print("--- Running exhaustive subset selection ---")
+best_models_results, all_model_objects = regsubsets_exhaustive(
+                                                                X_train_df=X_train,
+                                                                y_train_series=y_train,
+                                                                nvmax=10,
+                                                                id_column='Unnamed: 0'
+)
+
+# --- Displaying only the final summary ---
+print("\n--- Summary of the best global model by AIC ---")
+
+if not best_models_results['aic'].empty:
+    # Find the row with the globally lowest AIC across all feature counts
+    # We combine all results and then find the minimum AIC
+    all_results_df_for_global = pd.concat([best_models_results['aic'], 
+                                           best_models_results['bic'], 
+                                           best_models_results['adj_r_squared']]).drop_duplicates(subset=['formula'])
+
+    if 'formula' in all_results_df_for_global.columns and 'aic' in all_results_df_for_global.columns:
+        global_best_aic_row = all_results_df_for_global.loc[all_results_df_for_global['aic'].idxmin()]
+        global_best_aic_formula = global_best_aic_row['formula']
+        
+        print(f"Model with lowest global AIC: {global_best_aic_formula}")
+        
+        # Now, print the full statsmodels summary for this specific model
+        if global_best_aic_formula in all_model_objects:
+            print(all_model_objects[global_best_aic_formula].summary())
+        else:
+            print("Error: The object for the best global AIC model was not found in 'all_model_objects'.")
+    else:
+        print("Error: 'formula' or 'aic' columns not found in combined results for global best model.")
+else:
+    print("No valid models were found for subset selection. Cannot display global best model.")
+```
+`Selection Algorithm: exhaustive` **: Esto es crucial. Significa que el algoritmo probó todas las combinaciones posibles** de variables para cada tamaño de subconjunto hasta `nvmax = 10` y seleccionó el mejor para cada tamaño. Esto asegura que, para cada número de variables (1, 2, ..., 10), el modelo presentado es el óptimo según el criterio interno de `regsubsets_exhaustive` (generalmente `AIC`, $R^2$ ajustado, BIC a menos que se especifique otro en la función).  
+
+
+
+```{python}
+#| echo: true
+#| message: false
+#| warning: false
+#| results: as-is
+#| code-fold: true
+
+import matplotlib.pyplot as plt
+
+### Extracción de los datos de R2 Ajustado
+#La información ya está en `best_models_results['adj_r_squared']`. Para obtenerla en un formato de DataFrame con columnas explícitas para el número de variables y el R2 ajustado, simplemente hacemos:
+
+# Obtener el DataFrame de los mejores R2 Ajustados por número de variables
+adjr2_data_df = best_models_results['adj_r_squared'].reset_index()
+
+# Renombrar columnas para mayor claridad
+adjr2_data_df.rename(columns={'n_features': 'Numero_de_Variables', 
+                              'adj_r_squared': 'R2_Ajustado'}, inplace=True)
+
+print("--- DataFrame con R2 Ajustado por Número de Variables ---")
+print(adjr2_data_df[['Numero_de_Variables', 'R2_Ajustado']].to_string(index=False))
+
+if not adjr2_data_df.empty:
+    plt.figure(figsize = (8, 5)) # Tamaño de la figura más compacto
+    
+    # Graficar línea y puntos
+    plt.plot(adjr2_data_df['Numero_de_Variables'], adjr2_data_df['R2_Ajustado'], 
+             marker='o', linestyle='-', color='skyblue')
+
+    # Encontrar el punto de R2 ajustado máximo
+    max_adjr2_row = adjr2_data_df.loc[adjr2_data_df['R2_Ajustado'].idxmax()]
+    best_num_vars = int(max_adjr2_row['Numero_de_Variables'])
+    max_adjr2_value = max_adjr2_row['R2_Ajustado']
+
+    # Resaltar el punto máximo
+    plt.plot(best_num_vars, max_adjr2_value, 'ro', markersize = 8) # Punto rojo grande
+    plt.axvline(x = best_num_vars, color = 'red', linestyle='--', linewidth = 1, alpha = 0.7) # Línea vertical
+
+    # Etiquetas y título
+    plt.title("R2 Ajustado vs. Número de Variables")
+    plt.xlabel("Número de Variables")
+    plt.ylabel("R2 Ajustado")
+    
+    # Asegurar que los ticks del eje X sean enteros y legibles
+    plt.xticks(range(1, max(adjr2_data_df['Numero_de_Variables']) + 1))
+    
+    plt.grid(True, linestyle=':', alpha=0.6) # Cuadrícula ligera
+    plt.tight_layout()
+    plt.show()
+else:
+    print("No hay datos para generar el gráfico de R2 Ajustado.")
+```
+
+
 

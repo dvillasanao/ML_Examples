@@ -50,4 +50,7 @@ rsconnect/
 
 
 renv/
+renv/library/
+renv/python/
 renv.lock
+env-python/
