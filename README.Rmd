@@ -46,3 +46,36 @@ machine-learning-methods/
   └── README.md
 
 ````
+
+## 🧠 Categorías y Descripción
+  
+  | Categoría                  | Descripción                                                                 |
+  |---------------------------|-----------------------------------------------------------------------------|
+  | **Bayesian**              | Modelos basados en inferencia bayesiana como Naive Bayes.                  |
+  | **Clustering**            | Agrupación no supervisada (k-means, DBSCAN, etc.).                         |
+  | **Decision Tree**         | Árboles de decisión para clasificación y regresión.                        |
+  | **Deep Learning**         | Redes profundas con TensorFlow, PyTorch o Keras.                           |
+  | **Dimensionality Reduction** | Técnicas como PCA, t-SNE, UMAP.                                             |
+  | **Ensemble**              | Métodos como Random Forest, Gradient Boosting.                             |
+  | **Instance Based**        | Métodos como k-NN, basados en la similitud entre instancias.               |
+  | **Neural Network**        | Redes neuronales artificiales simples (MLP, perceptrón).                   |
+  | **Regression**            | Regresiones lineales, polinomiales, logísticas.                            |
+  | **Regularization**        | Penalización L1, L2 (Ridge, Lasso).                                         |
+  | **Decision Rules**        | Algoritmos basados en reglas como RIPPER o OneR.                           |
+  
+  
+### Requisitos
+  
+  - [Quarto](https://quarto.org/)
+- Python 3.x con bibliotecas: `scikit-learn`, `pandas`, `matplotlib`, `seaborn`, etc.
+- R con paquetes: `caret`, `mlr3`, `tidymodels`, entre otros.
+
+## Código de Conducta
+
+Por favor, revisa el [Código de Conducta](CODE_OF_CONDUCT.md) antes de contribuir.
+
+## Licencia
+
+Este trabajo de Diana Villasana Ocampo está bajo una <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"> Licencia Creative Commons Atribución 4.0 Internacional.</a>.
+
+
