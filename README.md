@@ -9,5 +9,5 @@
 
 <p align="center">
 
-<img src="img/ML Categories_Page_2.png" alt="Machine Learning" width="100%"/>
+<img src="img/ML Categories_Page_2.png" alt="Machine Learning" width="80%"/>
 </p>
