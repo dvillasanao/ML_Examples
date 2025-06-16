@@ -1,0 +1,204 @@
+---
+title: "Entorno en R"
+author: "Diana Villasana Ocampo"
+output:
+   html_document:
+      code_folding: hide
+      highlight: tango
+      theme: flatly
+      toc: true
+      toc_depth: 3
+      toc_float:
+        collapsed: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, eval = FALSE,
+                      cache.lazy = FALSE, class.source = "fold-show")
+knitr::opts_knit$set(root.dir = here::here())
+setwd(here::here())
+```
+
+```{r,echo=FALSE, eval=FALSE, }
+rm(list = ls())
+```
+
+Crear un entorno en R con `renv` permite **aislar las dependencias de tu proyecto** para que sea **reproducible**, portable y menos propenso a errores por cambios en versiones de paquetes. A continuación se explica,  **todo lo esencial de usar `renv` correctamente**:
+
+
+`renv` es un paquete de `R` que:
+
+* Administra entornos de paquetes a nivel de proyecto.
+* Guarda la versión exacta de cada paquete usado.
+* Permite compartir proyectos con otros sin conflictos de versiones.
+* Crea un "lockfile" (`renv.lock`) que documenta las dependencias exactas.
+
+
+### 🔧 Requisitos previos
+
+* Tener `R` instalado.
+* Instalar el paquete `renv`:
+
+```{r}
+install.packages("renv")
+```
+
+
+### 🧪 1. Inicializar un entorno con `renv`
+
+Desde la consola de `R` o `RStudio`, en la carpeta del proyecto:
+
+```{r}
+renv::init()
+```
+
+Esto hace:
+
+* Crea un subdirectorio `renv/` con la librería del proyecto.
+* Genera `renv.lock` (archivo de bloqueo con las versiones de los paquetes).
+* Crea o modifica `.Rprofile` para que cargue `renv` al abrir el proyecto.
+
+🔁 Si tu proyecto ya tiene paquetes instalados, `renv` los detectará e incluirá.
+
+
+### 📦 2. Instalar paquetes dentro del entorno
+
+```{r}
+install.packages("dplyr")  # o cualquier paquete
+```
+
+✅ `renv` instalará el paquete dentro de la carpeta local del proyecto (`renv/library/`), no en  la instalación global de R.
+
+
+### 📌 3. Registrar dependencias en el lockfile
+
+Cuando se instalan nuevos paquetes, se pueden registrar los cambios en el lockfile:
+
+```{r}
+renv::snapshot()
+```
+
+Esto actualiza `renv.lock` para reflejar las nuevas dependencias.
+
+
+### ♻️ 4. Restaurar un entorno existente
+
+Cuando se comparte el  proyecto con alguien (o se pasa a otro equipo), las personas pueden recrear el entorno exacto con:
+
+```{r}
+renv::restore()
+```
+
+Se usará `renv.lock` para instalar las versiones exactas de todos los paquetes.
+
+
+### 🔍 5. Comprobación y limpieza
+
+* Ver paquetes instalados:
+
+```{r}
+renv::status()
+```
+
+* Eliminar los paquetes que ya no se usan:
+
+```{r}
+renv::clean()
+```
+
+* Ver los paquetes usados en el proyecto:
+
+```{r}
+renv::dependencies()
+```
+
+
+### 📁 Estructura típica de un proyecto con `renv`
+
+```
+mi_proyecto/
+├── renv/              # Librería local y archivos internos de renv
+├── renv.lock          # Lista de paquetes y versiones
+├── .Rprofile          # Carga automática de renv al abrir el proyecto
+├── script.R           # Tu código en R
+└── ...                # Otros archivos del proyecto
+```
+
+
+
+### 💡 Buenas prácticas
+
+* Usa `renv::snapshot()` cada vez que se cambien los paquetes.
+* No editar `renv.lock` a mano.
+* Añadir `renv/` a `.gitignore`, pero **sí** se incluye `renv.lock` y `.Rprofile` en el repositorio.
+* Usa `renv::activate()` si necesitas reactivar el entorno (p. ej., después de mover el proyecto).
+
+
+
+### 🧳 Exportar/Compartir el entorno
+
+* Comparte solo los archivos necesarios:
+
+  * Código (`*.R`, `*.Rmd`)
+  * `renv.lock`
+  * `.Rprofile`
+
+Quien reciba el proyecto podrá usar `renv::restore()` para recrear el entorno.
+
+
+Si se desea  **quitar `renv` de un proyecto**, se puede hacer de forma segura, y hay varias opciones según qué tanto se quiera eliminar:
+
+
+### 🧼 Opción 1: Desactivar `renv` sin borrar paquetes (más segura)
+
+```{r}
+renv::deactivate()
+```
+
+Esto hará que el entorno de `renv` **deje de activarse automáticamente**, pero **los paquetes instalados siguen ahí**. Útil si solo quieres pausar `renv`.
+
+
+
+### 🗑️ Opción 2: Eliminar por completo `renv` del proyecto
+
+```{r}
+renv::uninstall()
+```
+
+Este comando:
+
+* Borra el directorio `renv/` (la biblioteca local y metadatos).
+* Elimina `.Rprofile` o la parte que activa `renv`.
+* Borra `renv.lock`.
+
+⚠️ **Advertencia**: esto no desinstala los paquetes globales ni afecta otros proyectos.
+
+
+
+### 🧹 Limpieza manual (si prefieres hacerlo por cuenta propia)
+
+1. **Borrar estos archivos/directorios en el proyecto**:
+
+   * `renv/`
+   * `renv.lock`
+   * `.Rprofile` (o edita este archivo para eliminar la línea que carga `renv`)
+
+2. **(Opcional)**: Eliminar los paquetes locales del disco si se quiere liberar espacio (lo haría `renv::uninstall()` también).
+
+
+
+### 🔁 ¿Y si luego quiero volver a usarlo?
+
+Se puede volver a activarlo con:
+
+```{r}
+renv::init()
+```
+
+
+### 📝 Recomendación
+
+Antes de eliminar `renv`, se puede hacer una copia de seguridad de `renv.lock` si en algún momento se quiere restaurar el entorno tal como estaba.
+
+
+

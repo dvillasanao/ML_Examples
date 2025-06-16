@@ -119,7 +119,10 @@ window.Quarto = {
   <li><a href="#pasos-generales-del-machine-learning-supervisado" id="toc-pasos-generales-del-machine-learning-supervisado" class="nav-link" data-scroll-target="#pasos-generales-del-machine-learning-supervisado"><strong>Pasos generales del Machine Learning supervisado</strong></a></li>
   <li><a href="#base-de-datos" id="toc-base-de-datos" class="nav-link" data-scroll-target="#base-de-datos">Base de datos</a></li>
   <li><a href="#entrenamiento-de-los-datos-traintest" id="toc-entrenamiento-de-los-datos-traintest" class="nav-link" data-scroll-target="#entrenamiento-de-los-datos-traintest">Entrenamiento de los datos (train/test)</a></li>
-  <li><a href="#entrenamiento-del-modelo" id="toc-entrenamiento-del-modelo" class="nav-link" data-scroll-target="#entrenamiento-del-modelo">Entrenamiento del modelo</a></li>
+  <li><a href="#entrenamiento-del-modelo" id="toc-entrenamiento-del-modelo" class="nav-link" data-scroll-target="#entrenamiento-del-modelo">Entrenamiento del modelo</a>
+  <ul class="collapse">
+  <li><a href="#observaciones-generales" id="toc-observaciones-generales" class="nav-link" data-scroll-target="#observaciones-generales">📌 <strong>Observaciones generales</strong></a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -257,126 +260,130 @@ Este material es reproducible en código Python utilizando Quarto
 </div>
 <p>La Regresión por Mínimos Cuadrados Ordinarios (Ordinary Least Squares Regression, <strong>OLSR</strong> u <strong>OLS</strong>) representa una metodología estadística esencial que permite analizar la correlación entre una <strong>variable dependiente</strong> (también conocida como variable de respuesta) y una o más <strong>variables independientes</strong> (o predictoras). Este método constituye una herramienta fundamental en el campo del análisis de regresión lineal.</p>
 <p align="center">
-<img src="../../img/Regression/01_image_OLSR.png" alt="Machine Learning Steps" width="40%">
-</p>
+</p><p><img src="../../img/Regression/01_image_OLSR.png" alt="Machine Learning Steps" width="40%"></p>
+<p></p>
 <p><strong>Librerías que se usaron en el documento</strong></p>
 <div id="load-py-pckgs" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rpy2</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os <span class="co"># Necesario para la función os.makedirs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#conda install -c conda-forge numpy</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#conda install -c conda-forge pandas</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#conda install -c conda-forge scikit-learn</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rpy2</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os <span class="co"># Necesario para la función os.makedirs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="4c665cc1" class="cell" data-execution_count="5">
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div id="2c3f8e7d" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <style type="text/css">
-#T_672b7 td {
+#T_d07f3 td {
   padding: 1px;
 }
-#T_672b7_row0_col0, #T_672b7_row0_col1, #T_672b7_row1_col0, #T_672b7_row1_col1, #T_672b7_row2_col0, #T_672b7_row2_col1, #T_672b7_row3_col0, #T_672b7_row3_col1, #T_672b7_row4_col0, #T_672b7_row4_col1, #T_672b7_row5_col0, #T_672b7_row5_col1, #T_672b7_row6_col0, #T_672b7_row6_col1, #T_672b7_row7_col0, #T_672b7_row7_col1, #T_672b7_row8_col0, #T_672b7_row8_col1, #T_672b7_row9_col0, #T_672b7_row9_col1, #T_672b7_row10_col0, #T_672b7_row10_col1, #T_672b7_row11_col0, #T_672b7_row11_col1, #T_672b7_row12_col0, #T_672b7_row12_col1 {
+#T_d07f3_row0_col0, #T_d07f3_row0_col1, #T_d07f3_row1_col0, #T_d07f3_row1_col1, #T_d07f3_row2_col0, #T_d07f3_row2_col1, #T_d07f3_row3_col0, #T_d07f3_row3_col1, #T_d07f3_row4_col0, #T_d07f3_row4_col1, #T_d07f3_row5_col0, #T_d07f3_row5_col1, #T_d07f3_row6_col0, #T_d07f3_row6_col1, #T_d07f3_row7_col0, #T_d07f3_row7_col1, #T_d07f3_row8_col0, #T_d07f3_row8_col1, #T_d07f3_row9_col0, #T_d07f3_row9_col1, #T_d07f3_row10_col0, #T_d07f3_row10_col1, #T_d07f3_row11_col0, #T_d07f3_row11_col1, #T_d07f3_row12_col0, #T_d07f3_row12_col1 {
   width: 200px;
   text-align: left;
 }
-#T_672b7_row0_col2, #T_672b7_row1_col2, #T_672b7_row2_col2, #T_672b7_row3_col2, #T_672b7_row4_col2, #T_672b7_row5_col2, #T_672b7_row6_col2, #T_672b7_row7_col2, #T_672b7_row8_col2, #T_672b7_row9_col2, #T_672b7_row10_col2, #T_672b7_row11_col2, #T_672b7_row12_col2 {
+#T_d07f3_row0_col2, #T_d07f3_row1_col2, #T_d07f3_row2_col2, #T_d07f3_row3_col2, #T_d07f3_row4_col2, #T_d07f3_row5_col2, #T_d07f3_row6_col2, #T_d07f3_row7_col2, #T_d07f3_row8_col2, #T_d07f3_row9_col2, #T_d07f3_row10_col2, #T_d07f3_row11_col2, #T_d07f3_row12_col2 {
   width: 500px;
   text-align: left;
 }
 </style>
 
-<div id="T_672b7" class="quarto-float quarto-figure quarto-figure-center anchored" style="font-family: Century Gothic; font-size: 10pt;" data-quarto-postprocess="true">
+<div id="T_d07f3" class="quarto-float quarto-figure quarto-figure-center anchored" style="font-family: Century Gothic; font-size: 10pt;" data-quarto-postprocess="true">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_672b7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_d07f3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Fuente: Elaboración propia
 </figcaption>
-<div aria-describedby="T_672b7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table id="T_672b7" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<div aria-describedby="T_d07f3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="T_d07f3" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_672b7_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
-<th id="T_672b7_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
-<th id="T_672b7_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
+<th id="T_d07f3_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
+<th id="T_d07f3_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
+<th id="T_d07f3_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_672b7_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
-<td id="T_672b7_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
-<td id="T_672b7_row0_col1" class="data row0 col1">Supervisado</td>
-<td id="T_672b7_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
+<td id="T_d07f3_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
+<td id="T_d07f3_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
+<td id="T_d07f3_row0_col1" class="data row0 col1">Supervisado</td>
+<td id="T_d07f3_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
 </tr>
 <tr class="even">
-<td id="T_672b7_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
-<td id="T_672b7_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
-<td id="T_672b7_row1_col1" class="data row1 col1">Numérica continua</td>
-<td id="T_672b7_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
+<td id="T_d07f3_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
+<td id="T_d07f3_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
+<td id="T_d07f3_row1_col1" class="data row1 col1">Numérica continua</td>
+<td id="T_d07f3_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
 </tr>
 <tr class="odd">
-<td id="T_672b7_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
-<td id="T_672b7_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
-<td id="T_672b7_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
-<td id="T_672b7_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
+<td id="T_d07f3_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
+<td id="T_d07f3_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
+<td id="T_d07f3_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
+<td id="T_d07f3_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
 </tr>
 <tr class="even">
-<td id="T_672b7_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
-<td id="T_672b7_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
-<td id="T_672b7_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
-<td id="T_672b7_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
+<td id="T_d07f3_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
+<td id="T_d07f3_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
+<td id="T_d07f3_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
+<td id="T_d07f3_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
 </tr>
 <tr class="odd">
-<td id="T_672b7_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
-<td id="T_672b7_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
-<td id="T_672b7_row4_col1" class="data row4 col1">Deseable</td>
-<td id="T_672b7_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
+<td id="T_d07f3_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
+<td id="T_d07f3_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
+<td id="T_d07f3_row4_col1" class="data row4 col1">Deseable</td>
+<td id="T_d07f3_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
 </tr>
 <tr class="even">
-<td id="T_672b7_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
-<td id="T_672b7_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
-<td id="T_672b7_row5_col1" class="data row5 col1">Necesaria</td>
-<td id="T_672b7_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
+<td id="T_d07f3_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
+<td id="T_d07f3_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
+<td id="T_d07f3_row5_col1" class="data row5 col1">Necesaria</td>
+<td id="T_d07f3_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
 </tr>
 <tr class="odd">
-<td id="T_672b7_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
-<td id="T_672b7_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
-<td id="T_672b7_row6_col1" class="data row6 col1">Necesaria</td>
-<td id="T_672b7_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
+<td id="T_d07f3_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
+<td id="T_d07f3_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
+<td id="T_d07f3_row6_col1" class="data row6 col1">Necesaria</td>
+<td id="T_d07f3_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
 </tr>
 <tr class="even">
-<td id="T_672b7_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
-<td id="T_672b7_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
-<td id="T_672b7_row7_col1" class="data row7 col1">Sí</td>
-<td id="T_672b7_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
+<td id="T_d07f3_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
+<td id="T_d07f3_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
+<td id="T_d07f3_row7_col1" class="data row7 col1">Sí</td>
+<td id="T_d07f3_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
 </tr>
 <tr class="odd">
-<td id="T_672b7_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
-<td id="T_672b7_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
-<td id="T_672b7_row8_col1" class="data row8 col1">Problema común</td>
-<td id="T_672b7_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
+<td id="T_d07f3_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
+<td id="T_d07f3_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
+<td id="T_d07f3_row8_col1" class="data row8 col1">Problema común</td>
+<td id="T_d07f3_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
 </tr>
 <tr class="even">
-<td id="T_672b7_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
-<td id="T_672b7_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
-<td id="T_672b7_row9_col1" class="data row9 col1">Alta</td>
-<td id="T_672b7_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
+<td id="T_d07f3_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
+<td id="T_d07f3_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
+<td id="T_d07f3_row9_col1" class="data row9 col1">Alta</td>
+<td id="T_d07f3_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
 </tr>
 <tr class="odd">
-<td id="T_672b7_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
-<td id="T_672b7_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
-<td id="T_672b7_row10_col1" class="data row10 col1">Muy alta</td>
-<td id="T_672b7_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
+<td id="T_d07f3_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
+<td id="T_d07f3_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
+<td id="T_d07f3_row10_col1" class="data row10 col1">Muy alta</td>
+<td id="T_d07f3_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
 </tr>
 <tr class="even">
-<td id="T_672b7_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
-<td id="T_672b7_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
-<td id="T_672b7_row11_col1" class="data row11 col1">Compatible</td>
-<td id="T_672b7_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
+<td id="T_d07f3_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
+<td id="T_d07f3_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
+<td id="T_d07f3_row11_col1" class="data row11 col1">Compatible</td>
+<td id="T_d07f3_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
 </tr>
 <tr class="odd">
-<td id="T_672b7_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
-<td id="T_672b7_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
-<td id="T_672b7_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
-<td id="T_672b7_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
+<td id="T_d07f3_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
+<td id="T_d07f3_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
+<td id="T_d07f3_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
+<td id="T_d07f3_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
 </tr>
 </tbody>
 </table>
@@ -446,8 +453,8 @@ Donde:
 <li><strong>Interpretación de resultados</strong></li>
 </ol>
 <p align="center">
-<img src="../../img/ML_Steps.png" alt="Machine Learning Steps" width="100%">
-</p>
+</p><p><img src="../../img/ML_Steps.png" alt="Machine Learning Steps" width="100%"></p>
+<p></p>
 <hr>
 </section>
 <section id="base-de-datos" class="level2">
@@ -525,13 +532,13 @@ Donde:
 </tr>
 </tbody>
 </table>
-<div id="768724d0" class="cell" data-execution_count="6">
+<div id="681a06bb" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>require(reticulate)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>reticulate::repl_python() <span class="co">#can be used to interactively run Python code</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Cargar y se exploran los datos</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data(<span class="st">"mtcars"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cfcbefde" class="cell" data-execution_count="7">
+<div id="ea17bb7f" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#pip install openpyxl </span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
@@ -547,11 +554,11 @@ Donde:
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>mtcars_df.to_excel(<span class="bu">file</span> <span class="op">/</span><span class="st">"mtcars_data.xlsx"</span>, index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="680ccf02" class="cell" data-execution_count="8">
+<div id="df074549" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mtcars_df <span class="op">=</span> pd.read_excel(Path.cwd().parent.parent <span class="op">/</span> <span class="st">"Data"</span> <span class="op">/</span> <span class="st">"mtcars_data.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="5a00bfdf" class="cell" data-execution_count="9">
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div id="58613bd4" class="cell" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 
 
@@ -837,7 +844,7 @@ Dep. Variable:                    mpg   R-squared:                       0.896
 Model:                            OLS   Adj. R-squared:                  0.821
 Method:                 Least Squares   F-statistic:                     12.00
 Date:                Sun, 15 Jun 2025   Prob (F-statistic):           3.06e-05
-Time:                        01:35:19   Log-Likelihood:                -52.439
+Time:                        23:03:34   Log-Likelihood:                -52.439
 No. Observations:                  25   AIC:                             126.9
 Df Residuals:                      14   BIC:                             140.3
 Df Model:                          10                                         
@@ -869,6 +876,94 @@ Notes:
 strong multicollinearity or other numerical problems.</code></pre>
 </div>
 </div>
+<p>Como resultado se da una visión general de qué tan bien el modelo se ajusta a los datos:</p>
+<ul>
+<li><strong><code>R-squared: 0.896</code></strong>: También conocido como <strong>coeficiente de determinación</strong>. Esto significa que el 89.6% de la variabilidad en <code>mpg</code> puede ser explicada por las variables predictoras en tu modelo. ¡Este es un valor bastante alto, lo que sugiere que tu modelo explica una gran parte de la variación en <code>mpg</code>!
+<ul>
+<li><strong><code>Adj. R-squared: 0.821</code></strong>: El <strong>R-cuadrado ajustado</strong> es una versión del R-cuadrado que penaliza el modelo por cada variable predictora adicional. Es más útil cuando comparas modelos con diferentes números de predictores. Un valor de 0.821 sigue siendo muy bueno y sugiere que el alto R-cuadrado no es solo por añadir muchas variables sin valor.</li>
+</ul></li>
+<li><strong><code>F-statistic: 12.00</code></strong>: La <strong>Estadística F</strong> evalúa la significancia global del modelo. Prueba la hipótesis nula de que todos los coeficientes de las variables predictoras son cero (es decir, que ninguna de tus variables predictoras tiene un efecto significativo sobre <code>mpg</code>).</li>
+<li><strong><code>Prob (F-statistic): 3.06e-05</code></strong>: Este es el <strong>p-valor asociado a la Estadística F</strong>. Un valor tan pequeño (3.06e-05, que es 0.0000306) es mucho menor que el nivel de significancia común (0.05). Esto significa que <strong>el modelo en su conjunto es estadísticamente significativo</strong>, y al menos una de tus variables predictoras tiene un efecto significativo sobre <code>mpg</code>.</li>
+</ul>
+<p><strong>Estadísticos</strong></p>
+<p>Estas métricas ayudan a evaluar si el modelo cumple con los supuestos de la regresión lineal:</p>
+<ul>
+<li><strong><code>Omnibus</code>, <code>Prob(Omnibus)</code>, <code>Jarque-Bera (JB)</code>, <code>Prob(JB)</code>, <code>Skew</code>, <code>Kurtosis</code></strong>: Estas son pruebas de <strong>normalidad de los residuos</strong>.</li>
+<li><code>Prob(Omnibus): 0.310</code> y <code>Prob(JB): 0.462</code> (ambos &gt; 0.05) sugieren que <strong>los residuos son aproximadamente normales</strong>, lo cual es bueno.</li>
+<li><code>Skew</code> (Asimetría) y <code>Kurtosis</code> (Curtosis) describen la forma de la distribución de los residuos. Valores cercanos a 0 para <code>Skew</code> y cercanos a 3 para <code>Kurtosis</code> (o 0 para <code>Excess Kurtosis</code>, que es lo que se interpreta a menudo) indican normalidad. Tus valores son razonables.</li>
+<li><strong><code>Durbin-Watson: 1.335</code></strong>: Esta prueba detecta la <strong>autocorrelación en los residuos</strong>.
+<ul>
+<li>Un valor cercano a 2 indica poca o ninguna autocorrelación.</li>
+<li>Valores muy por debajo de 2 (como 1.335) pueden sugerir cierta autocorrelación positiva (residuos adyacentes están correlacionados), lo cual es una violación de los supuestos y podría afectar la validez de tus errores estándar y p-valores.</li>
+</ul></li>
+<li><strong>`<code>Cond. No.: 1.94e+04</code></strong>: El <strong>Número de Condición</strong>.
+<ul>
+<li>Este valor es una medida de <strong>multicolinealidad</strong>.</li>
+<li>Un valor alto (generalmente &gt; 1000, y este es de 19400) <strong>indica una fuerte multicolinealidad</strong> entre las variables predictoras. Esto confirma la sospecha de la tabla de coeficientes: tus variables están altamente correlacionadas entre sí, lo que dificulta al modelo discernir el efecto único de cada una. Esta es la razón más probable por la que el modelo es significativo en general, pero los predictores individuales no lo son.</li>
+</ul></li>
+</ul>
+<p><strong>¿Por qué los resultados de R y Python son diferentes a pesar de usar la misma lógica?</strong></p>
+<p>La razón principal por la que obtienes resultados ligeramente diferentes en R y Python para los coeficientes, errores estándar y p-valores (aunque las métricas generales como R-cuadrado y F-estadístico son muy similares) es debido a la <strong>naturaleza aleatoria de la división de los datos en entrenamiento y prueba</strong>.</p>
+<section id="observaciones-generales" class="level3">
+<h3 class="anchored" data-anchor-id="observaciones-generales">📌 <strong>Observaciones generales</strong></h3>
+<ul>
+<li><p>El modelo tiene un <strong>muy buen R²</strong> (89.6%) ⇒ explica bien la variabilidad en <code>mpg</code>.</p></li>
+<li><p><strong>El modelo completo es estadísticamente significativo</strong>, pero <strong>ninguna variable individual lo es</strong>, lo que probablemente se deba a <strong>multicolinealidad</strong>.</p></li>
+<li><p>Considera usar:</p>
+<ul>
+<li><strong>Análisis de VIF</strong> (Variance Inflation Factor) para detectar multicolinealidad.</li>
+<li><strong>Reducción de dimensionalidad</strong> (PCA, selección de variables).</li>
+<li><strong>Regularización</strong> (Ridge/Lasso) para mejorar la estabilidad del modelo.</li>
+</ul></li>
+</ul>
+<div id="cell-scatter-plots-faceted" class="cell" data-fig-height="8" data-fig-width="10" data-message="false" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> (</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    ggplot, aes, geom_point, geom_smooth, facet_wrap,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    theme_bw, theme, element_text, labs</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar datos de ejemplo si no tienes mtcars_df</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine.data <span class="im">import</span> mtcars</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>mtcars_df <span class="op">=</span> mtcars.copy()</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Preparación de los datos</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>tabla_py <span class="op">=</span> mtcars_df.melt(id_vars<span class="op">=</span>[<span class="st">"mpg"</span>], var_name<span class="op">=</span><span class="st">"variable"</span>, value_name<span class="op">=</span><span class="st">"value"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Crear el gráfico con plotnine</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> (</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    ggplot(tabla_py, aes(y<span class="op">=</span><span class="st">"mpg"</span>, x<span class="op">=</span><span class="st">"value"</span>, color<span class="op">=</span><span class="st">"variable"</span>))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_point()</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> geom_smooth(method<span class="op">=</span><span class="st">"lm"</span>, se<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme_bw()</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> theme(</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        plot_title<span class="op">=</span>element_text(size<span class="op">=</span><span class="dv">22</span>),</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        plot_subtitle<span class="op">=</span>element_text(size<span class="op">=</span><span class="dv">18</span>),</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        plot_caption<span class="op">=</span>element_text(size<span class="op">=</span><span class="dv">11</span>),</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        axis_text<span class="op">=</span>element_text(),</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        axis_title<span class="op">=</span>element_text(size<span class="op">=</span><span class="dv">15</span>),</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        legend_position<span class="op">=</span><span class="st">"none"</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> facet_wrap(<span class="st">"~variable"</span>, scales<span class="op">=</span><span class="st">"free"</span>)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> labs(</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"Diagramas de dispersión"</span>,</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="st">""</span>,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        y<span class="op">=</span><span class="st">""</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el gráfico</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_01_OLSR_py_files/figure-html/scatter-plots-faceted-output-1.png" id="scatter-plots-faceted" width="672" height="480" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 </section>
 
 </main>

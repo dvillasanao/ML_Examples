@@ -151,7 +151,9 @@ h6{
 La Regresión por Mínimos Cuadrados Ordinarios (Ordinary Least Squares Regression, **OLSR** u **OLS**) representa una metodología estadística esencial que permite analizar la correlación entre una **variable dependiente** (también conocida como variable de respuesta) y una o más **variables independientes** (o predictoras). Este método constituye una herramienta fundamental en el campo del análisis de regresión lineal.
 
 <p align="center">
+
 <img src="../../img/Regression/01_image_OLSR.png" alt="Machine Learning Steps" width="40%"/>
+
 </p>
 
 ```{python}
@@ -161,7 +163,6 @@ import sys
 print(sys.path)
 
 ```
-
 
 ```{python}
 #| label: setup-python
@@ -185,6 +186,11 @@ print(sys.path)
 
 ```{python}
 #| label: load-py-pckgs
+
+#conda install -c conda-forge numpy
+#conda install -c conda-forge pandas
+#conda install -c conda-forge scikit-learn
+
 import re
 import rpy2
 import pandas as pd
@@ -192,7 +198,6 @@ from pathlib import Path
 import seaborn as sns
 import os # Necesario para la función os.makedirs
 ```
-
 
 ```{python}
 #| echo: false
@@ -275,8 +280,6 @@ styled_table = (
 styled_table
 ```
 
-
-
 ## Objetivo
 
 La Regresión por Mínimos Cuadrados Ordinarios (`OLSR`) busca la línea que mejor se ajusta a los datos. Para lograrlo, reduce al mínimo la suma de los cuadrados de las diferencias entre los valores reales y los valores que predice el modelo. Estas diferencias son los **residuos** o **errores**. Al trabajar con los cuadrados de los errores, este método evita que los errores positivos y negativos se anulen entre sí, y da más peso a los errores grandes durante el proceso de minimización.
@@ -336,7 +339,9 @@ Para lograr esta minimización, se utilizan técnicas de cálculo (derivadas par
 8.  **Interpretación de resultados**
 
 <p align="center">
+
 <img src="../../img/ML_Steps.png" alt="Machine Learning Steps" width="100%"/>
+
 </p>
 
 ------------------------------------------------------------------------
@@ -348,7 +353,7 @@ La base de datos `mtcars` es un conjunto de datos clásico en R que contiene inf
 Aquí está una descripción de cada columna:
 
 | Variable | Significado | Tipo de dato |
-|-------------------|-----------------------------------|-------------------|
+|-------------------|----------------------------------|-------------------|
 | `mpg` | Miles per gallon (millas por galón) | Numérica |
 | `cyl` | Número de cilindros | Entero |
 | `disp` | Desplazamiento del motor (en pulgadas cúbicas) | Numérica |
@@ -361,10 +366,6 @@ Aquí está una descripción de cada columna:
 | `gear` | Número de velocidades (marchas) adelante | Entero |
 | `carb` | Número de carburadores | Entero |
 
-
-
-
-
 ```{python}
 #| eval: false
 require(reticulate)
@@ -372,7 +373,6 @@ reticulate::repl_python() #can be used to interactively run Python code
 # 2. Cargar y se exploran los datos
 data("mtcars")
 ```
-
 
 ```{python}
 #| echo: true
@@ -394,27 +394,24 @@ file = Path.cwd().parent.parent / "Data"
 mtcars_df.to_excel(file /"mtcars_data.xlsx", index=True)
 ```
 
-
 ```{python}
 mtcars_df = pd.read_excel(Path.cwd().parent.parent / "Data" / "mtcars_data.xlsx")
 ```
-
 
 ```{python}
 #| echo: false
 mtcars_df.head(10)
 ```
 
-
 ## Entrenamiento de los datos (train/test)
 
 La división de datos en conjuntos de **entrenamiento (train)** y **prueba (test)** es una práctica fundamental en el aprendizaje automático y la modelización predictiva. Su importancia radica en la necesidad de obtener una evaluación **realista y no sesgada** del rendimiento de un modelo, y de asegurar que el modelo sea capaz de **generalizar** a datos nuevos y no vistos.
 
-* En Python, `train_test_split()` devuelve directamente los cuatro conjuntos de datos:
-  * `X_train`: Predictoras para entrenamiento.
-* `X_test`: Predictoras para prueba.
-* `y_train`: Variable objetivo para entrenamiento.
-* `y_test`: Variable objetivo para prueba.
+-   En Python, `train_test_split()` devuelve directamente los cuatro conjuntos de datos:
+    -   `X_train`: Predictoras para entrenamiento.
+-   `X_test`: Predictoras para prueba.
+-   `y_train`: Variable objetivo para entrenamiento.
+-   `y_test`: Variable objetivo para prueba.
 
 ```{python}
 #| label: split-data
@@ -450,7 +447,6 @@ print(f"Tamaño del conjunto de entrenamiento (y_train): {y_train.shape}")
 print(f"Tamaño del conjunto de prueba (y_test): {y_test.shape}")
 ```
 
-
 -   Particionar los datos, evita el **overfitting** (cuando el modelo memoriza los datos de entrenamiento).
 -   Permite una **evaluación honesta** del modelo al probarlo en datos que no vio durante el entrenamiento.
 -   Es una práctica estándar en cualquier pipeline de aprendizaje automático.
@@ -467,13 +463,12 @@ El **entrenamiento de un modelo** es el paso más importante en el aprendizaje a
 
 **Función de entrenamiento**
 
-  * `modelo_ols_py = smf.ols(formula=formula, data=train_data_combined).fit()`:
-  * `smf.ols()`: Es la función para ajustar un modelo de Mínimos Cuadrados Ordinarios (Ordinary Least Squares - OLS).
-* `formula=formula`: Le pasamos la cadena de fórmula que definimos.
-* `data=train_data_combined`: Le indicamos de qué DataFrame debe tomar las variables.
-* `.fit()`: Este método entrena el modelo sobre los datos.
+-   `modelo_ols_py = smf.ols(formula=formula, data=train_data_combined).fit()`:
+-   `smf.ols()`: Es la función para ajustar un modelo de Mínimos Cuadrados Ordinarios (Ordinary Least Squares - OLS).
+-   `formula=formula`: Le pasamos la cadena de fórmula que definimos.
+-   `data=train_data_combined`: Le indicamos de qué DataFrame debe tomar las variables.
+-   `.fit()`: Este método entrena el modelo sobre los datos.
 
-    
 ```{python}
 #| label: train-ols-model
 #| echo: true
@@ -509,4 +504,90 @@ modelo_ols_py = smf.ols(formula=formula, data=train_data_combined).fit()
 print("Resumen del Modelo OLS en Python:")
 print(modelo_ols_py.summary()) # .as_html() para una salida bonita en Quarto
 ```
+
+Como resultado se da una visión general de qué tan bien el modelo se ajusta a los datos:
+
+-   **`R-squared: 0.896`**: También conocido como **coeficiente de determinación**. Esto significa que el 89.6% de la variabilidad en `mpg` puede ser explicada por las variables predictoras en tu modelo. ¡Este es un valor bastante alto, lo que sugiere que tu modelo explica una gran parte de la variación en `mpg`!
+    -   **`Adj. R-squared: 0.821`**: El **R-cuadrado ajustado** es una versión del R-cuadrado que penaliza el modelo por cada variable predictora adicional. Es más útil cuando comparas modelos con diferentes números de predictores. Un valor de 0.821 sigue siendo muy bueno y sugiere que el alto R-cuadrado no es solo por añadir muchas variables sin valor.
+-   **`F-statistic: 12.00`**: La **Estadística F** evalúa la significancia global del modelo. Prueba la hipótesis nula de que todos los coeficientes de las variables predictoras son cero (es decir, que ninguna de tus variables predictoras tiene un efecto significativo sobre `mpg`).
+-   **`Prob (F-statistic): 3.06e-05`**: Este es el **p-valor asociado a la Estadística F**. Un valor tan pequeño (3.06e-05, que es 0.0000306) es mucho menor que el nivel de significancia común (0.05). Esto significa que **el modelo en su conjunto es estadísticamente significativo**, y al menos una de tus variables predictoras tiene un efecto significativo sobre `mpg`.
+
+**Estadísticos**
+
+Estas métricas ayudan a evaluar si el modelo cumple con los supuestos de la regresión lineal:
+
+-   **`Omnibus`, `Prob(Omnibus)`, `Jarque-Bera (JB)`, `Prob(JB)`, `Skew`, `Kurtosis`**: Estas son pruebas de **normalidad de los residuos**.
+-   `Prob(Omnibus): 0.310` y `Prob(JB): 0.462` (ambos \> 0.05) sugieren que **los residuos son aproximadamente normales**, lo cual es bueno.
+-   `Skew` (Asimetría) y `Kurtosis` (Curtosis) describen la forma de la distribución de los residuos. Valores cercanos a 0 para `Skew` y cercanos a 3 para `Kurtosis` (o 0 para `Excess Kurtosis`, que es lo que se interpreta a menudo) indican normalidad. Tus valores son razonables.
+-   **`Durbin-Watson: 1.335`**: Esta prueba detecta la **autocorrelación en los residuos**.
+    -   Un valor cercano a 2 indica poca o ninguna autocorrelación.
+    -   Valores muy por debajo de 2 (como 1.335) pueden sugerir cierta autocorrelación positiva (residuos adyacentes están correlacionados), lo cual es una violación de los supuestos y podría afectar la validez de tus errores estándar y p-valores.
+-   **\``Cond. No.: 1.94e+04`**: El **Número de Condición**.
+    -   Este valor es una medida de **multicolinealidad**.
+    -   Un valor alto (generalmente \> 1000, y este es de 19400) **indica una fuerte multicolinealidad** entre las variables predictoras. Esto confirma la sospecha de la tabla de coeficientes: tus variables están altamente correlacionadas entre sí, lo que dificulta al modelo discernir el efecto único de cada una. Esta es la razón más probable por la que el modelo es significativo en general, pero los predictores individuales no lo son.
+
+**¿Por qué los resultados de R y Python son diferentes a pesar de usar la misma lógica?**
+
+La razón principal por la que obtienes resultados ligeramente diferentes en R y Python para los coeficientes, errores estándar y p-valores (aunque las métricas generales como R-cuadrado y F-estadístico son muy similares) es debido a la **naturaleza aleatoria de la división de los datos en entrenamiento y prueba**.
+
+### 📌 **Observaciones generales**
+
+-   El modelo tiene un **muy buen R²** (89.6%) ⇒ explica bien la variabilidad en `mpg`.
+
+-   **El modelo completo es estadísticamente significativo**, pero **ninguna variable individual lo es**, lo que probablemente se deba a **multicolinealidad**.
+
+-   Considera usar:
+
+    -   **Análisis de VIF** (Variance Inflation Factor) para detectar multicolinealidad.
+    -   **Reducción de dimensionalidad** (PCA, selección de variables).
+    -   **Regularización** (Ridge/Lasso) para mejorar la estabilidad del modelo.  
     
+    
+```{python}
+#| label: scatter-plots-faceted
+#| echo: true
+#| message: false
+#| warning: false
+#| fig-width: 10 # Ajusta el ancho de la figura
+#| fig-height: 8  # Ajusta la altura de la figura
+
+import pandas as pd
+from plotnine import (
+    ggplot, aes, geom_point, geom_smooth, facet_wrap,
+    theme_bw, theme, element_text, labs
+)
+
+# Cargar datos de ejemplo si no tienes mtcars_df
+from plotnine.data import mtcars
+mtcars_df = mtcars.copy()
+
+
+# 1. Preparación de los datos
+tabla_py = mtcars_df.melt(id_vars=["mpg"], var_name="variable", value_name="value")
+
+# 2. Crear el gráfico con plotnine
+p = (
+    ggplot(tabla_py, aes(y="mpg", x="value", color="variable"))
+    + geom_point()
+    + geom_smooth(method="lm", se=True, color="black")
+    + theme_bw()
+    + theme(
+        plot_title=element_text(size=22),
+        plot_subtitle=element_text(size=18),
+        plot_caption=element_text(size=11),
+        axis_text=element_text(),
+        axis_title=element_text(size=15),
+        legend_position="none"
+    )
+    + facet_wrap("~variable", scales="free")
+    + labs(
+        title="Diagramas de dispersión",
+        x="",
+        y=""
+    )
+)
+
+# Mostrar el gráfico
+p
+```
+

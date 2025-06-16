@@ -1,0 +1,116 @@
+---
+title: "Estadístico de Durbin Watson"
+subtitle: "Apuntes y anotaciones personales"
+author: "Diana Villasana Ocampo"
+format:
+  html:
+    code-fold: false
+    highlight-style: tango
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    toc-location: left
+execute:
+  echo: true      
+  message: false   # Suprimir mensajes generados por R/Python
+  warning: false   # Suprimir advertencias generadas por R/Python
+  error: false     # Suprimir errores (muestra la ejecución, pero no los errores)
+  execute-dir: project
+editor: visual
+---
+
+El **estadístico de Durbin-Watson (DW)** se utiliza para detectar **autocorrelación de primer orden** (particularmente autocorrelación positiva) en los **residuos** de una regresión lineal.
+
+### 🧮 Fórmula del estadístico de Durbin-Watson:
+
+$$
+DW = \frac{\sum_{t=2}^{n} (e_t - e_{t-1})^2}{\sum_{t=1}^{n} e_t^2}
+$$
+
+Donde:
+
+-   $e_t$ = residuo en el periodo $t$ (es decir, $y_t - \hat{y}_t$)
+-   $n$ = número de observaciones
+
+------------------------------------------------------------------------
+
+### 📊 Interpretación del valor de DW:
+
+-   **DW ≈ 2**: No hay autocorrelación.
+-   **DW \< 2**: Posible **autocorrelación positiva**.
+-   **DW \> 2**: Posible **autocorrelación negativa**.
+-   **Rango**: $0 \leq DW \leq 4$
+
+### 🧠 Ejemplo sencillo:
+
+Supongamos que tenemos 5 residuos de un modelo:
+
+$$
+e = [1.0, 0.5, 0.2, 0.3, 0.1]
+$$
+
+1.  Calculamos las diferencias:
+
+$$
+(0.5 - 1.0)^2 = 0.25, \quad (0.2 - 0.5)^2 = 0.09, \quad (0.3 - 0.2)^2 = 0.01, \quad (0.1 - 0.3)^2 = 0.04
+$$
+
+Suma del numerador:
+
+$$
+0.25 + 0.09 + 0.01 + 0.04 = 0.39
+$$
+
+2.  Suma de cuadrados de los residuos:
+
+$$
+1.0^2 + 0.5^2 + 0.2^2 + 0.3^2 + 0.1^2 = 1.0 + 0.25 + 0.04 + 0.09 + 0.01 = 1.39
+$$
+
+3.  Cálculo final:
+
+$$
+DW = \frac{0.39}{1.39} ≈ 0.28 \quad \Rightarrow \text{alta autocorrelación positiva}
+$$
+
+### 📦 En Python con `statsmodels`:
+
+```{python}
+#| eval: false
+# pip install statsmodels
+from statsmodels.stats.stattools import durbin_watson
+
+dw_stat = durbin_watson(modelo_ols_py.resid)
+print(f'Estadístico de Durbin-Watson: {dw_stat:.2f}')
+```
+
+### 📦 En R con `car::durbinWatsonTest()`:
+
+```{r, eval = FALSE}
+#install.packages("car")
+require(car)
+
+# Ajustar modelo de regresión lineal
+modelo <- lm(y ~ x1 + x2, data = datos)
+
+# Calcular el estadístico de Durbin-Watson
+durbinWatsonTest(modelo)
+```
+
+```{r, eval = FALSE}
+# Ajustar el modelo
+modelo <- lm(y ~ x1 + x2, data = datos)
+
+# Obtener residuos
+e <- resid(modelo)
+
+# Numerador: suma de cuadrados de diferencias entre residuos consecutivos
+num <- sum(diff(e)^2)
+
+# Denominador: suma de cuadrados de los residuos
+den <- sum(e^2)
+
+# Cálculo de Durbin-Watson
+DW <- num / den
+DW
+```

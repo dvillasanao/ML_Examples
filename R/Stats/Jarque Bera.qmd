@@ -1,0 +1,124 @@
+---
+title: "Estadístico de Jarque Bera (JB)"
+subtitle: "Apuntes y anotaciones personales"
+author: "Diana Villasana Ocampo"
+format:
+  html:
+    code-fold: false
+    highlight-style: tango
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    toc-location: left
+execute:
+  echo: true      
+  message: false   # Suprimir mensajes generados por R/Python
+  warning: false   # Suprimir advertencias generadas por R/Python
+  error: false     # Suprimir errores (muestra la ejecución, pero no los errores)
+  execute-dir: project
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, eval = FALSE,
+                      cache.lazy = FALSE, class.source = "fold-show")
+knitr::opts_knit$set(root.dir = here::here())
+setwd(here::here())
+```
+
+El **estadístico de Jarque-Bera (JB)** se utiliza para probar si los **residuos** (u otra variable) siguen una distribución **normal**. Evalúa la **asimetría** (skewness) y la **curtosis** (kurtosis) de los datos en comparación con una distribución normal.
+
+------------------------------------------------------------------------
+
+### 📐 Fórmula del estadístico de Jarque-Bera:
+
+$$
+JB = \frac{n}{6} \left( S^2 + \frac{(K - 3)^2}{4} \right)
+$$
+
+Donde:
+
+-   $n$: número de observaciones
+-   $S$: asimetría (skewness)
+-   $K$: curtosis muestral
+
+------------------------------------------------------------------------
+
+### 📊 Interpretación:
+
+-   **Hipótesis nula (**$H_0$): Los datos siguen una distribución normal.
+-   **Hipótesis alternativa (**$H_1$): Los datos no siguen una distribución normal.
+-   Un **valor alto** del estadístico JB (y un p-valor pequeño) indica **no normalidad**.
+
+### 📦 En **Python** con `scipy.stats.jarque_bera`:
+
+```{python}
+#| eval: false
+
+from scipy.stats import jarque_bera
+
+# Supongamos que tienes un vector de residuos o una variable
+jb_stat, p_value = jarque_bera(residuals)
+
+print(f'Estadístico de Jarque-Bera: {jb_stat:.4f}')
+print(f'P-valor: {p_value:.4f}')
+```
+
+### 📦 En **Python** desde un modelo OLS con `statsmodels`:
+
+```{python}
+#| eval: false
+
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
+# Ajustar modelo OLS
+modelo = smf.ols('y ~ x1 + x2', data = df).fit()
+
+# Obtener residuos
+residuos = modelo.resid
+
+# Aplicar Jarque-Bera
+from scipy.stats import jarque_bera
+
+jb_stat, p_value = jarque_bera(residuos)
+
+print(f'Estadístico JB: {jb_stat:.4f}, P-valor: {p_value:.4f}')
+```
+
+### 📦 En **R** con `tseries::jarque.bera.test()`:
+
+```{r}
+# Instalar si no lo tienes
+install.packages("tseries")
+
+# Cargar el paquete
+library(tseries)
+
+# Supongamos que ajustamos un modelo
+modelo <- lm(y ~ x1 + x2, data = datos)
+
+# Obtener los residuos
+residuos <- resid(modelo)
+
+# Aplicar la prueba de Jarque-Bera
+jarque.bera.test(residuos)
+```
+
+### 🧮 Cálculo manual en R (paso a paso):
+
+```{r}
+# Supongamos que tienes un vector de residuos:
+residuos <- resid(modelo)
+n <- length(residuos)
+
+# Calcular skewness y kurtosis
+library(e1071)  # para funciones de skewness y kurtosis
+
+S <- skewness(residuos)
+K <- kurtosis(residuos)  # e1071 calcula "excess kurtosis", por lo que debes sumar 3 si es así
+
+# Calcular JB
+JB <- (n / 6) * (S^2 + ((K - 3)^2) / 4)
+JB
+```
