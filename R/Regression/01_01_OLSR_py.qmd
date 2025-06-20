@@ -339,7 +339,9 @@ Para lograr esta minimización, se utilizan técnicas de cálculo (derivadas par
 8.  **Interpretación de resultados**
 
 <p align="center">
+
 <img src="../../img/ML_Steps.png" alt="Machine Learning Steps" width="100%"/>
+
 </p>
 
 ------------------------------------------------------------------------
@@ -400,7 +402,8 @@ mtcars_df = pd.read_excel(Path.cwd().parent.parent / "Data" / "mtcars_data.xlsx"
 #| echo: false
 mtcars_df.head(10)
 ```
-**Convertir todas las columnas a tipo numérico** 
+
+**Convertir todas las columnas a tipo numérico**
 
 ```{python}
 # --- IMPORTANTE: Convertir todas las columnas a tipo numérico ---
@@ -410,7 +413,6 @@ mtcars_df.head(10)
 
 mtcars_df = mtcars_df.apply(pd.to_numeric, errors='coerce')
 ```
-
 
 ## Entrenamiento de los datos (train/test)
 
@@ -548,9 +550,8 @@ La razón principal por la que obtienes resultados ligeramente diferentes en R y
 
     -   **Análisis de VIF** (Variance Inflation Factor) para detectar multicolinealidad.
     -   **Reducción de dimensionalidad** (PCA, selección de variables).
-    -   **Regularización** (Ridge/Lasso) para mejorar la estabilidad del modelo.  
-    
-    
+    -   **Regularización** (Ridge/Lasso) para mejorar la estabilidad del modelo.
+
 ```{python}
 #| label: scatter-plots-faceted
 #| echo: true
@@ -605,7 +606,6 @@ p = (
 p
 ```
 
-
 ## Selección de variables
 
 ### Criterio de Información de Akaike
@@ -649,10 +649,9 @@ A medida que $n$ (tamaño de la muestra) es grande, el término de corrección s
 
 Se realiza una selección automática de variables para un modelo de regresión lineal, utilizando el **criterio AIC (Criterio de Información de Akaike**)
 
-
 **Implementación de Selección por Pasos (Stepwise) con AIC en Python**
 
-Dado que `statsmodels` no tiene un `stepAIC` incorporado que funcione exactamente como en R con `direction="both"`, una forma común de lograr esto en Python es implementar la lógica de forma manual o usar una función auxiliar que la simule. 
+Dado que `statsmodels` no tiene un `stepAIC` incorporado que funcione exactamente como en R con `direction="both"`, una forma común de lograr esto en Python es implementar la lógica de forma manual o usar una función auxiliar que la simule.
 
 ```{python}
 #| label: stepwise-aic
@@ -826,26 +825,22 @@ El procedimiento va eliminando o agregando variables al modelo original para red
 
 -   Cuando **ya no puede bajar más el AIC** quitando o agregando variables. El modelo final es el que **tiene el AIC más bajo** alcanzado durante el proceso.
 
-
-
 ### Interpretación Final
-  
-  | Aspecto                         | Modelo Completo | Modelo por AIC (reducido) |
-  | ------------------------------- | --------------- | ------------------------- |
-  | **R² ajustado**                 | 0.821           | 0.862 ✅                   |
-  | **AIC**                         | 126.9           | **116.5 ✅**               |
-  | **Coeficientes significativos** | Ninguno         | Todos ✅                   |
-  | **Multicolinealidad**           | Alta ⚠️         | Baja ✅                    |
-  | **Interpretabilidad**           | Difusa          | Clara ✅                   |
-  
+
+| Aspecto                         | Modelo Completo | Modelo por AIC (reducido) |
+|------------------------------|------------------|------------------------|
+| **R² ajustado**                 | 0.821           | 0.862 ✅                  |
+| **AIC**                         | 126.9           | **116.5 ✅**              |
+| **Coeficientes significativos** | Ninguno         | Todos ✅                  |
+| **Multicolinealidad**           | Alta ⚠️         | Baja ✅                   |
+| **Interpretabilidad**           | Difusa          | Clara ✅                  |
 
 **Conclusión del modelo reducido**:
-  
-  * Todas las variables son estadísticamente significativas.
-* El modelo es más simple (3 variables vs. 10).
-* El AIC bajó significativamente ⇒ mejora en calidad del modelo.
-* La interpretación es mucho más clara y robusta.
 
+-   Todas las variables son estadísticamente significativas.
+-   El modelo es más simple (3 variables vs. 10).
+-   El AIC bajó significativamente ⇒ mejora en calidad del modelo.
+-   La interpretación es mucho más clara y robusta.
 
 ### Forward or backward stepwise
 
@@ -870,18 +865,18 @@ Es importante mencionar que, aunque los métodos forward y backward son populare
 -   **No considera la teoría:** El proceso es puramente estadístico y no incorpora el conocimiento del dominio o la teoría subyacente sobre las relaciones entre las variables. Un modelo estadísticamente "óptimo" podría carecer de sentido teórico o práctico.
 -   **Dependencia del orden:** La selección de variables puede ser sensible al orden en que se añaden o eliminan, especialmente en la selección hacia adelante.
 
+**Selección de Subconjuntos de Variables con `statsmodels` en Python**
 
-**Selección de Subconjuntos de Variables con `statsmodels` en Python**  
-
-En Python, no hay una función directa que replique `regsubsets` con todos sus métodos (exhaustiva, forward, backward, etc.) en una sola llamada como en R.  
+En Python, no hay una función directa que replique `regsubsets` con todos sus métodos (exhaustiva, forward, backward, etc.) en una sola llamada como en R.
 
 Explicación de la Función Genérica `regsubsets_exhaustive`:
-  
+
 1.  **Parámetros de Entrada**:
-  * `X_train_df`: El DataFrame de variables predictoras de entrenamiento.
-* `y_train_series`: La Serie de la variable dependiente de entrenamiento. **Es crucial que `y_train_series` tenga un `.name` (e.g., `'mpg'`) asignado**, ya que `statsmodels` lo usa para construir la fórmula. Si `y_train` no tiene un nombre, se puede asignár (`y_train.name = 'nombre_columna'`).
-* `nvmax`: El número máximo de variables a considerar.
-* `id_column`: Un nuevo parámetro para especificar el nombre de cualquier columna que sea un identificador (como `'name'` o `'Unnamed: 0'`) y que **no debe usarse como predictor**.
+
+-   `X_train_df`: El DataFrame de variables predictoras de entrenamiento.
+-   `y_train_series`: La Serie de la variable dependiente de entrenamiento. **Es crucial que `y_train_series` tenga un `.name` (e.g., `'mpg'`) asignado**, ya que `statsmodels` lo usa para construir la fórmula. Si `y_train` no tiene un nombre, se puede asignár (`y_train.name = 'nombre_columna'`).
+-   `nvmax`: El número máximo de variables a considerar.
+-   `id_column`: Un nuevo parámetro para especificar el nombre de cualquier columna que sea un identificador (como `'name'` o `'Unnamed: 0'`) y que **no debe usarse como predictor**.
 
 2.  **`train_data_combined`**: Dentro de la función, combinamos `X_train_df` y `y_train_series` en un solo DataFrame. Esto es lo que `statsmodels` espera para la función `smf.ols` cuando se usa la sintaxis de fórmula.
 
@@ -890,7 +885,6 @@ Explicación de la Función Genérica `regsubsets_exhaustive`:
 4.  **Almacenamiento de Objetos de Modelo**: Añadimos un diccionario `model_objects` que guarda cada objeto de modelo ajustado (`model_objects[formula] = model`). Esto es muy útil porque si luego se decide que un modelo específico (por ejemplo, el mejor AIC con 5 características) es el que se quiere, se puede recuperar el diccionario y acceder a su `.summary()`, `.predict()`, etc.
 
 5.  **Retorno de Valores**: La función devuelve un diccionario `best_models` (que contiene DataFrames para los mejores modelos por R-cuadrado ajustado, AIC y BIC) y el diccionario `all_model_objects`.
-
 
 ```{python}
 #| label: regsubsets-generic-function
@@ -996,7 +990,6 @@ def regsubsets_exhaustive(X_train_df, y_train_series, nvmax=None, id_column=None
 
 ```
 
-
 ```{python}
 #| echo: true
 #| message: false
@@ -1042,8 +1035,8 @@ if not best_models_results['aic'].empty:
 else:
     print("No valid models were found for subset selection. Cannot display global best model.")
 ```
-`Selection Algorithm: exhaustive` **: Esto es crucial. Significa que el algoritmo probó todas las combinaciones posibles** de variables para cada tamaño de subconjunto hasta `nvmax = 10` y seleccionó el mejor para cada tamaño. Esto asegura que, para cada número de variables (1, 2, ..., 10), el modelo presentado es el óptimo según el criterio interno de `regsubsets_exhaustive` (generalmente `AIC`, $R^2$ ajustado, BIC a menos que se especifique otro en la función).  
 
+`Selection Algorithm: exhaustive` **: Esto es crucial. Significa que el algoritmo probó todas las combinaciones posibles** de variables para cada tamaño de subconjunto hasta `nvmax = 10` y seleccionó el mejor para cada tamaño. Esto asegura que, para cada número de variables (1, 2, ..., 10), el modelo presentado es el óptimo según el criterio interno de `regsubsets_exhaustive` (generalmente `AIC`, $R^2$ ajustado, BIC a menos que se especifique otro en la función).
 
 ```{python}
 #| echo: true
@@ -1097,7 +1090,8 @@ if not adjr2_data_df.empty:
 else:
     print("No hay datos para generar el gráfico de R2 Ajustado.")
 ```
-*## Evaluación del modelo
+
+\*## Evaluación del modelo
 
 Ahora se va a trabajar con un **modelo reducido (`modelo_step`)**, es importante **usar ese modelo** para hacer predicciones en el conjunto de prueba. Además, como solo algunas variables quedaron en el modelo (`drat`, `wt`, `gear`, `carb`), el `test_data` debe contener esas columnas.
 
@@ -1138,15 +1132,14 @@ Donde $R_j^2$ es el coeficiente de determinación ($R^2$) de una regresión auxi
 -   **5 \< VIF ≤ 10:** Puede indicar un nivel moderado a alto de multicolinealidad que podría justificar una investigación.
 -   **VIF \> 10:** A menudo se considera una indicación clara de multicolinealidad grave y problemática. Es un umbral comúnmente aceptado para señalar que una variable está fuertemente correlacionada con otras, lo que podría afectar la estabilidad y fiabilidad del modelo.
 
-**Regla práctica para interpretar VIF:**    
+**Regla práctica para interpretar VIF:**
 
-| VIF  | Interpretación                                   |
-  | ---- | ------------------------------------------------ |
-  | 1    | Sin colinealidad                                 |
-  | 1–5  | Colinealidad baja / aceptable                    |
-  | 5–10 | Colinealidad moderada a alta (requiere atención) |
-  | > 10 | ⚠️ **Colinealidad severa** (problema serio)      |
-  
+| VIF   | Interpretación                                   |
+|-------|--------------------------------------------------|
+| 1     | Sin colinealidad                                 |
+| 1–5   | Colinealidad baja / aceptable                    |
+| 5–10  | Colinealidad moderada a alta (requiere atención) |
+| \> 10 | ⚠️ **Colinealidad severa** (problema serio)      |
 
 ```{python}
 import pandas as pd
@@ -1180,15 +1173,13 @@ print("\nFactor de Inflación de la Varianza (VIF) ordenado:")
 print(vif_data.sort_values(by="VIF", ascending=False))
 ```
 
-* **Prácticamente todas las variables (excepto `drat`) tienen VIF > 10**, lo cual indica **multicolinealidad severa**.
-* Esto **explica por qué en el modelo original ninguno de los coeficientes era significativo**, a pesar del R² alto.
-* Multicolinealidad **infla los errores estándar** de los coeficientes y los hace **menos confiables**, incluso si el modelo global es significativo.
-
+-   **Prácticamente todas las variables (excepto `drat`) tienen VIF \> 10**, lo cual indica **multicolinealidad severa**.
+-   Esto **explica por qué en el modelo original ninguno de los coeficientes era significativo**, a pesar del R² alto.
+-   Multicolinealidad **infla los errores estándar** de los coeficientes y los hace **menos confiables**, incluso si el modelo global es significativo.
 
 ## Evaluación del modelo
 
 La partición de los datos en `X_train`, `X_test`, `y_train`, y `y_test` se hace una sola vez al principio de tu análisis para asegurar que la evaluación final del modelo (con `X_test` y `y_test`) sea imparcial.
-
 
 Una vez que tienes la fórmula del modelo óptimo se selecciona (`'mpg ~ wt + qsec + am'`), lo que haces es **re-entrenar el modelo con esta nueva fórmula utilizando únicamente los datos de entrenamiento (`X_train` y `y_train`)**.
 
@@ -1242,9 +1233,7 @@ Esta operación es un paso clave en el flujo de trabajo de modelado predictivo, 
 
 2.  **Uso práctico del modelo:** Después de validar que el modelo es bueno, se puede usarlo para predecir la variable dependiente para nuevas observaciones futuras de las que solo se conocen las variables predictoras (por ejemplo, predecir el precio de una casa basándose en sus características, si el modelo fue entrenado para eso).
 
-
 El objeto `final_modelo_ols_py` (que es un objeto de tipo `statsmodels.regression.linear_model.RegressionResultsWrapper`) tiene un método `.predict()` que hace exactamente esto.
-
 
 ```{python}
 # 5. Para el modelo en los datos de prueba
@@ -1291,7 +1280,6 @@ Donde:
 -   $\hat{y}_i$: Es el **valor predicho** por el modelo para la observación $i$.
 -   $|y_i - \hat{y}_i|$: Es el **valor absoluto** de la diferencia entre el valor real y el valor predicho para la observación $i$. Tomar el valor absoluto es crucial porque evita que los errores positivos y negativos se cancelen entre sí, lo que daría una falsa impresión de precisión.
 -   $\sum_{i=1}^{n}$: Indica la suma de todos los errores absolutos para todas las $n$ observaciones.
-
 
 ```{python}
 # Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)
@@ -1356,7 +1344,6 @@ Elevar al cuadrado las diferencias tiene dos propósitos principales:
     -   **Ventaja:** Si los errores grandes son particularmente indeseables en tu aplicación, el RMSE es una buena métrica porque los destaca.\
 -   **Desventaja:** Si tu conjunto de datos contiene muchos valores atípicos reales o errores de medición que no son representativos del rendimiento general del modelo, el RMSE podría dar una visión pesimista.
 
-
 ```{python}
 # Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
@@ -1401,7 +1388,6 @@ $$SST = \sum_{i=1}^{n} (y_i - \bar{y})^2$$
 -   $R^2 = 1$: Indica que el modelo explica el 100% de la variabilidad en la variable dependiente. Esto rara vez ocurre en la práctica con datos del mundo real, y a menudo sugiere sobreajuste si sucede en un conjunto de entrenamiento.\
 -   **Valores más altos de** $R^2$ indican un mejor ajuste del modelo a los datos observados, lo que significa que las variables predictoras del modelo explican una mayor proporción de la variabilidad en la variable dependiente.
 
-
 ```{python}
 # Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
@@ -1411,18 +1397,15 @@ r_squared_test = r2_score(y_test, predicciones_py)
 print(f"R-squared en conjunto de prueba: {r_squared_test:.4f}")
 ```
 
-
 -   Esto significa que el **65.3% de la variabilidad** de `mpg` (consumo de combustible) en los datos de prueba **es explicada por el modelo**.
     -   El **34.6% restante** es **variabilidad no explicada** (error, factores no incluidos, ruido).\
-    -   El modelo predice **más de la mitad de la variabilidad de `mpg`** en los datos de prueba.   
-    
-    
+    -   El modelo predice **más de la mitad de la variabilidad de `mpg`** en los datos de prueba.
+
 #### Distribución de los residuos
 
 Relación lineal entre variable dependiente e independiente:
 
 Se calculan los residuos para cada observación y se representan (`scatterplot`). Si las observaciones siguen la línea del modelo, los residuos se deben distribuir aleatoriamente entorno al valor 0.
-
 
 ```{python}
 #| echo: true
@@ -1500,7 +1483,6 @@ plt.tick_params(axis  ='y', labelsize = 12)
 plt.tight_layout() # Ajusta el diseño para que no se corten etiquetas
 plt.show()
 ```
-
 
 Los residuos se deben distribuir de forma normal con media 0. Para comprobarlo se recurre a histogramas, a los cuantiles normales o a un test de contraste de normalidad.
 
@@ -1716,7 +1698,6 @@ plt.tight_layout() # Adjust layout to prevent labels from being cut off
 plt.show()
 ```
 
-
 #### Shapiro-Wilk normality test
 
 El **Test de Normalidad de Shapiro-Wilk** es una prueba estadística que se utiliza para determinar si una muestra de datos procede de una población con distribución normal. Es una de las pruebas de normalidad más potentes y ampliamente recomendadas, especialmente para tamaños de muestra pequeños a moderados.
@@ -1725,7 +1706,6 @@ Es una prueba estadística que evalúa si los datos provienen de una distribuci�
 
 -   **Hipótesis nula (H₀)**: los datos siguen una distribución normal.
 -   **Hipótesis alternativa (H₁)**: los datos **no** siguen una distribución normal.
-
 
 ```{python}
 import pandas as pd
@@ -1758,9 +1738,7 @@ else:
 -   **p = 0.3030 \> 0.05** → **no se rechaza H₀**
     -   **Conclusión**: **los residuos del modelo pueden considerarse normalmente distribuidos**.
 
-
 ##### Evaluación de los residuos de un modelo lineal
-
 
 ```{python}
 #| echo: true
@@ -1871,7 +1849,9 @@ En modelos de **regresión lineal OLS (Ordinary Least Squares Regression)**, la 
 -   **Elección de** $k$: Los valores comunes para $k$ son 5 o 10. Un $k$ más alto (por ejemplo, 10) proporciona una estimación más precisa del rendimiento pero es computacionalmente más costoso. Un $k$ más bajo (por ejemplo, 5) es más rápido pero la estimación puede ser más variable.
 
 <p align="center">
+
 <img src="../../img/K-Fold (Cross Validation).png" alt="Machine Learning Steps" width="80%"/>
+
 </p>
 
 ````         
@@ -1882,11 +1862,11 @@ cv_splitter = KFold(n_splits = 10, shuffle = True, random_state = 123)
 
 -   **Más usada** y recomendada para regresión lineal.
 -   Divide los datos en *k* grupos (folds), entrena el modelo en *k-1* y valida en el restante, repitiendo *k* veces.
--   * En Python, esto se traduce al argumento `n_splits=10` en `KFold`.
-* **Configuración de `shuffle` y `random_state`:**
-  * `shuffle=True`: Es una buena práctica para mezclar los datos antes de dividirlos, asegurando que los folds sean aleatorios y representativos.
-* `random_state`: Asegura que si `shuffle=True`, las divisiones sean siempre las mismas cada vez que ejecutes el código, lo que es crucial para la reproducibilidad de tus resultados.
-
+-   
+    -   En Python, esto se traduce al argumento `n_splits=10` en `KFold`.
+-   **Configuración de `shuffle` y `random_state`:**
+    -   `shuffle=True`: Es una buena práctica para mezclar los datos antes de dividirlos, asegurando que los folds sean aleatorios y representativos.
+-   `random_state`: Asegura que si `shuffle=True`, las divisiones sean siempre las mismas cada vez que ejecutes el código, lo que es crucial para la reproducibilidad de tus resultados.
 
 ###### **Validación Cruzada de Dejar Uno Fuera (Leave-One-Out Cross-Validation - LOOCV):**
 
@@ -1896,33 +1876,301 @@ cv_splitter = KFold(n_splits = 10, shuffle = True, random_state = 123)
 -   **Desventaja:** Es computacionalmente muy costoso, especialmente para grandes conjuntos de datos, ya que se ajusta el modelo $n$ veces.
 
 <p align="center">
+
 <img src="../../img/LOOCV (Cross Validation).png" alt="Machine Learning Steps" width="80%"/>
+
 </p>
 
 ````         
-```r
-trainControl(method = "LOOCV")
+```python
+loocv_splitter = LeaveOneOut()
 ```
 ````
 
--   Cada observación se deja fuera una vez (es como `k = n`).
--   Proporciona una evaluación **menos sesgada**, pero puede ser **computacionalmente costosa**.
--   En modelos lineales como OLS, es factible y a veces preferido si tienes pocos datos.
+-   **`LeaveOneOut()`**: Esta clase es la representación directa de LOOCV en `scikit-learn`. No necesita argumentos ya que su naturaleza está definida por el tamaño del conjunto de datos.
+-   **Coste Computacional**: LOOCV es **muy intensivo computacionalmente** porque entrena el modelo `n` veces (donde `n` es el número de muestras). Por esta razón, no se recomienda para datasets grandes. Es más adecuado para datasets pequeños o cuando es crucial obtener una estimación de rendimiento casi insesgada para cada observación individual.
+-   **`cross_val_score`**: Al igual que con `KFold`, pasas tu splitter `loocv_splitter` al argumento `cv` de `cross_val_score` (o a `GridSearchCV`, etc.) para realizar la validación cruzada.
 
 ###### **Validación Cruzada de Repeated k-fold cross-validation**
 
 La **validación cruzada repetida k-fold** (`Repeated k-Fold Cross-Validation`) es una extensión del método k-fold cross-validation y se utiliza para obtener una **estimación más estable** y **confiable del desempeño de un modelo**, especialmente cuando el conjunto de datos es pequeño o tiene mucha variabilidad.
 
 <p align="center">
+
 <img src="../../img/Repeated k-fold cross-validation.png" alt="Machine Learning Steps" width="50%"/>
+
 </p>
 
 ````         
 ```r
-trainControl(method = "repeatedcv", number = 10, repeats = 5)
+repeated_cv_splitter = RepeatedKFold(n_splits = 10, n_repeats = 5, random_state = 123)
 ```
 ````
 
 -   Repite el proceso de k-fold varias veces con diferentes particiones aleatorias.
 -   Ofrece una **estimación más estable** del error de generalización.
 -   Útil si los datos tienen mucha variabilidad o ruido.
+
+```{python}
+#| echo: true
+#| eval: true
+#| message: false
+#| warning: false
+#| results: as-is
+#| code-fold: true
+#| 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from sklearn.model_selection import KFold, cross_val_score
+from sklearn.linear_model import LinearRegression
+
+# Preprocesamiento: Asegurarse de que los datos sean numéricos y manejar la columna de nombres.
+# --- INICIO: Sección de preprocesamiento robusta y corregida ---
+
+# Identificar columnas que no son de tipo numérico si se cargaron como objetos/strings
+# `rdatasets` a menudo carga la primera columna (nombres de filas en R) como una columna de objeto.
+# Esta es la causa más probable de tu problema.
+
+# Opción 1: Identificar y eliminar columnas no numéricas antes de la conversión
+# O más seguro: Asumir que la primera columna es el índice y hacerla el índice de Pandas
+if mtcars_df.iloc[:, 0].dtype == 'object': # Check if the first column is an object type (likely names)
+    # Check if it looks like row names (e.g., 'Mazda RX4', 'Datsun 710')
+    if mtcars_df.iloc[:, 0].nunique() == mtcars_df.shape[0]: # If all values are unique, it's likely an identifier
+        print("\nDetectada primera columna tipo 'object' con valores únicos. Estableciendo como índice.")
+        mtcars_df = mtcars_df.set_index(mtcars_df.columns[0])
+    else:
+        # If not unique, maybe it's just a non-numeric column we should drop or handle differently
+        print(f"\nDetectada columna '{mtcars_df.columns[0]}' tipo 'object'. Se intentará convertir o eliminar.")
+        # For mtcars, dropping is usually safe if it's the car name column and not an actual feature.
+        # If it's a feature, you'd need one-hot encoding or another suitable method.
+        # For now, let's assume it's the car name and drop it if not set as index.
+        # Alternatively, you could just select all columns from the 2nd one onwards: mtcars_df = mtcars_df.iloc[:, 1:]
+
+# Ahora, convierte todas las columnas restantes a numérico.
+# Esto es más seguro porque el problema de la columna de objetos ya debería estar resuelto.
+mtcars_df_numeric_clean = mtcars_df.apply(pd.to_numeric, errors='coerce')
+
+# Verificación de NaNs después de la conversión
+print("\n--- NaNs después de apply(pd.to_numeric, errors='coerce') (debería ser 0 si no había problemas) ---")
+print(mtcars_df_numeric_clean.isnull().sum())
+
+# Si todavía hay NaNs aquí (lo cual es inesperado para mtcars estándar),
+# entonces dropna() sí sería el paso apropiado.
+# Dado que mtcars NO TIENE NAs originales, si hay NAs en mtcars_df_numeric_clean,
+# significa que 'errors='coerce'' los ha introducido, lo cual a su vez significa
+# que algo que debería ser numérico no lo es. Esto sería un problema con tu dataset
+# o con cómo lo estás cargando.
+# Para mtcars, esta línea _no_ debería eliminar filas.
+mtcars_df_final = mtcars_df_numeric_clean.dropna()
+
+print("\n--- Shape del DataFrame después de toda la limpieza (debería ser 32, 11 para mtcars) ---")
+print(f"Shape: {mtcars_df_final.shape}")
+
+if mtcars_df_final.shape[0] == 0:
+    raise ValueError("¡Advertencia crítica: El DataFrame está AÚN vacío después de la limpieza! Revisa la carga de datos y las columnas.")
+
+
+# Definir la variable objetivo (y) y las características (X)
+# ¡Asegúrate de usar mtcars_df_final aquí!
+X = mtcars_df_final.drop(columns=['mpg'])
+y = mtcars_df_final['mpg']
+
+print(f"\nShape de X final para el modelo: {X.shape}")
+print(f"Shape de y final para el modelo: {y.shape}")
+
+# --- FIN: Sección de preprocesamiento robusta y corregida ---
+    
+
+# --- Bloque de Validación Cruzada (ahora utilizando los datos originales limpios X, y) ---
+# trainControl(method = "cv", number = 10) en R
+control_cv = KFold(n_splits = 10, shuffle = True, random_state  =123)
+
+modelo_lm = LinearRegression()
+
+print("\n--- Realizando Validación Cruzada con scikit-learn ---")
+# La validación cruzada se aplica al conjunto de datos COMPLETO (X, y)
+# para obtener una estimación imparcial del rendimiento general.
+scores = cross_val_score(modelo_lm, X, y, cv=control_cv, scoring='r2')
+
+print("\n--- Resultados de la Validación Cruzada (Regresión Lineal) ---")
+print(f"Número de folds: {control_cv.n_splits}")
+print(f"Puntuaciones de R^2 por fold: {scores}")
+print(f"R^2 promedio: {np.mean(scores):.4f}")
+print(f"Desviación estándar del R^2: {np.std(scores):.4f}")
+```
+
+**Modelo reducido**
+
+$$mpg \sim drat + wt + gear + carb$$
+
+```{python}
+#| echo: true
+#| eval: true
+#| message: false
+#| warning: false
+#| results: as-is
+#| code-fold: true
+#| 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from sklearn.model_selection import KFold, cross_val_score
+from sklearn.linear_model import LinearRegression
+
+# Preprocesamiento: Asegurarse de que los datos sean numéricos y manejar la columna de nombres.
+# --- INICIO: Sección de preprocesamiento robusta y corregida ---
+
+# Identificar columnas que no son de tipo numérico si se cargaron como objetos/strings
+# `rdatasets` a menudo carga la primera columna (nombres de filas en R) como una columna de objeto.
+# Esta es la causa más probable de tu problema.
+
+# Opción 1: Identificar y eliminar columnas no numéricas antes de la conversión
+# O más seguro: Asumir que la primera columna es el índice y hacerla el índice de Pandas
+if mtcars_df.iloc[:, 0].dtype == 'object': # Check if the first column is an object type (likely names)
+    # Check if it looks like row names (e.g., 'Mazda RX4', 'Datsun 710')
+    if mtcars_df.iloc[:, 0].nunique() == mtcars_df.shape[0]: # If all values are unique, it's likely an identifier
+        print("\nDetectada primera columna tipo 'object' con valores únicos. Estableciendo como índice.")
+        mtcars_df = mtcars_df.set_index(mtcars_df.columns[0])
+    else:
+        # If not unique, maybe it's just a non-numeric column we should drop or handle differently
+        print(f"\nDetectada columna '{mtcars_df.columns[0]}' tipo 'object'. Se intentará convertir o eliminar.")
+        # For mtcars, dropping is usually safe if it's the car name column and not an actual feature.
+        # If it's a feature, you'd need one-hot encoding or another suitable method.
+        # For now, let's assume it's the car name and drop it if not set as index.
+        # Alternatively, you could just select all columns from the 2nd one onwards: mtcars_df = mtcars_df.iloc[:, 1:]
+
+# Ahora, convierte todas las columnas restantes a numérico.
+# Esto es más seguro porque el problema de la columna de objetos ya debería estar resuelto.
+mtcars_df_numeric_clean = mtcars_df.apply(pd.to_numeric, errors='coerce')
+
+# Si todavía hay NaNs aquí (lo cual es inesperado para mtcars estándar),
+# entonces dropna() sí sería el paso apropiado.
+# Para mtcars, esta línea _no_ debería eliminar filas.
+mtcars_df_final = mtcars_df_numeric_clean.dropna()
+
+print("\n--- Shape del DataFrame después de toda la limpieza (debería ser 32, 11 para mtcars) ---")
+print(f"Shape: {mtcars_df_final.shape}")
+
+if mtcars_df_final.shape[0] == 0:
+    raise ValueError("¡Advertencia crítica: El DataFrame está AÚN vacío después de la limpieza! Revisa la carga de datos y las columnas.")
+
+
+# Definir la variable objetivo (y) y las características (X)
+target_variable = 'mpg'
+predictor_variables = ['drat', 'wt', 'gear', 'carb'] 
+
+X = mtcars_df_final[predictor_variables]
+y = mtcars_df_final[target_variable]
+
+print(f"\nShape de X final para el modelo: {X.shape}")
+print(f"Shape de y final para el modelo: {y.shape}")
+
+# --- FIN: Sección de preprocesamiento robusta y corregida ---
+    
+
+# --- Bloque de Validación Cruzada (ahora utilizando los datos originales limpios X, y) ---
+# trainControl(method = "cv", number = 10) en R
+control_cv = KFold(n_splits = 10, shuffle = True, random_state = 123)
+
+modelo_lm = LinearRegression()
+
+print("\n--- Realizando Validación Cruzada con scikit-learn ---")
+# La validación cruzada se aplica al conjunto de datos COMPLETO (X, y)
+# para obtener una estimación imparcial del rendimiento general.
+scores = cross_val_score(modelo_lm, X, y, cv = control_cv, scoring = 'r2')
+
+print("\n--- Resultados de la Validación Cruzada (Regresión Lineal) ---")
+print(f"Número de folds: {control_cv.n_splits}")
+print(f"Puntuaciones de R^2 por fold: {scores}")
+print(f"R^2 promedio: {np.mean(scores):.4f}")
+print(f"Desviación estándar del R^2: {np.std(scores):.4f}")
+```
+
+| Métrica | Valor | Interpretación |
+|-------------|-------------|----------------------------------------------|
+| **R² promedio** | `0.1172` | Muy bajo → el modelo no generaliza bien. |
+| **Desviación estándar** | `1.0691` | ⚠️ Muy alta → indica que el desempeño del modelo varía **enormemente** entre folds. |
+
+-   Hay **algunos folds excelentes**: 0.913, 0.936, 0.991
+-   Pero también hay **otros muy malos**: -0.437 y especialmente **-2.847**
+    -   Esto indica que el modelo **es muy inestable dependiendo del fold**, probablemente debido a:
+
+    -   Tamaño pequeño del conjunto de datos.
+-   Variabilidad alta en los datos.
+-   Posible **overfitting** o mala generalización.
+
+#### Nuevos datos
+
+Se **utiliza el modelo ya entrenado** para predecir el consumo de gasolina (variable `mpg`) de un **nuevo automóvil simulado**, con características específicas. Utilizando el parametro del modelo final `final_modelo_ols_py.params`, se pueden observar los coeficientes de la regresión.
+
+$$\hat{Y} = -3.027 - 3.106(wt) + 1.771 (qsec) + 3.963 (am)$$
+
+
+```{python}
+# --- Predicción de nuevos datos ---
+nuevo_auto_df = pd.DataFrame({
+    'wt': [2.8],
+    'qsec': [18.61],
+    'am': [1]
+})
+
+# predict(modelo_step, newdata = nuevo_auto) en R
+# Equivalente en Python: Usar el método .predict() del modelo entrenado de statsmodels.
+prediccion_mpg = final_modelo_ols_py.predict(nuevo_auto_df)
+
+print("\n--- Predicción para el nuevo auto ---")
+print(f"Datos del nuevo auto:\n{nuevo_auto_df}")
+print(f"Predicción de MPG: {prediccion_mpg.iloc[0]:.2f}") # .iloc[0] para obtener el valor escalar
+```
+
+Esto significa que, según el modelo, un auto con esas características tendrá un rendimiento de aproximadamente 25.21 mpg.
+
+## 📌 Notas
+
+-   Este modelo es considerado **supervisado** porque se entrena con pares de entrada y salida.
+-   Aunque la regresión lineal es simple, **sigue siendo un algoritmo de machine learning supervisado** y útil como línea base (baseline).
+-   Puedes reemplazar `lm()` por modelos más complejos como `randomForest`, `xgboost`, etc., manteniendo la misma estructura.
+
+### Ventajas y Limitaciones
+
+**Ventajas:**
+
+-   **Simplicidad:** Es fácil de entender e implementar.
+
+-   **Interpretabilidad:** Los coeficientes estimados tienen una interpretación clara.
+
+-   **Eficiencia:** Bajo ciertas condiciones, los estimadores de OLS son los más eficientes.
+
+**Limitaciones:**
+
+-   **Sensibilidad a valores atípicos:** Los valores extremos pueden influir mucho en la línea de regresión.
+-   **Sensibilidad a violaciones de supuestos:** Si los supuestos no se cumplen, las estimaciones pueden ser sesgadas o ineficientes, y la inferencia estadística puede ser inválida.
+-   **Solo relaciones lineales:** No puede capturar relaciones no lineales a menos que se transformen las variables adecuadamente.
+
+## Referencias
+
+-   **Regresión Lineal OLS:** <https://www.statsmodels.org/dev/examples/notebooks/generated/ols.html>
+
+    -  Este es el punto de partida esencial. Muestra cómo usar `statsmodels.formula.api.ols` (para sintaxis tipo R, como `y ~ x1 + x2`) y `statsmodels.api.OLS` (para un enfoque más matricial).
+
+-   **Tutorial de Regresión Lineal:** [https://www.statsmodels.org/dev/gettingstarted.html#regression](https://www.google.com/search?q=https://www.statsmodels.org/dev/gettingstarted.html%23regression)  
+
+    -  Una buena introducción general a la regresión en `statsmodels`.   
+
+-  **Regresión Lineal (`LinearRegression`):** [https://scikit-learn.org/stable/modules/linear\_model.html\#ordinary-least-squares](https://www.google.com/search?q=https://scikit-learn.org/stable/modules/linear_model.html%23ordinary-least-squares) 
+
+    -  Aquí encontrarás la clase `sklearn.linear_model.LinearRegression`.
+
+-   **Módulos de validación cruzada:** [https://scikit-learn.org/stable/modules/cross\_validation.html](https://scikit-learn.org/stable/modules/cross_validation.html)
+
+    -  Es donde se encuentran `KFold`, `cross_val_score`, `RepeatedKFold`, etc., para la evaluación robusta del modelo.
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img src="https://i.creativecommons.org/l/by/4.0/88x31.png" alt="Creative Commons Licence" style="border-width:0"/></a><br />This work by [**Diana Villasana Ocampo**]{xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName"} is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
