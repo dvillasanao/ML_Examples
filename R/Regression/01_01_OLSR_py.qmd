@@ -1272,3 +1272,588 @@ print("\nValores reales de mpg en el conjunto de prueba:")
 print(y_test)
 ```
 
+### Evaluar el desempeño predictivo
+
+#### Mean Absolute Error (`MAE`)
+
+El **MAE (Mean Absolute Error)**, o **Error Absoluto Medio** en español, es una de las métricas más utilizadas para evaluar la precisión de un modelo de regresión. Mide la **magnitud promedio de los errores** entre los valores predichos por un modelo y los valores reales observados.
+
+##### Fórmula del MAE
+
+La fórmula para calcular el MAE es la siguiente:
+
+$$MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|$$
+
+Donde:
+
+-   $n$: Es el número total de observaciones (o puntos de datos) en el conjunto de datos.
+-   $y_i$: Es el **valor real u observado** de la variable dependiente para la observación $i$.
+-   $\hat{y}_i$: Es el **valor predicho** por el modelo para la observación $i$.
+-   $|y_i - \hat{y}_i|$: Es el **valor absoluto** de la diferencia entre el valor real y el valor predicho para la observación $i$. Tomar el valor absoluto es crucial porque evita que los errores positivos y negativos se cancelen entre sí, lo que daría una falsa impresión de precisión.
+-   $\sum_{i=1}^{n}$: Indica la suma de todos los errores absolutos para todas las $n$ observaciones.
+
+
+```{python}
+# Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+
+# Cálculo del MAE (Mean Absolute Error)
+mae = mean_absolute_error(y_test, predicciones_py)
+
+print(f"MAE en conjunto de prueba: {mae:.4f}")
+```
+
+Esto significa que, **en promedio**, el modelo reducido predice el consumo de combustible con un error de ±3.10 mpg. Esto es bueno o malo. Depende del rango de la variable `mpg` en `mtcars`.
+
+```{python}
+import pandas as pd
+
+# Calcular el rango (mínimo y máximo) de la columna 'mpg'
+min_mpg = mtcars_df['mpg'].min()
+max_mpg = mtcars_df['mpg'].max()
+
+# Imprimir el resultado
+print(f"Rango de mpg (mínimo, máximo): ({min_mpg}, {max_mpg})")
+```
+
+El rango de `mpg` es de **10.4 a 33.9**, es decir, abarca **\~23.5 unidades**.
+
+Por tanto:
+
+```         
+  * Un MAE de **3.10** representa alrededor de un **15% del rango total**. El modelo, en promedio, se equivoca por 3.10 millas por galón en sus predicciones.  
+* No es un error enorme, pero **tampoco es excelente**.  
+* Si el modelo completo (`modelo_ols`) tenía un MAE menor, podría predecir mejor, aunque con más colinealidad.
+```
+
+#### Root Mean Squared Error (`RMSE`)
+
+El **RMSE (Root Mean Squared Error)**, o **Raíz del Error Cuadrático Medio**, es una de las métricas más comunes y ampliamente utilizadas para evaluar la precisión de los modelos de regresión. Mide la **magnitud promedio de los errores** entre los valores predichos por un modelo y los valores reales observados, pero dando **mayor peso a los errores más grandes**.
+
+#### Fórmula del RMSE
+
+$$RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}$$
+
+Donde:
+
+-   $n$: Es el número total de observaciones (o puntos de datos).\
+-   $y_i$: Es el **valor real u observado** de la variable dependiente para la observación $i$.\
+-   $\hat{y}_i$: Es el **valor predicho** por el modelo para la observación $i$.\
+-   $(y_i - \hat{y}_i)^2$: Es el **cuadrado de la diferencia** entre el valor real y el valor predicho para la observación $i$.
+
+Elevar al cuadrado las diferencias tiene dos propósitos principales:
+
+-   Eliminar los signos negativos: Asegura que los errores positivos y negativos no se cancelen entre sí.\
+-   Penalizar más los errores grandes: Los errores más grandes tienen un impacto desproporcionadamente mayor en el resultado final del RMSE que los errores pequeños, debido a la operación al cuadrado.\
+-   $\sum_{i=1}^{n}$: Indica la suma de todos los errores al cuadrado para todas las $n$ observaciones.
+
+##### Interpretación del RMSE:
+
+-   El RMSE se expresa en las **mismas unidades que la variable dependiente original**. Esto facilita su interpretación. Por ejemplo, si estás prediciendo la altura en metros y el RMSE es 0.5, significa que, en promedio, las predicciones del modelo se desvían aproximadamente 0.5 metros de la altura real.\
+-   **Un RMSE de 0 (cero) indica un modelo perfecto**, donde todas las predicciones son exactamente iguales a los valores reales.
+-   **Valores más bajos de RMSE indican un mejor rendimiento del modelo.**
+    -   **Sensibilidad a valores atípicos:** Debido al término al cuadrado, el RMSE penaliza más fuertemente los errores grandes (valores atípicos) que el MAE. Esto significa que si tu modelo tiene algunos errores de predicción muy grandes, el RMSE será significativamente más alto que el MAE. Esta característica puede ser una ventaja o desventaja dependiendo del contexto:\
+    -   **Ventaja:** Si los errores grandes son particularmente indeseables en tu aplicación, el RMSE es una buena métrica porque los destaca.\
+-   **Desventaja:** Si tu conjunto de datos contiene muchos valores atípicos reales o errores de medición que no son representativos del rendimiento general del modelo, el RMSE podría dar una visión pesimista.
+
+
+```{python}
+# Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+
+# Cálculo del RMSE (Root Mean Squared Error)
+rmse = np.sqrt(mean_squared_error(y_test, predicciones_py))
+
+print(f"\nRMSE en conjunto de prueba: {rmse:.4f}")
+```
+
+-   Un RMSE de **3.4120** significa que, en promedio, las predicciones difieren de los valores reales por **±3.41 millas por galón**.
+    -   Como **los errores grandes tienen más peso** (al ser elevados al cuadrado), el RMSE será siempre **igual o mayor al MAE**. Penaliza más los errores grandes que el MAE.
+    -   Es **aceptable para predicción en `mtcars`**, pero con espacio para mejora si se requiere mayor precisión.
+
+**Compararlo con el MAE**
+
+-   Si **RMSE está mucho más alto que el MAE**, el modelo está cometiendo **errores grandes con frecuencia** (outliers, mala especificación).\
+-   Si **RMSE ≈ MAE**, los errores están bien distribuidos.
+
+#### Coeficiente de determinación $R^2$
+
+$R^{2}$ (**coeficiente de determinación**) mide qué proporción de la variabilidad de la **variable dependiente** es explicada por el modelo.
+
+La fórmula general del $R^2$ (coeficiente de determinación) es:
+
+$$R^2 = 1 - \frac{SSE}{SST}$$
+
+Donde:
+
+-   $SSE$ (Sum of Squared Errors) o $RSS$ (Residual Sum of Squares): Es la **Suma de Cuadrados de los Errores** (o Suma de Cuadrados de los Residuos). Mide la variación no explicada por el modelo. Se calcula como la suma de los cuadrados de las diferencias entre los valores observados ($y_i$) y los valores predichos por el modelo ($\hat{y}_i$):
+
+$$SSE = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$$
+
+-   $SST$ (Total Sum of Squares): Es la **Suma Total de Cuadrados**. Mide la variación total de la variable dependiente respecto a su media. Representa la variabilidad total en los datos que el modelo intenta explicar. Se calcula como la suma de los cuadrados de las diferencias entre los valores observados ($y_i$) y la media de la variable dependiente ($\bar{y}$):
+
+$$SST = \sum_{i=1}^{n} (y_i - \bar{y})^2$$
+
+##### Interpretación del $R^2$:
+
+-   El $R^2$ es una métrica que varía entre **0 y 1** (o 0% y 100%).\
+-   $R^2 = 0$: Indica que el modelo no explica ninguna de la variabilidad en la variable dependiente. Es tan bueno como simplemente usar la media de la variable dependiente para la predicción.\
+-   $R^2 = 1$: Indica que el modelo explica el 100% de la variabilidad en la variable dependiente. Esto rara vez ocurre en la práctica con datos del mundo real, y a menudo sugiere sobreajuste si sucede en un conjunto de entrenamiento.\
+-   **Valores más altos de** $R^2$ indican un mejor ajuste del modelo a los datos observados, lo que significa que las variables predictoras del modelo explican una mayor proporción de la variabilidad en la variable dependiente.
+
+
+```{python}
+# Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+
+r_squared_test = r2_score(y_test, predicciones_py)
+
+print(f"R-squared en conjunto de prueba: {r_squared_test:.4f}")
+```
+
+
+-   Esto significa que el **65.3% de la variabilidad** de `mpg` (consumo de combustible) en los datos de prueba **es explicada por el modelo**.
+    -   El **34.6% restante** es **variabilidad no explicada** (error, factores no incluidos, ruido).\
+    -   El modelo predice **más de la mitad de la variabilidad de `mpg`** en los datos de prueba.   
+    
+    
+#### Distribución de los residuos
+
+Relación lineal entre variable dependiente e independiente:
+
+Se calculan los residuos para cada observación y se representan (`scatterplot`). Si las observaciones siguen la línea del modelo, los residuos se deben distribuir aleatoriamente entorno al valor 0.
+
+
+```{python}
+#| echo: true
+#| message: false
+#| warning: false
+#| results: as-is
+#| code-fold: true
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.formula.api as smf
+
+# 1. Se crea un dataframe 'tabla' con fitted.values y residuals
+# En statsmodels, los valores ajustados se obtienen con .fittedvalues y los residuos con .resid
+tabla_py = pd.DataFrame({
+                         'prediccion': final_modelo_ols_py.fittedvalues,
+                         'residuo': final_modelo_ols_py.resid
+})
+
+# 2. Configuración de los estilos para el gráfico (similar a theme_bw y los ajustes de texto de ggplot2)
+# Configura el estilo de seaborn
+sns.set_style("whitegrid") # Similar a theme_bw() o theme_minimal()
+
+# Se configura la fuente globalmente en Montserrat
+plt.rcParams['font.family'] = 'Montserrat' # Descomenta si tienes la fuente instalada
+
+# Se crea la figura y los ejes
+plt.figure(figsize = (10, 6)) # Tamaño de la figura
+
+# 3. Se crea el gráfico de dispersión con Seaborn
+# Se usa scatterplot para los puntos y controlamos el color con 'hue'
+# Se usa palette para la escala de colores, similar a scale_color_gradient2
+scatterplot = sns.scatterplot(
+                              data = tabla_py,
+                              x = 'prediccion',
+                              y = 'residuo',
+                              hue = 'residuo', # Colorear por el valor del residuo
+                              palette = 'RdBu_r', # 'RdBu_r' es una paleta divergente (rojo-azul, invertida para azul-rojo)
+                                                # 'coolwarm' también es una buena opción divergente.
+                              legend = False,     # No mostrar leyenda de color, similar a legend.position = "none"
+                              s = 70,             # Tamaño de los puntos
+                              alpha = 0.8         # Transparencia
+)
+
+# 4.Se añade la línea horizontal en y=0
+plt.axhline(y = 0, color = 'black', linestyle = '-', linewidth = 1)
+
+# 5. Se añaden los segmentos desde los puntos hasta y = 0
+# Se puede hacer iterando o usando una función de matplotlib si fuera posible vectorizarlo
+# Para simplicidad y control, iteramos aquí. Ojo: para muchos puntos, esto puede ser lento.
+# Para muchos puntos, podrías considerar alternativas o quitarlo si no es crítico para la interpretación.
+
+for i in range(len(tabla_py)):
+    x_val = tabla_py['prediccion'].iloc[i]
+    y_val = tabla_py['residuo'].iloc[i]
+    plt.plot([x_val, x_val], [y_val, 0], color='gray', linestyle='-', linewidth = 0.5, alpha = 0.2)
+
+
+# 6. Se configuran las etiquetas y título
+plt.title("Distribución de los residuos", fontsize = 18, loc = 'left', fontweight = 'bold')
+plt.xlabel("predicción modelo", fontsize = 14)
+plt.ylabel("residuo", fontsize = 14)
+
+# Ajustes de los ticks y etiquetas de los ejes
+plt.tick_params(axis = 'x', labelsize = 12)
+plt.tick_params(axis  ='y', labelsize = 12)
+
+
+# Ajustar los límites del eje y si es necesario para evitar que los puntos se corten
+# plt.ylim(min(tabla_py['residuo']) * 1.1, max(tabla_py['residuo']) * 1.1)
+
+# Mostrar el gráfico
+plt.tight_layout() # Ajusta el diseño para que no se corten etiquetas
+plt.show()
+```
+
+
+Los residuos se deben distribuir de forma normal con media 0. Para comprobarlo se recurre a histogramas, a los cuantiles normales o a un test de contraste de normalidad.
+
+```{python}
+#| echo: true
+#| message: false
+#| warning: false
+#| results: as-is
+#| code-fold: true
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.formula.api as smf
+
+
+# Se crea un DataFrame'tabla_py' con los residuos
+# En statsmodels, los residuos se obtienen con .resid
+tabla_py = pd.DataFrame({
+                         'residuo': final_modelo_ols_py.resid
+})
+
+# 1. Se confifuran los estilos para el gráfico
+sns.set_style("whitegrid") # Similar a theme_light() en R, que da un fondo blanco con rejillas
+
+# Opcional: Se confifura  la fuente globalmente si se tiene disponible (ej. 'Montserrat')
+plt.rcParams['font.family'] = 'Montserrat'
+plt.rcParams['axes.labelweight'] = 'bold' # Para hacer las etiquetas de los ejes en negrita si deseas
+plt.rcParams['font.size'] = 12 # Tamaño de fuente base
+
+# Se crea la figura y los ejes
+plt.figure(figsize = (10, 6)) # Tamaño de la figura
+
+# 2. Se crea el histograma con Seaborn
+# 'kde=False' asegura que sea solo un histograma (sin la curva de densidad suavizada)
+# 'stat="density"' es el equivalente de 'aes(y = ..density..)' de ggplot2
+sns.histplot(
+             data = tabla_py,
+             x = 'residuo',
+             bins = 'auto', # 'auto' para que Seaborn determine un número de bins apropiado
+             color = '#C70039', # Color de las barras del histograma
+             edgecolor = '#900C3F', # Borde de las barras
+             stat = "density" # Importante: normaliza la altura de las barras para que sumen 1 (densidad)
+)
+
+# 3. Configurar etiquetas y título
+plt.title("Histograma de los residuos", fontsize = 18, loc = 'left', fontweight = 'bold')
+plt.xlabel("Residuo", fontsize = 14)
+plt.ylabel("Densidad", fontsize = 14) # Cambiamos a Densidad porque usamos stat="density"
+
+# Ajustes de los ticks y etiquetas de los ejes
+plt.tick_params(axis='x', labelsize = 12)
+plt.tick_params(axis='y', labelsize = 12)
+
+# Se quita la leyenda (aunque histplot no suele generarla si solo hay una variable)
+# plt.legend().remove() # Descomenta si por alguna razón aparece una leyenda
+
+# 4. Resultado
+plt.tight_layout() # Ajusta el diseño para que no se corten etiquetas
+plt.show()
+```
+
+#### Q-Q Plot
+
+Los gráficos Q-Q normales son esenciales para verificar uno de los supuestos clave en la regresión lineal: la **normalidad de los residuos**. Si los residuos siguen una distribución normal, los puntos en el gráfico Q-Q deben caer aproximadamente a lo largo de una línea recta.
+
+```{python}
+#| echo: true
+#| message: false
+#| warning: false
+#| results: as-is
+#| code-fold: true
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm # Importa statsmodels.api para qqplot
+
+# Residuos del modelo
+residuos_py = final_modelo_ols_py.resid
+
+# 1. Se crea el Gráfico Q-Q Normal
+# sm.qqplot automáticamente calcula los cuantiles teóricos y observados
+# y dibuja la línea de referencia.
+# 'line="45"' dibuja la línea y=x (pendiente 1, intercepto 0)
+fig = sm.qqplot(residuos_py, 
+                line = '45', 
+                fit = True, 
+                plot_type = 'qq', 
+                ax = None) # 'ax=None' crea una nueva figura por defecto
+
+# Si se necesita una personalización más profunda o el objeto Axis, se puede hacer esto:
+fig, ax = plt.subplots(figsize = (8, 6)) # Se crea una figura y ejes explícitamente
+sm.qqplot(residuos_py, line='45', fit = True, ax = ax)
+
+# 2. Se configuran los estilos y se personaliza el gráfico
+# Puedes establecer un estilo global de Seaborn para que el fondo sea similar a theme_minimal
+sns.set_style("whitegrid") # O "white", "dark", "darkgrid" para diferentes estilos de fondo/rejilla
+
+# Se configura el color de los puntos (sm.qqplot no tiene un argumento directo para el color de los puntos)
+# Se necesita acceder a los objetos Line2D (los puntos) en el gráfico.
+# sm.qqplot devuelve un objeto Figure, que contiene los Axes.
+# Los puntos suelen ser el primer objeto Line2D en los Axes.
+# Iteramos sobre los ejes para encontrar los puntos y la línea
+for ax in fig.get_axes():
+    # Los puntos son el primer elemento en ax.collections (si son scatter) o ax.lines
+    # Para qqplot, los puntos son Lines2D.
+    if ax.lines: # Verifica si hay líneas
+        # Los puntos del Q-Q plot suelen ser la primera línea/colección
+        ax.lines[0].set_color('darkblue') # Color de los puntos
+        ax.lines[0].set_marker('o')      # Tipo de marcador (círculo)
+        ax.lines[0].set_markersize(5)    # Tamaño de los puntos
+        ax.lines[0].set_alpha(0.7)       # Transparencia
+
+        # La línea de referencia (si line='45' fue usado) suele ser la segunda línea
+        if len(ax.lines) > 1:
+            ax.lines[1].set_color('red') # Color de la línea de referencia
+            ax.lines[1].set_linestyle('--') # Estilo de línea discontinua
+
+
+# 3. Configurar etiquetas y título
+plt.title("Gráfico Q-Q Normal de los Residuos del Modelo", fontsize=18, loc='center', fontweight='bold')
+plt.xlabel("Cuantiles Teóricos Normales", fontsize=14)
+plt.ylabel("Residuos del Modelo", fontsize=14)
+
+# Ajustar los ticks y etiquetas de los ejes
+plt.tick_params(axis='x', labelsize=12)
+plt.tick_params(axis='y', labelsize=12)
+
+# Quitar la leyenda si aparece por defecto
+# if ax.get_legend():
+#     ax.get_legend().remove()
+
+# Ajustar el diseño para que no se corten etiquetas
+plt.tight_layout()
+
+# Mostrar el gráfico
+plt.show()
+```
+
+##### Interpretación del gráfico Q-Q Normal:
+
+-   **Si los puntos caen aproximadamente sobre la línea roja diagonal**, indica que los residuos siguen una distribución normal. Esto es lo que idealmente buscas.\
+-   **Si los puntos se desvían de la línea**, puede indicar una violación del supuesto de normalidad:
+    -   **Forma de "S"**: Los residuos pueden tener colas más pesadas o más ligeras de lo esperado (ej. distribución con curtosis).
+-   **Curvatura en un extremo o ambos**: Los residuos pueden estar sesgados (skewed) hacia la izquierda o la derecha.
+
+#### Residuos Studentizados (Studentized Residuals)
+
+-   También conocidos como residuos studentizados externamente (o residuos t). Son una versión más refinada de los residuos estandarizados.
+
+-   Cada residuo se divide por una estimación de su error estándar que excluye la observación actual, lo que los hace más apropiados para la detección de outliers, ya que el outlier no influye en la estimación de su propia varianza.
+
+```{python}
+#| echo: true
+#| eval: false
+#| message: false
+#| warning: false
+#| results: as-is
+#| code-fold: true
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm # Import statsmodels.api for qqplot
+
+# Get the studentized residuals from the fitted model
+# This is the direct equivalent of rstudent(modelo_step) in R
+residuos_studentized_py = final_modelo_ols_py.get_influence().resid_studentized_external
+
+# 1. Create the Normal Q-Q Plot
+# sm.qqplot automatically calculates theoretical and observed quantiles
+# and draws the reference line.
+# 'line="45"' draws the y=x line (slope 1, intercept 0)
+fig = sm.qqplot(residuos_studentized_py, line = '45', fit = True, plot_type = 'qq', ax = None)
+
+# 2. Configure styles and customize the plot
+fig, ax = plt.subplots(figsize = (12, 6)) # Se crea una figura y ejes explícitamente
+sm.qqplot(residuos_studentized_py, line='45', fit = True)
+sns.set_style("whitegrid") # Sets a nice background with a grid
+
+
+# Customize point and line appearance
+for ax in fig.get_axes():
+    if ax.lines:
+        # Points
+        ax.lines[0].set_color('darkblue')
+        ax.lines[0].set_marker('o')
+        ax.lines[0].set_markersize(5)
+        ax.lines[0].set_alpha(0.7)
+
+        # Reference line
+        if len(ax.lines) > 1:
+            ax.lines[1].set_color('red')
+            ax.lines[1].set_linestyle('--')
+
+# 3. Configure labels and title
+plt.title("Gráfico Q-Q Normal de los Residuos studentized", fontsize = 18, loc = 'center', fontweight = 'bold')
+plt.xlabel("Cuantiles Teóricos Normales", fontsize = 14)
+plt.ylabel("Residuos studentized", fontsize = 14)
+
+# Adjust tick and label sizes
+plt.tick_params(axis='x', labelsize = 12)
+plt.tick_params(axis='y', labelsize = 12)
+
+# 4. Display the plot
+plt.tight_layout() # Adjust layout to prevent labels from being cut off
+plt.show()
+```
+
+
+#### Shapiro-Wilk normality test
+
+El **Test de Normalidad de Shapiro-Wilk** es una prueba estadística que se utiliza para determinar si una muestra de datos procede de una población con distribución normal. Es una de las pruebas de normalidad más potentes y ampliamente recomendadas, especialmente para tamaños de muestra pequeños a moderados.
+
+Es una prueba estadística que evalúa si los datos provienen de una distribución normal.
+
+-   **Hipótesis nula (H₀)**: los datos siguen una distribución normal.
+-   **Hipótesis alternativa (H₁)**: los datos **no** siguen una distribución normal.
+
+
+```{python}
+import pandas as pd
+import numpy as np
+import statsmodels.formula.api as smf
+from scipy.stats import shapiro # Importa la función shapiro
+
+# Obtener los residuos del modelo entrenado
+# Este es el equivalente de modelo_step$residuals en R
+residuos = final_modelo_ols_py.resid
+
+# Realizar el Test de Shapiro-Wilk para normalidad
+# La función shapiro() devuelve dos valores: el estadístico W y el valor p
+statistic, p_value = shapiro(residuos)
+
+print("--- Resultado del Test de Shapiro-Wilk ---")
+print(f"Estadístico W: {statistic:.4f}")
+print(f"Valor p: {p_value:.4f}")
+
+# Interpretar el resultado (convencionalmente con alpha = 0.05)
+alpha = 0.05
+if p_value > alpha:
+    print(f"Dado que el valor p ({p_value:.4f}) es mayor que {alpha}, no se puede rechazar la hipótesis nula.")
+    print("Por lo tanto, los residuos parecen seguir una distribución normal.")
+else:
+    print(f"Dado que el valor p ({p_value:.4f}) es menor o igual que {alpha}, se rechaza la hipótesis nula.")
+    print("Por lo tanto, los residuos no parecen seguir una distribución normal.")
+```
+
+-   **p = 0.3030 \> 0.05** → **no se rechaza H₀**
+    -   **Conclusión**: **los residuos del modelo pueden considerarse normalmente distribuidos**.
+
+
+##### Evaluación de los residuos de un modelo lineal
+
+
+```{python}
+#| echo: true
+#| message: false
+#| warning: false
+#| results: as-is
+#| code-fold: true
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from statsmodels.graphics.regressionplots import plot_leverage_resid2, plot_homoscedasticity
+
+# Configurar el estilo de seaborn para una apariencia similar
+sns.set_style("white") # Un fondo blanco, similar al default de R para estos plots
+
+# 1. Crear una figura con dos subplots (1 fila, 2 columnas)
+# Esto es el equivalente a par(mfrow = c(1,2)) en R
+fig, axes = plt.subplots(1, 2, figsize = (14, 6)) # figsize ajusta el tamaño total de la figura
+
+# --- Gráfico 1: Scale-Location (o Spread-Location) ---
+# Este gráfico evalúa la homoscedasticidad (varianza constante de los residuos).
+# En statsmodels, puedes obtener los residuos estandarizados (studentized residuals)
+# y los valores ajustados para graficarlos.
+# La raíz cuadrada de los residuos estandarizados absolutos vs. los valores ajustados.
+
+# Obtener los residuos estandarizados y los valores ajustados del modelo
+# Los residuos estandarizados son muy similares a los studentized residuals que usaste antes,
+# pero a menudo los residuos estandarizados (con varianza 1) son los que se usan aquí.
+standardized_residuals = final_modelo_ols_py.get_influence().resid_std # studentized residuals from get_influence() are also often called standardized
+fitted_values = final_modelo_ols_py.fittedvalues
+
+# Calcular la raíz cuadrada del valor absoluto de los residuos estandarizados
+sqrt_abs_standardized_residuals = np.sqrt(np.abs(standardized_residuals))
+
+# Graficar en el primer subplot (axes[0])
+axes[0].scatter(fitted_values, sqrt_abs_standardized_residuals, edgecolors='black', facecolors='none')
+
+# Añadir la línea de LOESS (Locally Estimated Scatterplot Smoothing)
+# Esto se hace manualmente con seaborn o statsmodels si quieres ser preciso,
+# o simplemente se dibuja una línea suavizada si es solo para visualización.
+# Aquí usaremos sns.regplot para la línea LOESS, pero lo hacemos sobre los mismos datos
+# y luego eliminamos los puntos para que solo quede la línea.
+sns.regplot(
+    x=fitted_values,
+    y=sqrt_abs_standardized_residuals,
+    lowess=True, # Esto es clave para la línea suavizada (LOESS)
+    scatter=False, # No dibuja los puntos (ya los dibujamos con scatter)
+    color='red',
+    ax=axes[0]
+)
+
+# Etiquetas para puntos influyentes (como Chrysler Imperial, Fiat 128, Datsun 710)
+# Esto requiere un poco más de trabajo ya que statsmodels no lo hace automáticamente en todos los plots.
+# Necesitas identificar los nombres de las filas de los outliers.
+# Ejemplo muy básico: Si conoces los índices o tienes un método para identificarlos
+# (e.g., por un umbral de residuo alto)
+# Aquí lo haremos con un ejemplo, si tus datos tienen nombres de índice:
+if hasattr(train_data_selected_model, 'index'):
+    # Identifica algunos puntos con residuos estandarizados altos para etiquetarlos
+    # Esto es una simplificación; en un análisis real usarías métricas de influencia.
+    top_indices = np.abs(standardized_residuals).nlargest(3).index
+    for i, txt in enumerate(top_indices):
+        axes[0].annotate(txt, (fitted_values[txt], sqrt_abs_standardized_residuals[txt]),
+                         xytext=(5, 5), textcoords='offset points')
+
+
+axes[0].set_title('Scale-Location')
+axes[0].set_xlabel('Fitted values')
+axes[0].set_ylabel(r'$\sqrt{|Standardized\ residuals|}$') # LaTeX para la raíz cuadrada
+
+# --- Gráfico 2: Residuals vs Leverage (con Distancia de Cook) ---
+# plot_leverage_resid2 es una función de statsmodels que hace exactamente este gráfico.
+# fit_result.get_influence() es lo que proporciona los valores de leverage y los residuos.
+sm.graphics.plot_leverage_resid2(final_modelo_ols_py, ax=axes[1], # Dibuja en el segundo subplot
+                                 # Configuración para la distancia de Cook
+                                 line_kwargs={'color': 'red', 'alpha': 0.8}, # Estilo de la línea LOESS
+                                 # Etiquetar puntos influyentes (lo hace sm.graphics.plot_leverage_resid2 por defecto)
+                                 # El argumento 'alpha' para los contornos de Cook está dentro de la función.
+                                )
+
+# Customize the title and labels for the second plot
+axes[1].set_title('Residuals vs Leverage')
+axes[1].set_xlabel('Leverage')
+axes[1].set_ylabel('Standardized residuals') # Nota: plot_leverage_resid2 usa residuos estandarizados
+
+# Puedes ajustar los límites si es necesario para que se parezca más al gráfico de R
+#axes[1].set_xlim(0, 0.5)
+#axes[1].set_ylim(-2, 3)
+
+# Asegurarse de que el diseño sea ajustado y que los subplots no se superpongan
+plt.tight_layout()
+plt.show()
+```
+

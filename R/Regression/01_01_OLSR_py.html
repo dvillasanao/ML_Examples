@@ -130,6 +130,7 @@ window.Quarto = {
   <li><a href="#evaluación-del-modelo" id="toc-evaluación-del-modelo" class="nav-link" data-scroll-target="#evaluación-del-modelo">Evaluación del modelo</a>
   <ul class="collapse">
   <li><a href="#modelo-predictivo" id="toc-modelo-predictivo" class="nav-link" data-scroll-target="#modelo-predictivo">Modelo predictivo</a></li>
+  <li><a href="#evaluar-el-desempeño-predictivo" id="toc-evaluar-el-desempeño-predictivo" class="nav-link" data-scroll-target="#evaluar-el-desempeño-predictivo">Evaluar el desempeño predictivo</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -283,115 +284,115 @@ Este material es reproducible en código Python utilizando Quarto
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os <span class="co"># Necesario para la función os.makedirs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="2d9a9be5" class="cell" data-execution_count="5">
+<div id="c8eccfd4" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display" data-execution_count="3">
 <style type="text/css">
-#T_e4166 td {
+#T_0721e td {
   padding: 1px;
 }
-#T_e4166_row0_col0, #T_e4166_row0_col1, #T_e4166_row1_col0, #T_e4166_row1_col1, #T_e4166_row2_col0, #T_e4166_row2_col1, #T_e4166_row3_col0, #T_e4166_row3_col1, #T_e4166_row4_col0, #T_e4166_row4_col1, #T_e4166_row5_col0, #T_e4166_row5_col1, #T_e4166_row6_col0, #T_e4166_row6_col1, #T_e4166_row7_col0, #T_e4166_row7_col1, #T_e4166_row8_col0, #T_e4166_row8_col1, #T_e4166_row9_col0, #T_e4166_row9_col1, #T_e4166_row10_col0, #T_e4166_row10_col1, #T_e4166_row11_col0, #T_e4166_row11_col1, #T_e4166_row12_col0, #T_e4166_row12_col1 {
+#T_0721e_row0_col0, #T_0721e_row0_col1, #T_0721e_row1_col0, #T_0721e_row1_col1, #T_0721e_row2_col0, #T_0721e_row2_col1, #T_0721e_row3_col0, #T_0721e_row3_col1, #T_0721e_row4_col0, #T_0721e_row4_col1, #T_0721e_row5_col0, #T_0721e_row5_col1, #T_0721e_row6_col0, #T_0721e_row6_col1, #T_0721e_row7_col0, #T_0721e_row7_col1, #T_0721e_row8_col0, #T_0721e_row8_col1, #T_0721e_row9_col0, #T_0721e_row9_col1, #T_0721e_row10_col0, #T_0721e_row10_col1, #T_0721e_row11_col0, #T_0721e_row11_col1, #T_0721e_row12_col0, #T_0721e_row12_col1 {
   width: 200px;
   text-align: left;
 }
-#T_e4166_row0_col2, #T_e4166_row1_col2, #T_e4166_row2_col2, #T_e4166_row3_col2, #T_e4166_row4_col2, #T_e4166_row5_col2, #T_e4166_row6_col2, #T_e4166_row7_col2, #T_e4166_row8_col2, #T_e4166_row9_col2, #T_e4166_row10_col2, #T_e4166_row11_col2, #T_e4166_row12_col2 {
+#T_0721e_row0_col2, #T_0721e_row1_col2, #T_0721e_row2_col2, #T_0721e_row3_col2, #T_0721e_row4_col2, #T_0721e_row5_col2, #T_0721e_row6_col2, #T_0721e_row7_col2, #T_0721e_row8_col2, #T_0721e_row9_col2, #T_0721e_row10_col2, #T_0721e_row11_col2, #T_0721e_row12_col2 {
   width: 500px;
   text-align: left;
 }
 </style>
 
-<div id="T_e4166" class="quarto-float quarto-figure quarto-figure-center anchored" data-quarto-postprocess="true" style="font-family: Century Gothic; font-size: 10pt;">
+<div id="T_0721e" class="quarto-float quarto-figure quarto-figure-center anchored" style="font-family: Century Gothic; font-size: 10pt;" data-quarto-postprocess="true">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_e4166-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_0721e-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Fuente: Elaboración propia
 </figcaption>
-<div aria-describedby="T_e4166-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table id="T_e4166" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<div aria-describedby="T_0721e-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="T_0721e" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_e4166_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
-<th id="T_e4166_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
-<th id="T_e4166_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
+<th id="T_0721e_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
+<th id="T_0721e_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
+<th id="T_0721e_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_e4166_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
-<td id="T_e4166_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
-<td id="T_e4166_row0_col1" class="data row0 col1">Supervisado</td>
-<td id="T_e4166_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
+<td id="T_0721e_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
+<td id="T_0721e_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
+<td id="T_0721e_row0_col1" class="data row0 col1">Supervisado</td>
+<td id="T_0721e_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
 </tr>
 <tr class="even">
-<td id="T_e4166_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
-<td id="T_e4166_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
-<td id="T_e4166_row1_col1" class="data row1 col1">Numérica continua</td>
-<td id="T_e4166_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
+<td id="T_0721e_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
+<td id="T_0721e_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
+<td id="T_0721e_row1_col1" class="data row1 col1">Numérica continua</td>
+<td id="T_0721e_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
 </tr>
 <tr class="odd">
-<td id="T_e4166_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
-<td id="T_e4166_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
-<td id="T_e4166_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
-<td id="T_e4166_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
+<td id="T_0721e_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
+<td id="T_0721e_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
+<td id="T_0721e_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
+<td id="T_0721e_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
 </tr>
 <tr class="even">
-<td id="T_e4166_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
-<td id="T_e4166_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
-<td id="T_e4166_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
-<td id="T_e4166_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
+<td id="T_0721e_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
+<td id="T_0721e_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
+<td id="T_0721e_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
+<td id="T_0721e_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
 </tr>
 <tr class="odd">
-<td id="T_e4166_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
-<td id="T_e4166_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
-<td id="T_e4166_row4_col1" class="data row4 col1">Deseable</td>
-<td id="T_e4166_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
+<td id="T_0721e_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
+<td id="T_0721e_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
+<td id="T_0721e_row4_col1" class="data row4 col1">Deseable</td>
+<td id="T_0721e_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
 </tr>
 <tr class="even">
-<td id="T_e4166_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
-<td id="T_e4166_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
-<td id="T_e4166_row5_col1" class="data row5 col1">Necesaria</td>
-<td id="T_e4166_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
+<td id="T_0721e_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
+<td id="T_0721e_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
+<td id="T_0721e_row5_col1" class="data row5 col1">Necesaria</td>
+<td id="T_0721e_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
 </tr>
 <tr class="odd">
-<td id="T_e4166_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
-<td id="T_e4166_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
-<td id="T_e4166_row6_col1" class="data row6 col1">Necesaria</td>
-<td id="T_e4166_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
+<td id="T_0721e_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
+<td id="T_0721e_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
+<td id="T_0721e_row6_col1" class="data row6 col1">Necesaria</td>
+<td id="T_0721e_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
 </tr>
 <tr class="even">
-<td id="T_e4166_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
-<td id="T_e4166_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
-<td id="T_e4166_row7_col1" class="data row7 col1">Sí</td>
-<td id="T_e4166_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
+<td id="T_0721e_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
+<td id="T_0721e_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
+<td id="T_0721e_row7_col1" class="data row7 col1">Sí</td>
+<td id="T_0721e_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
 </tr>
 <tr class="odd">
-<td id="T_e4166_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
-<td id="T_e4166_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
-<td id="T_e4166_row8_col1" class="data row8 col1">Problema común</td>
-<td id="T_e4166_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
+<td id="T_0721e_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
+<td id="T_0721e_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
+<td id="T_0721e_row8_col1" class="data row8 col1">Problema común</td>
+<td id="T_0721e_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
 </tr>
 <tr class="even">
-<td id="T_e4166_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
-<td id="T_e4166_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
-<td id="T_e4166_row9_col1" class="data row9 col1">Alta</td>
-<td id="T_e4166_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
+<td id="T_0721e_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
+<td id="T_0721e_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
+<td id="T_0721e_row9_col1" class="data row9 col1">Alta</td>
+<td id="T_0721e_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
 </tr>
 <tr class="odd">
-<td id="T_e4166_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
-<td id="T_e4166_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
-<td id="T_e4166_row10_col1" class="data row10 col1">Muy alta</td>
-<td id="T_e4166_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
+<td id="T_0721e_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
+<td id="T_0721e_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
+<td id="T_0721e_row10_col1" class="data row10 col1">Muy alta</td>
+<td id="T_0721e_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
 </tr>
 <tr class="even">
-<td id="T_e4166_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
-<td id="T_e4166_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
-<td id="T_e4166_row11_col1" class="data row11 col1">Compatible</td>
-<td id="T_e4166_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
+<td id="T_0721e_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
+<td id="T_0721e_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
+<td id="T_0721e_row11_col1" class="data row11 col1">Compatible</td>
+<td id="T_0721e_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
 </tr>
 <tr class="odd">
-<td id="T_e4166_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
-<td id="T_e4166_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
-<td id="T_e4166_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
-<td id="T_e4166_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
+<td id="T_0721e_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
+<td id="T_0721e_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
+<td id="T_0721e_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
+<td id="T_0721e_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
 </tr>
 </tbody>
 </table>
@@ -540,13 +541,13 @@ Donde:
 </tr>
 </tbody>
 </table>
-<div id="4ebfc4f7" class="cell" data-execution_count="6">
+<div id="3657a813" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>require(reticulate)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>reticulate::repl_python() <span class="co">#can be used to interactively run Python code</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Cargar y se exploran los datos</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data(<span class="st">"mtcars"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="57c61bfa" class="cell" data-execution_count="7">
+<div id="b4367e8d" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#pip install openpyxl </span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
@@ -562,10 +563,10 @@ Donde:
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>mtcars_df.to_excel(<span class="bu">file</span> <span class="op">/</span><span class="st">"mtcars_data.xlsx"</span>, index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="9347c335" class="cell" data-execution_count="8">
+<div id="50bfc000" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mtcars_df <span class="op">=</span> pd.read_excel(Path.cwd().parent.parent <span class="op">/</span> <span class="st">"Data"</span> <span class="op">/</span> <span class="st">"mtcars_data.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="576849d0" class="cell" data-execution_count="9">
+<div id="3e42bd2e" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 
@@ -746,7 +747,7 @@ Donde:
 </div>
 </div>
 <p><strong>Convertir todas las columnas a tipo numérico</strong></p>
-<div id="5d2e589c" class="cell" data-execution_count="10">
+<div id="f8e3e877" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- IMPORTANTE: Convertir todas las columnas a tipo numérico ---</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esto es crucial para evitar el TypeError</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 'errors='coerce'' convertirá cualquier valor no numérico a NaN</span></span>
@@ -860,7 +861,7 @@ Dep. Variable:                    mpg   R-squared:                       0.896
 Model:                            OLS   Adj. R-squared:                  0.821
 Method:                 Least Squares   F-statistic:                     12.00
 Date:                Thu, 19 Jun 2025   Prob (F-statistic):           3.06e-05
-Time:                        14:24:04   Log-Likelihood:                -52.439
+Time:                        15:17:58   Log-Likelihood:                -52.439
 No. Observations:                  25   AIC:                             126.9
 Df Residuals:                      14   BIC:                             140.3
 Df Model:                          10                                         
@@ -1289,7 +1290,7 @@ Dep. Variable:                    mpg   R-squared:                       0.879
 Model:                            OLS   Adj. R-squared:                  0.862
 Method:                 Least Squares   F-statistic:                     50.92
 Date:                Thu, 19 Jun 2025   Prob (F-statistic):           8.26e-10
-Time:                        14:24:08   Log-Likelihood:                -54.262
+Time:                        15:18:00   Log-Likelihood:                -54.262
 No. Observations:                  25   AIC:                             116.5
 Df Residuals:                      21   BIC:                             121.4
 Df Model:                           3                                         
@@ -1516,7 +1517,7 @@ Significa que si quitas la variable <code>vs</code>, el AIC baja de 57.77 a 56.3
 <span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> best_models, model_objects</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="26d717f9" class="cell" data-message="false" data-results="as-is" data-execution_count="16">
+<div id="77372a1f" class="cell" data-message="false" data-results="as-is" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This line is crucial and should be present in your actual script</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># to ensure y_train has a name.</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> y_train.name <span class="kw">is</span> <span class="va">None</span>:</span>
@@ -1567,7 +1568,7 @@ Dep. Variable:                    mpg   R-squared:                       0.879
 Model:                            OLS   Adj. R-squared:                  0.862
 Method:                 Least Squares   F-statistic:                     50.92
 Date:                Thu, 19 Jun 2025   Prob (F-statistic):           8.26e-10
-Time:                        14:24:16   Log-Likelihood:                -54.262
+Time:                        15:18:11   Log-Likelihood:                -54.262
 No. Observations:                  25   AIC:                             116.5
 Df Residuals:                      21   BIC:                             121.4
 Df Model:                           3                                         
@@ -1591,7 +1592,7 @@ Notes:
 </div>
 </div>
 <p><code>Selection Algorithm: exhaustive</code> <strong>: Esto es crucial. Significa que el algoritmo probó todas las combinaciones posibles</strong> de variables para cada tamaño de subconjunto hasta <code>nvmax = 10</code> y seleccionó el mejor para cada tamaño. Esto asegura que, para cada número de variables (1, 2, …, 10), el modelo presentado es el óptimo según el criterio interno de <code>regsubsets_exhaustive</code> (generalmente <code>AIC</code>, <span class="math inline">\(R^2\)</span> ajustado, BIC a menos que se especifique otro en la función).</p>
-<div id="5c6f1209" class="cell" data-message="false" data-results="as-is" data-execution_count="17">
+<div id="495b5841" class="cell" data-message="false" data-results="as-is" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1664,7 +1665,7 @@ Notes:
 <p>*## Evaluación del modelo</p>
 <p>Ahora se va a trabajar con un <strong>modelo reducido (<code>modelo_step</code>)</strong>, es importante <strong>usar ese modelo</strong> para hacer predicciones en el conjunto de prueba. Además, como solo algunas variables quedaron en el modelo (<code>drat</code>, <code>wt</code>, <code>gear</code>, <code>carb</code>), el <code>test_data</code> debe contener esas columnas.</p>
 <p><strong>Verificar qué variables necesita el modelo reducido</strong></p>
-<div id="eb4fd720" class="cell" data-execution_count="18">
+<div id="8004c67d" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>global_best_aic_row <span class="op">=</span> all_results_df_for_global.loc[all_results_df_for_global[<span class="st">'aic'</span>].idxmin()]</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>global_best_aic_formula <span class="op">=</span> global_best_aic_row[<span class="st">'formula'</span>]</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>global_best_aic_formula</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1726,7 +1727,7 @@ Notes:
 </tr>
 </tbody>
 </table>
-<div id="1faad742" class="cell" data-execution_count="19">
+<div id="4ddddb13" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
@@ -1785,7 +1786,7 @@ Factor de Inflación de la Varianza (VIF) ordenado:
 <h2 class="anchored" data-anchor-id="evaluación-del-modelo">Evaluación del modelo</h2>
 <p>La partición de los datos en <code>X_train</code>, <code>X_test</code>, <code>y_train</code>, y <code>y_test</code> se hace una sola vez al principio de tu análisis para asegurar que la evaluación final del modelo (con <code>X_test</code> y <code>y_test</code>) sea imparcial.</p>
 <p>Una vez que tienes la fórmula del modelo óptimo se selecciona (<code>'mpg ~ wt + qsec + am'</code>), lo que haces es <strong>re-entrenar el modelo con esta nueva fórmula utilizando únicamente los datos de entrenamiento (<code>X_train</code> y <code>y_train</code>)</strong>.</p>
-<div id="d5121ab3" class="cell" data-execution_count="20">
+<div id="6afe6a31" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1833,7 +1834,7 @@ Dep. Variable:                    mpg   R-squared:                       0.879
 Model:                            OLS   Adj. R-squared:                  0.862
 Method:                 Least Squares   F-statistic:                     50.92
 Date:                Thu, 19 Jun 2025   Prob (F-statistic):           8.26e-10
-Time:                        14:24:16   Log-Likelihood:                -54.262
+Time:                        15:18:11   Log-Likelihood:                -54.262
 No. Observations:                  25   AIC:                             116.5
 Df Residuals:                      21   BIC:                             121.4
 Df Model:                           3                                         
@@ -1865,7 +1866,7 @@ Notes:
 <li><p><strong>Uso práctico del modelo:</strong> Después de validar que el modelo es bueno, se puede usarlo para predecir la variable dependiente para nuevas observaciones futuras de las que solo se conocen las variables predictoras (por ejemplo, predecir el precio de una casa basándose en sus características, si el modelo fue entrenado para eso).</p></li>
 </ol>
 <p>El objeto <code>final_modelo_ols_py</code> (que es un objeto de tipo <code>statsmodels.regression.linear_model.RegressionResultsWrapper</code>) tiene un método <code>.predict()</code> que hace exactamente esto.</p>
-<div id="4edaac44" class="cell" data-execution_count="21">
+<div id="41263894" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Para el modelo en los datos de prueba</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># En R, usas 'newdata = test_data_reducido'. En Python, pasas el DataFrame</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># con las mismas columnas predictoras que el modelo fue entrenado con.</span></span>
@@ -1912,6 +1913,256 @@ Valores reales de mpg en el conjunto de prueba:
 Name: mpg, dtype: float64</code></pre>
 </div>
 </div>
+</section>
+<section id="evaluar-el-desempeño-predictivo" class="level3">
+<h3 class="anchored" data-anchor-id="evaluar-el-desempeño-predictivo">Evaluar el desempeño predictivo</h3>
+<section id="mean-absolute-error-mae" class="level4">
+<h4 class="anchored" data-anchor-id="mean-absolute-error-mae">Mean Absolute Error (<code>MAE</code>)</h4>
+<p>El <strong>MAE (Mean Absolute Error)</strong>, o <strong>Error Absoluto Medio</strong> en español, es una de las métricas más utilizadas para evaluar la precisión de un modelo de regresión. Mide la <strong>magnitud promedio de los errores</strong> entre los valores predichos por un modelo y los valores reales observados.</p>
+<section id="fórmula-del-mae" class="level5">
+<h5 class="anchored" data-anchor-id="fórmula-del-mae">Fórmula del MAE</h5>
+<p>La fórmula para calcular el MAE es la siguiente:</p>
+<p><span class="math display">\[MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|\]</span></p>
+<p>Donde:</p>
+<ul>
+<li><span class="math inline">\(n\)</span>: Es el número total de observaciones (o puntos de datos) en el conjunto de datos.</li>
+<li><span class="math inline">\(y_i\)</span>: Es el <strong>valor real u observado</strong> de la variable dependiente para la observación <span class="math inline">\(i\)</span>.</li>
+<li><span class="math inline">\(\hat{y}_i\)</span>: Es el <strong>valor predicho</strong> por el modelo para la observación <span class="math inline">\(i\)</span>.</li>
+<li><span class="math inline">\(|y_i - \hat{y}_i|\)</span>: Es el <strong>valor absoluto</strong> de la diferencia entre el valor real y el valor predicho para la observación <span class="math inline">\(i\)</span>. Tomar el valor absoluto es crucial porque evita que los errores positivos y negativos se cancelen entre sí, lo que daría una falsa impresión de precisión.</li>
+<li><span class="math inline">\(\sum_{i=1}^{n}\)</span>: Indica la suma de todos los errores absolutos para todas las <span class="math inline">\(n\)</span> observaciones.</li>
+</ul>
+<div id="2d222036" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, mean_absolute_error, r2_score</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo del MAE (Mean Absolute Error)</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>mae <span class="op">=</span> mean_absolute_error(y_test, predicciones_py)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"MAE en conjunto de prueba: </span><span class="sc">{</span>mae<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MAE en conjunto de prueba: 3.1064</code></pre>
+</div>
+</div>
+<p>Esto significa que, <strong>en promedio</strong>, el modelo reducido predice el consumo de combustible con un error de ±3.10 mpg. Esto es bueno o malo. Depende del rango de la variable <code>mpg</code> en <code>mtcars</code>.</p>
+<div id="1af6c472" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el rango (mínimo y máximo) de la columna 'mpg'</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>min_mpg <span class="op">=</span> mtcars_df[<span class="st">'mpg'</span>].<span class="bu">min</span>()</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>max_mpg <span class="op">=</span> mtcars_df[<span class="st">'mpg'</span>].<span class="bu">max</span>()</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir el resultado</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rango de mpg (mínimo, máximo): (</span><span class="sc">{</span>min_mpg<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>max_mpg<span class="sc">}</span><span class="ss">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rango de mpg (mínimo, máximo): (10.4, 33.9)</code></pre>
+</div>
+</div>
+<p>El rango de <code>mpg</code> es de <strong>10.4 a 33.9</strong>, es decir, abarca <strong>~23.5 unidades</strong>.</p>
+<p>Por tanto:</p>
+<pre><code>  * Un MAE de **3.10** representa alrededor de un **15% del rango total**. El modelo, en promedio, se equivoca por 3.10 millas por galón en sus predicciones.  
+* No es un error enorme, pero **tampoco es excelente**.  
+* Si el modelo completo (`modelo_ols`) tenía un MAE menor, podría predecir mejor, aunque con más colinealidad.</code></pre>
+</section>
+</section>
+<section id="root-mean-squared-error-rmse" class="level4">
+<h4 class="anchored" data-anchor-id="root-mean-squared-error-rmse">Root Mean Squared Error (<code>RMSE</code>)</h4>
+<p>El <strong>RMSE (Root Mean Squared Error)</strong>, o <strong>Raíz del Error Cuadrático Medio</strong>, es una de las métricas más comunes y ampliamente utilizadas para evaluar la precisión de los modelos de regresión. Mide la <strong>magnitud promedio de los errores</strong> entre los valores predichos por un modelo y los valores reales observados, pero dando <strong>mayor peso a los errores más grandes</strong>.</p>
+</section>
+<section id="fórmula-del-rmse" class="level4">
+<h4 class="anchored" data-anchor-id="fórmula-del-rmse">Fórmula del RMSE</h4>
+<p><span class="math display">\[RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}\]</span></p>
+<p>Donde:</p>
+<ul>
+<li><span class="math inline">\(n\)</span>: Es el número total de observaciones (o puntos de datos).<br>
+</li>
+<li><span class="math inline">\(y_i\)</span>: Es el <strong>valor real u observado</strong> de la variable dependiente para la observación <span class="math inline">\(i\)</span>.<br>
+</li>
+<li><span class="math inline">\(\hat{y}_i\)</span>: Es el <strong>valor predicho</strong> por el modelo para la observación <span class="math inline">\(i\)</span>.<br>
+</li>
+<li><span class="math inline">\((y_i - \hat{y}_i)^2\)</span>: Es el <strong>cuadrado de la diferencia</strong> entre el valor real y el valor predicho para la observación <span class="math inline">\(i\)</span>.</li>
+</ul>
+<p>Elevar al cuadrado las diferencias tiene dos propósitos principales:</p>
+<ul>
+<li>Eliminar los signos negativos: Asegura que los errores positivos y negativos no se cancelen entre sí.<br>
+</li>
+<li>Penalizar más los errores grandes: Los errores más grandes tienen un impacto desproporcionadamente mayor en el resultado final del RMSE que los errores pequeños, debido a la operación al cuadrado.<br>
+</li>
+<li><span class="math inline">\(\sum_{i=1}^{n}\)</span>: Indica la suma de todos los errores al cuadrado para todas las <span class="math inline">\(n\)</span> observaciones.</li>
+</ul>
+<section id="interpretación-del-rmse" class="level5">
+<h5 class="anchored" data-anchor-id="interpretación-del-rmse">Interpretación del RMSE:</h5>
+<ul>
+<li>El RMSE se expresa en las <strong>mismas unidades que la variable dependiente original</strong>. Esto facilita su interpretación. Por ejemplo, si estás prediciendo la altura en metros y el RMSE es 0.5, significa que, en promedio, las predicciones del modelo se desvían aproximadamente 0.5 metros de la altura real.<br>
+</li>
+<li><strong>Un RMSE de 0 (cero) indica un modelo perfecto</strong>, donde todas las predicciones son exactamente iguales a los valores reales.</li>
+<li><strong>Valores más bajos de RMSE indican un mejor rendimiento del modelo.</strong>
+<ul>
+<li><strong>Sensibilidad a valores atípicos:</strong> Debido al término al cuadrado, el RMSE penaliza más fuertemente los errores grandes (valores atípicos) que el MAE. Esto significa que si tu modelo tiene algunos errores de predicción muy grandes, el RMSE será significativamente más alto que el MAE. Esta característica puede ser una ventaja o desventaja dependiendo del contexto:<br>
+</li>
+<li><strong>Ventaja:</strong> Si los errores grandes son particularmente indeseables en tu aplicación, el RMSE es una buena métrica porque los destaca.<br>
+</li>
+</ul></li>
+<li><strong>Desventaja:</strong> Si tu conjunto de datos contiene muchos valores atípicos reales o errores de medición que no son representativos del rendimiento general del modelo, el RMSE podría dar una visión pesimista.</li>
+</ul>
+<div id="66c3d9af" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, mean_absolute_error, r2_score</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Cálculo del RMSE (Root Mean Squared Error)</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> np.sqrt(mean_squared_error(y_test, predicciones_py))</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">RMSE en conjunto de prueba: </span><span class="sc">{</span>rmse<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+RMSE en conjunto de prueba: 3.4120</code></pre>
+</div>
+</div>
+<ul>
+<li>Un RMSE de <strong>3.4120</strong> significa que, en promedio, las predicciones difieren de los valores reales por <strong>±3.41 millas por galón</strong>.
+<ul>
+<li>Como <strong>los errores grandes tienen más peso</strong> (al ser elevados al cuadrado), el RMSE será siempre <strong>igual o mayor al MAE</strong>. Penaliza más los errores grandes que el MAE.</li>
+<li>Es <strong>aceptable para predicción en <code>mtcars</code></strong>, pero con espacio para mejora si se requiere mayor precisión.</li>
+</ul></li>
+</ul>
+<p><strong>Compararlo con el MAE</strong></p>
+<ul>
+<li>Si <strong>RMSE está mucho más alto que el MAE</strong>, el modelo está cometiendo <strong>errores grandes con frecuencia</strong> (outliers, mala especificación).<br>
+</li>
+<li>Si <strong>RMSE ≈ MAE</strong>, los errores están bien distribuidos.</li>
+</ul>
+</section>
+</section>
+<section id="coeficiente-de-determinación-r2" class="level4">
+<h4 class="anchored" data-anchor-id="coeficiente-de-determinación-r2">Coeficiente de determinación <span class="math inline">\(R^2\)</span></h4>
+<p><span class="math inline">\(R^{2}\)</span> (<strong>coeficiente de determinación</strong>) mide qué proporción de la variabilidad de la <strong>variable dependiente</strong> es explicada por el modelo.</p>
+<p>La fórmula general del <span class="math inline">\(R^2\)</span> (coeficiente de determinación) es:</p>
+<p><span class="math display">\[R^2 = 1 - \frac{SSE}{SST}\]</span></p>
+<p>Donde:</p>
+<ul>
+<li><span class="math inline">\(SSE\)</span> (Sum of Squared Errors) o <span class="math inline">\(RSS\)</span> (Residual Sum of Squares): Es la <strong>Suma de Cuadrados de los Errores</strong> (o Suma de Cuadrados de los Residuos). Mide la variación no explicada por el modelo. Se calcula como la suma de los cuadrados de las diferencias entre los valores observados (<span class="math inline">\(y_i\)</span>) y los valores predichos por el modelo (<span class="math inline">\(\hat{y}_i\)</span>):</li>
+</ul>
+<p><span class="math display">\[SSE = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2\]</span></p>
+<ul>
+<li><span class="math inline">\(SST\)</span> (Total Sum of Squares): Es la <strong>Suma Total de Cuadrados</strong>. Mide la variación total de la variable dependiente respecto a su media. Representa la variabilidad total en los datos que el modelo intenta explicar. Se calcula como la suma de los cuadrados de las diferencias entre los valores observados (<span class="math inline">\(y_i\)</span>) y la media de la variable dependiente (<span class="math inline">\(\bar{y}\)</span>):</li>
+</ul>
+<p><span class="math display">\[SST = \sum_{i=1}^{n} (y_i - \bar{y})^2\]</span></p>
+<section id="interpretación-del-r2" class="level5">
+<h5 class="anchored" data-anchor-id="interpretación-del-r2">Interpretación del <span class="math inline">\(R^2\)</span>:</h5>
+<ul>
+<li>El <span class="math inline">\(R^2\)</span> es una métrica que varía entre <strong>0 y 1</strong> (o 0% y 100%).<br>
+</li>
+<li><span class="math inline">\(R^2 = 0\)</span>: Indica que el modelo no explica ninguna de la variabilidad en la variable dependiente. Es tan bueno como simplemente usar la media de la variable dependiente para la predicción.<br>
+</li>
+<li><span class="math inline">\(R^2 = 1\)</span>: Indica que el modelo explica el 100% de la variabilidad en la variable dependiente. Esto rara vez ocurre en la práctica con datos del mundo real, y a menudo sugiere sobreajuste si sucede en un conjunto de entrenamiento.<br>
+</li>
+<li><strong>Valores más altos de</strong> <span class="math inline">\(R^2\)</span> indican un mejor ajuste del modelo a los datos observados, lo que significa que las variables predictoras del modelo explican una mayor proporción de la variabilidad en la variable dependiente.</li>
+</ul>
+<div id="ed696922" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, mean_absolute_error, r2_score</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>r_squared_test <span class="op">=</span> r2_score(y_test, predicciones_py)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"R-squared en conjunto de prueba: </span><span class="sc">{</span>r_squared_test<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R-squared en conjunto de prueba: 0.3468</code></pre>
+</div>
+</div>
+<ul>
+<li>Esto significa que el <strong>65.3% de la variabilidad</strong> de <code>mpg</code> (consumo de combustible) en los datos de prueba <strong>es explicada por el modelo</strong>.
+<ul>
+<li>El <strong>34.6% restante</strong> es <strong>variabilidad no explicada</strong> (error, factores no incluidos, ruido).<br>
+</li>
+<li>El modelo predice <strong>más de la mitad de la variabilidad de <code>mpg</code></strong> en los datos de prueba.</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="distribución-de-los-residuos" class="level4">
+<h4 class="anchored" data-anchor-id="distribución-de-los-residuos">Distribución de los residuos</h4>
+<p>Relación lineal entre variable dependiente e independiente:</p>
+<p>Se calculan los residuos para cada observación y se representan (<code>scatterplot</code>). Si las observaciones siguen la línea del modelo, los residuos se deben distribuir aleatoriamente entorno al valor 0.</p>
+<div id="5878c6f0" class="cell" data-message="false" data-results="as-is" data-execution_count="26">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Se crea un dataframe 'tabla' con fitted.values y residuals</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co"># En statsmodels, los valores ajustados se obtienen con .fittedvalues y los residuos con .resid</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>tabla_py <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>                         <span class="st">'prediccion'</span>: final_modelo_ols_py.fittedvalues,</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>                         <span class="st">'residuo'</span>: final_modelo_ols_py.resid</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Configuración de los estilos para el gráfico (similar a theme_bw y los ajustes de texto de ggplot2)</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Configura el estilo de seaborn</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>) <span class="co"># Similar a theme_bw() o theme_minimal()</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Se configura la fuente globalmente en Montserrat</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'font.family'</span>] <span class="op">=</span> <span class="st">'Montserrat'</span> <span class="co"># Descomenta si tienes la fuente instalada</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Se crea la figura y los ejes</span></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">6</span>)) <span class="co"># Tamaño de la figura</span></span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Se crea el gráfico de dispersión con Seaborn</span></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Se usa scatterplot para los puntos y controlamos el color con 'hue'</span></span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Se usa palette para la escala de colores, similar a scale_color_gradient2</span></span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>scatterplot <span class="op">=</span> sns.scatterplot(</span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a>                              data <span class="op">=</span> tabla_py,</span>
+<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a>                              x <span class="op">=</span> <span class="st">'prediccion'</span>,</span>
+<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a>                              y <span class="op">=</span> <span class="st">'residuo'</span>,</span>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a>                              hue <span class="op">=</span> <span class="st">'residuo'</span>, <span class="co"># Colorear por el valor del residuo</span></span>
+<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a>                              palette <span class="op">=</span> <span class="st">'RdBu_r'</span>, <span class="co"># 'RdBu_r' es una paleta divergente (rojo-azul, invertida para azul-rojo)</span></span>
+<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a>                                                <span class="co"># 'coolwarm' también es una buena opción divergente.</span></span>
+<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a>                              legend <span class="op">=</span> <span class="va">False</span>,     <span class="co"># No mostrar leyenda de color, similar a legend.position = "none"</span></span>
+<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a>                              s <span class="op">=</span> <span class="dv">70</span>,             <span class="co"># Tamaño de los puntos</span></span>
+<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a>                              alpha <span class="op">=</span> <span class="fl">0.8</span>         <span class="co"># Transparencia</span></span>
+<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-38"><a href="#cb35-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-39"><a href="#cb35-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 4.Se añade la línea horizontal en y=0</span></span>
+<span id="cb35-40"><a href="#cb35-40" aria-hidden="true" tabindex="-1"></a>plt.axhline(y <span class="op">=</span> <span class="dv">0</span>, color <span class="op">=</span> <span class="st">'black'</span>, linestyle <span class="op">=</span> <span class="st">'-'</span>, linewidth <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb35-41"><a href="#cb35-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-42"><a href="#cb35-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Se añaden los segmentos desde los puntos hasta y = 0</span></span>
+<span id="cb35-43"><a href="#cb35-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Se puede hacer iterando o usando una función de matplotlib si fuera posible vectorizarlo</span></span>
+<span id="cb35-44"><a href="#cb35-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Para simplicidad y control, iteramos aquí. Ojo: para muchos puntos, esto puede ser lento.</span></span>
+<span id="cb35-45"><a href="#cb35-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Para muchos puntos, podrías considerar alternativas o quitarlo si no es crítico para la interpretación.</span></span>
+<span id="cb35-46"><a href="#cb35-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-47"><a href="#cb35-47" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(tabla_py)):</span>
+<span id="cb35-48"><a href="#cb35-48" aria-hidden="true" tabindex="-1"></a>    x_val <span class="op">=</span> tabla_py[<span class="st">'prediccion'</span>].iloc[i]</span>
+<span id="cb35-49"><a href="#cb35-49" aria-hidden="true" tabindex="-1"></a>    y_val <span class="op">=</span> tabla_py[<span class="st">'residuo'</span>].iloc[i]</span>
+<span id="cb35-50"><a href="#cb35-50" aria-hidden="true" tabindex="-1"></a>    plt.plot([x_val, x_val], [y_val, <span class="dv">0</span>], color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span>, alpha <span class="op">=</span> <span class="fl">0.2</span>)</span>
+<span id="cb35-51"><a href="#cb35-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-52"><a href="#cb35-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-53"><a href="#cb35-53" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Se configuran las etiquetas y título</span></span>
+<span id="cb35-54"><a href="#cb35-54" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribución de los residuos"</span>, fontsize <span class="op">=</span> <span class="dv">18</span>, loc <span class="op">=</span> <span class="st">'left'</span>, fontweight <span class="op">=</span> <span class="st">'bold'</span>)</span>
+<span id="cb35-55"><a href="#cb35-55" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"predicción modelo"</span>, fontsize <span class="op">=</span> <span class="dv">14</span>)</span>
+<span id="cb35-56"><a href="#cb35-56" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"residuo"</span>, fontsize <span class="op">=</span> <span class="dv">14</span>)</span>
+<span id="cb35-57"><a href="#cb35-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-58"><a href="#cb35-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustes de los ticks y etiquetas de los ejes</span></span>
+<span id="cb35-59"><a href="#cb35-59" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis <span class="op">=</span> <span class="st">'x'</span>, labelsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb35-60"><a href="#cb35-60" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis  <span class="op">=</span><span class="st">'y'</span>, labelsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb35-61"><a href="#cb35-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-62"><a href="#cb35-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-63"><a href="#cb35-63" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar los límites del eje y si es necesario para evitar que los puntos se corten</span></span>
+<span id="cb35-64"><a href="#cb35-64" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.ylim(min(tabla_py['residuo']) * 1.1, max(tabla_py['residuo']) * 1.1)</span></span>
+<span id="cb35-65"><a href="#cb35-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-66"><a href="#cb35-66" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el gráfico</span></span>
+<span id="cb35-67"><a href="#cb35-67" aria-hidden="true" tabindex="-1"></a>plt.tight_layout() <span class="co"># Ajusta el diseño para que no se corten etiquetas</span></span>
+<span id="cb35-68"><a href="#cb35-68" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_01_OLSR_py_files/figure-html/cell-27-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 
