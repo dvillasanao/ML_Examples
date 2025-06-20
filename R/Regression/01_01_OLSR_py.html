@@ -131,6 +131,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#modelo-predictivo" id="toc-modelo-predictivo" class="nav-link" data-scroll-target="#modelo-predictivo">Modelo predictivo</a></li>
   <li><a href="#evaluar-el-desempeño-predictivo" id="toc-evaluar-el-desempeño-predictivo" class="nav-link" data-scroll-target="#evaluar-el-desempeño-predictivo">Evaluar el desempeño predictivo</a></li>
+  <li><a href="#validación-cruzada" id="toc-validación-cruzada" class="nav-link" data-scroll-target="#validación-cruzada">Validación cruzada</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -284,115 +285,115 @@ Este material es reproducible en código Python utilizando Quarto
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os <span class="co"># Necesario para la función os.makedirs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="c8eccfd4" class="cell" data-execution_count="5">
+<div id="27c8c266" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display" data-execution_count="3">
 <style type="text/css">
-#T_0721e td {
+#T_44260 td {
   padding: 1px;
 }
-#T_0721e_row0_col0, #T_0721e_row0_col1, #T_0721e_row1_col0, #T_0721e_row1_col1, #T_0721e_row2_col0, #T_0721e_row2_col1, #T_0721e_row3_col0, #T_0721e_row3_col1, #T_0721e_row4_col0, #T_0721e_row4_col1, #T_0721e_row5_col0, #T_0721e_row5_col1, #T_0721e_row6_col0, #T_0721e_row6_col1, #T_0721e_row7_col0, #T_0721e_row7_col1, #T_0721e_row8_col0, #T_0721e_row8_col1, #T_0721e_row9_col0, #T_0721e_row9_col1, #T_0721e_row10_col0, #T_0721e_row10_col1, #T_0721e_row11_col0, #T_0721e_row11_col1, #T_0721e_row12_col0, #T_0721e_row12_col1 {
+#T_44260_row0_col0, #T_44260_row0_col1, #T_44260_row1_col0, #T_44260_row1_col1, #T_44260_row2_col0, #T_44260_row2_col1, #T_44260_row3_col0, #T_44260_row3_col1, #T_44260_row4_col0, #T_44260_row4_col1, #T_44260_row5_col0, #T_44260_row5_col1, #T_44260_row6_col0, #T_44260_row6_col1, #T_44260_row7_col0, #T_44260_row7_col1, #T_44260_row8_col0, #T_44260_row8_col1, #T_44260_row9_col0, #T_44260_row9_col1, #T_44260_row10_col0, #T_44260_row10_col1, #T_44260_row11_col0, #T_44260_row11_col1, #T_44260_row12_col0, #T_44260_row12_col1 {
   width: 200px;
   text-align: left;
 }
-#T_0721e_row0_col2, #T_0721e_row1_col2, #T_0721e_row2_col2, #T_0721e_row3_col2, #T_0721e_row4_col2, #T_0721e_row5_col2, #T_0721e_row6_col2, #T_0721e_row7_col2, #T_0721e_row8_col2, #T_0721e_row9_col2, #T_0721e_row10_col2, #T_0721e_row11_col2, #T_0721e_row12_col2 {
+#T_44260_row0_col2, #T_44260_row1_col2, #T_44260_row2_col2, #T_44260_row3_col2, #T_44260_row4_col2, #T_44260_row5_col2, #T_44260_row6_col2, #T_44260_row7_col2, #T_44260_row8_col2, #T_44260_row9_col2, #T_44260_row10_col2, #T_44260_row11_col2, #T_44260_row12_col2 {
   width: 500px;
   text-align: left;
 }
 </style>
 
-<div id="T_0721e" class="quarto-float quarto-figure quarto-figure-center anchored" style="font-family: Century Gothic; font-size: 10pt;" data-quarto-postprocess="true">
+<div id="T_44260" class="quarto-float quarto-figure quarto-figure-center anchored" data-quarto-postprocess="true" style="font-family: Century Gothic; font-size: 10pt;">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_0721e-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="T_44260-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Fuente: Elaboración propia
 </figcaption>
-<div aria-describedby="T_0721e-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table id="T_0721e" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<div aria-describedby="T_44260-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="T_44260" class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_0721e_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
-<th id="T_0721e_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
-<th id="T_0721e_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
+<th id="T_44260_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Criterio</th>
+<th id="T_44260_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Aplica</th>
+<th id="T_44260_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Detalles</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_0721e_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
-<td id="T_0721e_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
-<td id="T_0721e_row0_col1" class="data row0 col1">Supervisado</td>
-<td id="T_0721e_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
+<td id="T_44260_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</td>
+<td id="T_44260_row0_col0" class="data row0 col0">🔍 Tipo de modelo</td>
+<td id="T_44260_row0_col1" class="data row0 col1">Supervisado</td>
+<td id="T_44260_row0_col2" class="data row0 col2">Se entrena con datos X → y</td>
 </tr>
 <tr class="even">
-<td id="T_0721e_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
-<td id="T_0721e_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
-<td id="T_0721e_row1_col1" class="data row1 col1">Numérica continua</td>
-<td id="T_0721e_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
+<td id="T_44260_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</td>
+<td id="T_44260_row1_col0" class="data row1 col0">🎯 Variable respuesta</td>
+<td id="T_44260_row1_col1" class="data row1 col1">Numérica continua</td>
+<td id="T_44260_row1_col2" class="data row1 col2">Ej. mpg, precio, ingresos</td>
 </tr>
 <tr class="odd">
-<td id="T_0721e_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
-<td id="T_0721e_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
-<td id="T_0721e_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
-<td id="T_0721e_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
+<td id="T_44260_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</td>
+<td id="T_44260_row2_col0" class="data row2 col0">🔢 Variables predictoras</td>
+<td id="T_44260_row2_col1" class="data row2 col1">Numéricas y/o categóricas</td>
+<td id="T_44260_row2_col2" class="data row2 col2">Categorías convertidas a dummies</td>
 </tr>
 <tr class="even">
-<td id="T_0721e_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
-<td id="T_0721e_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
-<td id="T_0721e_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
-<td id="T_0721e_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
+<td id="T_44260_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</td>
+<td id="T_44260_row3_col0" class="data row3 col0">📈 Relación entre variables</td>
+<td id="T_44260_row3_col1" class="data row3 col1">Lineal (supuesto clave)</td>
+<td id="T_44260_row3_col2" class="data row3 col2">Se asume una relación lineal entre X e Y</td>
 </tr>
 <tr class="odd">
-<td id="T_0721e_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
-<td id="T_0721e_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
-<td id="T_0721e_row4_col1" class="data row4 col1">Deseable</td>
-<td id="T_0721e_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
+<td id="T_44260_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</td>
+<td id="T_44260_row4_col0" class="data row4 col0">🧪 Normalidad de residuos</td>
+<td id="T_44260_row4_col1" class="data row4 col1">Deseable</td>
+<td id="T_44260_row4_col2" class="data row4 col2">Importante para intervalos de confianza válidos</td>
 </tr>
 <tr class="even">
-<td id="T_0721e_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
-<td id="T_0721e_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
-<td id="T_0721e_row5_col1" class="data row5 col1">Necesaria</td>
-<td id="T_0721e_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
+<td id="T_44260_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</td>
+<td id="T_44260_row5_col0" class="data row5 col0">🔁 Independencia de errores</td>
+<td id="T_44260_row5_col1" class="data row5 col1">Necesaria</td>
+<td id="T_44260_row5_col2" class="data row5 col2">Errores deben ser independientes</td>
 </tr>
 <tr class="odd">
-<td id="T_0721e_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
-<td id="T_0721e_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
-<td id="T_0721e_row6_col1" class="data row6 col1">Necesaria</td>
-<td id="T_0721e_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
+<td id="T_44260_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</td>
+<td id="T_44260_row6_col0" class="data row6 col0">⚖️ Homoscedasticidad</td>
+<td id="T_44260_row6_col1" class="data row6 col1">Necesaria</td>
+<td id="T_44260_row6_col2" class="data row6 col2">Varianza de errores debe ser constante</td>
 </tr>
 <tr class="even">
-<td id="T_0721e_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
-<td id="T_0721e_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
-<td id="T_0721e_row7_col1" class="data row7 col1">Sí</td>
-<td id="T_0721e_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
+<td id="T_44260_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</td>
+<td id="T_44260_row7_col0" class="data row7 col0">❗ Sensible a outliers</td>
+<td id="T_44260_row7_col1" class="data row7 col1">Sí</td>
+<td id="T_44260_row7_col2" class="data row7 col2">Outliers pueden influir mucho en el modelo</td>
 </tr>
 <tr class="odd">
-<td id="T_0721e_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
-<td id="T_0721e_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
-<td id="T_0721e_row8_col1" class="data row8 col1">Problema común</td>
-<td id="T_0721e_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
+<td id="T_44260_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</td>
+<td id="T_44260_row8_col0" class="data row8 col0">🔗 Multicolinealidad entre predictores</td>
+<td id="T_44260_row8_col1" class="data row8 col1">Problema común</td>
+<td id="T_44260_row8_col2" class="data row8 col2">Usar VIF para detectar problemas</td>
 </tr>
 <tr class="even">
-<td id="T_0721e_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
-<td id="T_0721e_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
-<td id="T_0721e_row9_col1" class="data row9 col1">Alta</td>
-<td id="T_0721e_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
+<td id="T_44260_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</td>
+<td id="T_44260_row9_col0" class="data row9 col0">🧠 Interpretabilidad</td>
+<td id="T_44260_row9_col1" class="data row9 col1">Alta</td>
+<td id="T_44260_row9_col2" class="data row9 col2">Modelo fácil de explicar</td>
 </tr>
 <tr class="odd">
-<td id="T_0721e_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
-<td id="T_0721e_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
-<td id="T_0721e_row10_col1" class="data row10 col1">Muy alta</td>
-<td id="T_0721e_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
+<td id="T_44260_level0_row10" class="row_heading level0 row10" data-quarto-table-cell-role="th">10</td>
+<td id="T_44260_row10_col0" class="data row10 col0">🚀 Velocidad y eficiencia</td>
+<td id="T_44260_row10_col1" class="data row10 col1">Muy alta</td>
+<td id="T_44260_row10_col2" class="data row10 col2">Rápido incluso con datos grandes</td>
 </tr>
 <tr class="even">
-<td id="T_0721e_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
-<td id="T_0721e_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
-<td id="T_0721e_row11_col1" class="data row11 col1">Compatible</td>
-<td id="T_0721e_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
+<td id="T_44260_level0_row11" class="row_heading level0 row11" data-quarto-table-cell-role="th">11</td>
+<td id="T_44260_row11_col0" class="data row11 col0">🧪 Validación cruzada</td>
+<td id="T_44260_row11_col1" class="data row11 col1">Compatible</td>
+<td id="T_44260_row11_col2" class="data row11 col2">Ayuda a prevenir overfitting</td>
 </tr>
 <tr class="odd">
-<td id="T_0721e_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
-<td id="T_0721e_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
-<td id="T_0721e_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
-<td id="T_0721e_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
+<td id="T_44260_level0_row12" class="row_heading level0 row12" data-quarto-table-cell-role="th">12</td>
+<td id="T_44260_row12_col0" class="data row12 col0">❌ No funciona bien si...</td>
+<td id="T_44260_row12_col1" class="data row12 col1">Relaciones no lineales, outliers severos, colinealidad</td>
+<td id="T_44260_row12_col2" class="data row12 col2">Evitar si no hay linealidad o hay muchos outliers</td>
 </tr>
 </tbody>
 </table>
@@ -541,13 +542,13 @@ Donde:
 </tr>
 </tbody>
 </table>
-<div id="3657a813" class="cell" data-execution_count="6">
+<div id="8679d803" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>require(reticulate)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>reticulate::repl_python() <span class="co">#can be used to interactively run Python code</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Cargar y se exploran los datos</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data(<span class="st">"mtcars"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="b4367e8d" class="cell" data-execution_count="7">
+<div id="831550be" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#pip install openpyxl </span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
@@ -563,10 +564,10 @@ Donde:
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>mtcars_df.to_excel(<span class="bu">file</span> <span class="op">/</span><span class="st">"mtcars_data.xlsx"</span>, index<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="50bfc000" class="cell" data-execution_count="8">
+<div id="378526d5" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mtcars_df <span class="op">=</span> pd.read_excel(Path.cwd().parent.parent <span class="op">/</span> <span class="st">"Data"</span> <span class="op">/</span> <span class="st">"mtcars_data.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="3e42bd2e" class="cell" data-execution_count="9">
+<div id="b6c77ee0" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 
@@ -747,7 +748,7 @@ Donde:
 </div>
 </div>
 <p><strong>Convertir todas las columnas a tipo numérico</strong></p>
-<div id="f8e3e877" class="cell" data-execution_count="10">
+<div id="e9f68ae0" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- IMPORTANTE: Convertir todas las columnas a tipo numérico ---</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esto es crucial para evitar el TypeError</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 'errors='coerce'' convertirá cualquier valor no numérico a NaN</span></span>
@@ -861,7 +862,7 @@ Dep. Variable:                    mpg   R-squared:                       0.896
 Model:                            OLS   Adj. R-squared:                  0.821
 Method:                 Least Squares   F-statistic:                     12.00
 Date:                Thu, 19 Jun 2025   Prob (F-statistic):           3.06e-05
-Time:                        15:17:58   Log-Likelihood:                -52.439
+Time:                        21:58:19   Log-Likelihood:                -52.439
 No. Observations:                  25   AIC:                             126.9
 Df Residuals:                      14   BIC:                             140.3
 Df Model:                          10                                         
@@ -1290,7 +1291,7 @@ Dep. Variable:                    mpg   R-squared:                       0.879
 Model:                            OLS   Adj. R-squared:                  0.862
 Method:                 Least Squares   F-statistic:                     50.92
 Date:                Thu, 19 Jun 2025   Prob (F-statistic):           8.26e-10
-Time:                        15:18:00   Log-Likelihood:                -54.262
+Time:                        21:58:21   Log-Likelihood:                -54.262
 No. Observations:                  25   AIC:                             116.5
 Df Residuals:                      21   BIC:                             121.4
 Df Model:                           3                                         
@@ -1517,7 +1518,7 @@ Significa que si quitas la variable <code>vs</code>, el AIC baja de 57.77 a 56.3
 <span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> best_models, model_objects</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="77372a1f" class="cell" data-message="false" data-results="as-is" data-execution_count="16">
+<div id="8ff2f77d" class="cell" data-message="false" data-results="as-is" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This line is crucial and should be present in your actual script</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># to ensure y_train has a name.</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> y_train.name <span class="kw">is</span> <span class="va">None</span>:</span>
@@ -1568,7 +1569,7 @@ Dep. Variable:                    mpg   R-squared:                       0.879
 Model:                            OLS   Adj. R-squared:                  0.862
 Method:                 Least Squares   F-statistic:                     50.92
 Date:                Thu, 19 Jun 2025   Prob (F-statistic):           8.26e-10
-Time:                        15:18:11   Log-Likelihood:                -54.262
+Time:                        21:58:33   Log-Likelihood:                -54.262
 No. Observations:                  25   AIC:                             116.5
 Df Residuals:                      21   BIC:                             121.4
 Df Model:                           3                                         
@@ -1592,7 +1593,7 @@ Notes:
 </div>
 </div>
 <p><code>Selection Algorithm: exhaustive</code> <strong>: Esto es crucial. Significa que el algoritmo probó todas las combinaciones posibles</strong> de variables para cada tamaño de subconjunto hasta <code>nvmax = 10</code> y seleccionó el mejor para cada tamaño. Esto asegura que, para cada número de variables (1, 2, …, 10), el modelo presentado es el óptimo según el criterio interno de <code>regsubsets_exhaustive</code> (generalmente <code>AIC</code>, <span class="math inline">\(R^2\)</span> ajustado, BIC a menos que se especifique otro en la función).</p>
-<div id="495b5841" class="cell" data-message="false" data-results="as-is" data-execution_count="17">
+<div id="356f01d6" class="cell" data-message="false" data-results="as-is" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1665,7 +1666,7 @@ Notes:
 <p>*## Evaluación del modelo</p>
 <p>Ahora se va a trabajar con un <strong>modelo reducido (<code>modelo_step</code>)</strong>, es importante <strong>usar ese modelo</strong> para hacer predicciones en el conjunto de prueba. Además, como solo algunas variables quedaron en el modelo (<code>drat</code>, <code>wt</code>, <code>gear</code>, <code>carb</code>), el <code>test_data</code> debe contener esas columnas.</p>
 <p><strong>Verificar qué variables necesita el modelo reducido</strong></p>
-<div id="8004c67d" class="cell" data-execution_count="18">
+<div id="1670cb31" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>global_best_aic_row <span class="op">=</span> all_results_df_for_global.loc[all_results_df_for_global[<span class="st">'aic'</span>].idxmin()]</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>global_best_aic_formula <span class="op">=</span> global_best_aic_row[<span class="st">'formula'</span>]</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>global_best_aic_formula</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1727,7 +1728,7 @@ Notes:
 </tr>
 </tbody>
 </table>
-<div id="4ddddb13" class="cell" data-execution_count="19">
+<div id="4a43186f" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
@@ -1786,7 +1787,7 @@ Factor de Inflación de la Varianza (VIF) ordenado:
 <h2 class="anchored" data-anchor-id="evaluación-del-modelo">Evaluación del modelo</h2>
 <p>La partición de los datos en <code>X_train</code>, <code>X_test</code>, <code>y_train</code>, y <code>y_test</code> se hace una sola vez al principio de tu análisis para asegurar que la evaluación final del modelo (con <code>X_test</code> y <code>y_test</code>) sea imparcial.</p>
 <p>Una vez que tienes la fórmula del modelo óptimo se selecciona (<code>'mpg ~ wt + qsec + am'</code>), lo que haces es <strong>re-entrenar el modelo con esta nueva fórmula utilizando únicamente los datos de entrenamiento (<code>X_train</code> y <code>y_train</code>)</strong>.</p>
-<div id="6afe6a31" class="cell" data-execution_count="20">
+<div id="5f66d17a" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1834,7 +1835,7 @@ Dep. Variable:                    mpg   R-squared:                       0.879
 Model:                            OLS   Adj. R-squared:                  0.862
 Method:                 Least Squares   F-statistic:                     50.92
 Date:                Thu, 19 Jun 2025   Prob (F-statistic):           8.26e-10
-Time:                        15:18:11   Log-Likelihood:                -54.262
+Time:                        21:58:33   Log-Likelihood:                -54.262
 No. Observations:                  25   AIC:                             116.5
 Df Residuals:                      21   BIC:                             121.4
 Df Model:                           3                                         
@@ -1866,7 +1867,7 @@ Notes:
 <li><p><strong>Uso práctico del modelo:</strong> Después de validar que el modelo es bueno, se puede usarlo para predecir la variable dependiente para nuevas observaciones futuras de las que solo se conocen las variables predictoras (por ejemplo, predecir el precio de una casa basándose en sus características, si el modelo fue entrenado para eso).</p></li>
 </ol>
 <p>El objeto <code>final_modelo_ols_py</code> (que es un objeto de tipo <code>statsmodels.regression.linear_model.RegressionResultsWrapper</code>) tiene un método <code>.predict()</code> que hace exactamente esto.</p>
-<div id="41263894" class="cell" data-execution_count="21">
+<div id="76e4bb7f" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Para el modelo en los datos de prueba</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># En R, usas 'newdata = test_data_reducido'. En Python, pasas el DataFrame</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># con las mismas columnas predictoras que el modelo fue entrenado con.</span></span>
@@ -1931,7 +1932,7 @@ Name: mpg, dtype: float64</code></pre>
 <li><span class="math inline">\(|y_i - \hat{y}_i|\)</span>: Es el <strong>valor absoluto</strong> de la diferencia entre el valor real y el valor predicho para la observación <span class="math inline">\(i\)</span>. Tomar el valor absoluto es crucial porque evita que los errores positivos y negativos se cancelen entre sí, lo que daría una falsa impresión de precisión.</li>
 <li><span class="math inline">\(\sum_{i=1}^{n}\)</span>: Indica la suma de todos los errores absolutos para todas las <span class="math inline">\(n\)</span> observaciones.</li>
 </ul>
-<div id="2d222036" class="cell" data-execution_count="22">
+<div id="e1295bdf" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, mean_absolute_error, r2_score</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1944,7 +1945,7 @@ Name: mpg, dtype: float64</code></pre>
 </div>
 </div>
 <p>Esto significa que, <strong>en promedio</strong>, el modelo reducido predice el consumo de combustible con un error de ±3.10 mpg. Esto es bueno o malo. Depende del rango de la variable <code>mpg</code> en <code>mtcars</code>.</p>
-<div id="1af6c472" class="cell" data-execution_count="23">
+<div id="bb39741a" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular el rango (mínimo y máximo) de la columna 'mpg'</span></span>
@@ -2004,7 +2005,7 @@ Name: mpg, dtype: float64</code></pre>
 </ul></li>
 <li><strong>Desventaja:</strong> Si tu conjunto de datos contiene muchos valores atípicos reales o errores de medición que no son representativos del rendimiento general del modelo, el RMSE podría dar una visión pesimista.</li>
 </ul>
-<div id="66c3d9af" class="cell" data-execution_count="24">
+<div id="fa73e64e" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, mean_absolute_error, r2_score</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2057,7 +2058,7 @@ RMSE en conjunto de prueba: 3.4120</code></pre>
 </li>
 <li><strong>Valores más altos de</strong> <span class="math inline">\(R^2\)</span> indican un mejor ajuste del modelo a los datos observados, lo que significa que las variables predictoras del modelo explican una mayor proporción de la variabilidad en la variable dependiente.</li>
 </ul>
-<div id="ed696922" class="cell" data-execution_count="25">
+<div id="bd863693" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Para evaluar el rendimiento del modelo (Ej: RMSE, MAE, R^2 en test)</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, mean_absolute_error, r2_score</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2082,7 +2083,7 @@ RMSE en conjunto de prueba: 3.4120</code></pre>
 <h4 class="anchored" data-anchor-id="distribución-de-los-residuos">Distribución de los residuos</h4>
 <p>Relación lineal entre variable dependiente e independiente:</p>
 <p>Se calculan los residuos para cada observación y se representan (<code>scatterplot</code>). Si las observaciones siguen la línea del modelo, los residuos se deben distribuir aleatoriamente entorno al valor 0.</p>
-<div id="5878c6f0" class="cell" data-message="false" data-results="as-is" data-execution_count="26">
+<div id="d72745bd" class="cell" data-message="false" data-results="as-is" data-execution_count="26">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -2162,6 +2163,436 @@ RMSE en conjunto de prueba: 3.4120</code></pre>
 </div>
 </div>
 </div>
+<p>Los residuos se deben distribuir de forma normal con media 0. Para comprobarlo se recurre a histogramas, a los cuantiles normales o a un test de contraste de normalidad.</p>
+<div id="9243b46d" class="cell" data-message="false" data-results="as-is" data-execution_count="27">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Se crea un DataFrame'tabla_py' con los residuos</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="co"># En statsmodels, los residuos se obtienen con .resid</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>tabla_py <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>                         <span class="st">'residuo'</span>: final_modelo_ols_py.resid</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Se confifuran los estilos para el gráfico</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>) <span class="co"># Similar a theme_light() en R, que da un fondo blanco con rejillas</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Opcional: Se confifura  la fuente globalmente si se tiene disponible (ej. 'Montserrat')</span></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'font.family'</span>] <span class="op">=</span> <span class="st">'Montserrat'</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'axes.labelweight'</span>] <span class="op">=</span> <span class="st">'bold'</span> <span class="co"># Para hacer las etiquetas de los ejes en negrita si deseas</span></span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'font.size'</span>] <span class="op">=</span> <span class="dv">12</span> <span class="co"># Tamaño de fuente base</span></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Se crea la figura y los ejes</span></span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">6</span>)) <span class="co"># Tamaño de la figura</span></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Se crea el histograma con Seaborn</span></span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 'kde=False' asegura que sea solo un histograma (sin la curva de densidad suavizada)</span></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 'stat="density"' es el equivalente de 'aes(y = ..density..)' de ggplot2</span></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>sns.histplot(</span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>             data <span class="op">=</span> tabla_py,</span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>             x <span class="op">=</span> <span class="st">'residuo'</span>,</span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>             bins <span class="op">=</span> <span class="st">'auto'</span>, <span class="co"># 'auto' para que Seaborn determine un número de bins apropiado</span></span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>             color <span class="op">=</span> <span class="st">'#C70039'</span>, <span class="co"># Color de las barras del histograma</span></span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>             edgecolor <span class="op">=</span> <span class="st">'#900C3F'</span>, <span class="co"># Borde de las barras</span></span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>             stat <span class="op">=</span> <span class="st">"density"</span> <span class="co"># Importante: normaliza la altura de las barras para que sumen 1 (densidad)</span></span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Configurar etiquetas y título</span></span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Histograma de los residuos"</span>, fontsize <span class="op">=</span> <span class="dv">18</span>, loc <span class="op">=</span> <span class="st">'left'</span>, fontweight <span class="op">=</span> <span class="st">'bold'</span>)</span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Residuo"</span>, fontsize <span class="op">=</span> <span class="dv">14</span>)</span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Densidad"</span>, fontsize <span class="op">=</span> <span class="dv">14</span>) <span class="co"># Cambiamos a Densidad porque usamos stat="density"</span></span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustes de los ticks y etiquetas de los ejes</span></span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, labelsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Se quita la leyenda (aunque histplot no suele generarla si solo hay una variable)</span></span>
+<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.legend().remove() # Descomenta si por alguna razón aparece una leyenda</span></span>
+<span id="cb36-48"><a href="#cb36-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-49"><a href="#cb36-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Resultado</span></span>
+<span id="cb36-50"><a href="#cb36-50" aria-hidden="true" tabindex="-1"></a>plt.tight_layout() <span class="co"># Ajusta el diseño para que no se corten etiquetas</span></span>
+<span id="cb36-51"><a href="#cb36-51" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_01_OLSR_py_files/figure-html/cell-28-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="q-q-plot" class="level4">
+<h4 class="anchored" data-anchor-id="q-q-plot">Q-Q Plot</h4>
+<p>Los gráficos Q-Q normales son esenciales para verificar uno de los supuestos clave en la regresión lineal: la <strong>normalidad de los residuos</strong>. Si los residuos siguen una distribución normal, los puntos en el gráfico Q-Q deben caer aproximadamente a lo largo de una línea recta.</p>
+<div id="f069adaf" class="cell" data-message="false" data-results="as-is" data-execution_count="28">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm <span class="co"># Importa statsmodels.api para qqplot</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Residuos del modelo</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>residuos_py <span class="op">=</span> final_modelo_ols_py.resid</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Se crea el Gráfico Q-Q Normal</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="co"># sm.qqplot automáticamente calcula los cuantiles teóricos y observados</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="co"># y dibuja la línea de referencia.</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 'line="45"' dibuja la línea y=x (pendiente 1, intercepto 0)</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> sm.qqplot(residuos_py, </span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>                line <span class="op">=</span> <span class="st">'45'</span>, </span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>                fit <span class="op">=</span> <span class="va">True</span>, </span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>                plot_type <span class="op">=</span> <span class="st">'qq'</span>, </span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>                ax <span class="op">=</span> <span class="va">None</span>) <span class="co"># 'ax=None' crea una nueva figura por defecto</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Si se necesita una personalización más profunda o el objeto Axis, se puede hacer esto:</span></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">6</span>)) <span class="co"># Se crea una figura y ejes explícitamente</span></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>sm.qqplot(residuos_py, line<span class="op">=</span><span class="st">'45'</span>, fit <span class="op">=</span> <span class="va">True</span>, ax <span class="op">=</span> ax)</span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Se configuran los estilos y se personaliza el gráfico</span></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Puedes establecer un estilo global de Seaborn para que el fondo sea similar a theme_minimal</span></span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>) <span class="co"># O "white", "dark", "darkgrid" para diferentes estilos de fondo/rejilla</span></span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Se configura el color de los puntos (sm.qqplot no tiene un argumento directo para el color de los puntos)</span></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Se necesita acceder a los objetos Line2D (los puntos) en el gráfico.</span></span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a><span class="co"># sm.qqplot devuelve un objeto Figure, que contiene los Axes.</span></span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Los puntos suelen ser el primer objeto Line2D en los Axes.</span></span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Iteramos sobre los ejes para encontrar los puntos y la línea</span></span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> fig.get_axes():</span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Los puntos son el primer elemento en ax.collections (si son scatter) o ax.lines</span></span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Para qqplot, los puntos son Lines2D.</span></span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ax.lines: <span class="co"># Verifica si hay líneas</span></span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Los puntos del Q-Q plot suelen ser la primera línea/colección</span></span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a>        ax.lines[<span class="dv">0</span>].set_color(<span class="st">'darkblue'</span>) <span class="co"># Color de los puntos</span></span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a>        ax.lines[<span class="dv">0</span>].set_marker(<span class="st">'o'</span>)      <span class="co"># Tipo de marcador (círculo)</span></span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a>        ax.lines[<span class="dv">0</span>].set_markersize(<span class="dv">5</span>)    <span class="co"># Tamaño de los puntos</span></span>
+<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a>        ax.lines[<span class="dv">0</span>].set_alpha(<span class="fl">0.7</span>)       <span class="co"># Transparencia</span></span>
+<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># La línea de referencia (si line='45' fue usado) suele ser la segunda línea</span></span>
+<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(ax.lines) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a>            ax.lines[<span class="dv">1</span>].set_color(<span class="st">'red'</span>) <span class="co"># Color de la línea de referencia</span></span>
+<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a>            ax.lines[<span class="dv">1</span>].set_linestyle(<span class="st">'--'</span>) <span class="co"># Estilo de línea discontinua</span></span>
+<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Configurar etiquetas y título</span></span>
+<span id="cb37-50"><a href="#cb37-50" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Gráfico Q-Q Normal de los Residuos del Modelo"</span>, fontsize<span class="op">=</span><span class="dv">18</span>, loc<span class="op">=</span><span class="st">'center'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb37-51"><a href="#cb37-51" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Cuantiles Teóricos Normales"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb37-52"><a href="#cb37-52" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Residuos del Modelo"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb37-53"><a href="#cb37-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-54"><a href="#cb37-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar los ticks y etiquetas de los ejes</span></span>
+<span id="cb37-55"><a href="#cb37-55" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, labelsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb37-56"><a href="#cb37-56" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-58"><a href="#cb37-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Quitar la leyenda si aparece por defecto</span></span>
+<span id="cb37-59"><a href="#cb37-59" aria-hidden="true" tabindex="-1"></a><span class="co"># if ax.get_legend():</span></span>
+<span id="cb37-60"><a href="#cb37-60" aria-hidden="true" tabindex="-1"></a><span class="co">#     ax.get_legend().remove()</span></span>
+<span id="cb37-61"><a href="#cb37-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-62"><a href="#cb37-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar el diseño para que no se corten etiquetas</span></span>
+<span id="cb37-63"><a href="#cb37-63" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb37-64"><a href="#cb37-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-65"><a href="#cb37-65" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el gráfico</span></span>
+<span id="cb37-66"><a href="#cb37-66" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="interpretación-del-gráfico-q-q-normal" class="level5">
+<h5 class="anchored" data-anchor-id="interpretación-del-gráfico-q-q-normal">Interpretación del gráfico Q-Q Normal:</h5>
+<ul>
+<li><strong>Si los puntos caen aproximadamente sobre la línea roja diagonal</strong>, indica que los residuos siguen una distribución normal. Esto es lo que idealmente buscas.<br>
+</li>
+<li><strong>Si los puntos se desvían de la línea</strong>, puede indicar una violación del supuesto de normalidad:
+<ul>
+<li><strong>Forma de “S”</strong>: Los residuos pueden tener colas más pesadas o más ligeras de lo esperado (ej. distribución con curtosis).</li>
+</ul></li>
+<li><strong>Curvatura en un extremo o ambos</strong>: Los residuos pueden estar sesgados (skewed) hacia la izquierda o la derecha.</li>
+</ul>
+</section>
+</section>
+<section id="residuos-studentizados-studentized-residuals" class="level4">
+<h4 class="anchored" data-anchor-id="residuos-studentizados-studentized-residuals">Residuos Studentizados (Studentized Residuals)</h4>
+<ul>
+<li><p>También conocidos como residuos studentizados externamente (o residuos t). Son una versión más refinada de los residuos estandarizados.</p></li>
+<li><p>Cada residuo se divide por una estimación de su error estándar que excluye la observación actual, lo que los hace más apropiados para la detección de outliers, ya que el outlier no influye en la estimación de su propia varianza.</p></li>
+</ul>
+<div id="3cfa1ed2" class="cell" data-message="false" data-results="as-is" data-execution_count="29">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf <span class="co"># Asegúrate de que esto esté importado si lo necesitas para final_modelo_ols_py</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the studentized residuals from the fitted model</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>residuos_studentized_py <span class="op">=</span> final_modelo_ols_py.get_influence().resid_studentized_external</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Configure plotting style first (apply globally)</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>) <span class="co"># Sets a nice background with a grid</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create the Figure and Axes explicitly and ONLY ONCE</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>)) <span class="co"># Create a figure and axes with desired size</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Draw the Q-Q plot onto the created axes (ax)</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a><span class="co"># IMPORTANT: Only ONE sm.qqplot call, and it MUST use 'ax=ax' and NOT 'plot_type'</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>sm.qqplot(residuos_studentized_py,</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>          line <span class="op">=</span> <span class="st">'45'</span>,</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>          fit <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>          ax <span class="op">=</span> ax) <span class="co"># &lt;-- This is the correct and only sm.qqplot call</span></span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Customize point and line appearance</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> fig.get_axes():</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ax.lines:</span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Points</span></span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>        ax.lines[<span class="dv">0</span>].set_color(<span class="st">'darkblue'</span>)</span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>        ax.lines[<span class="dv">0</span>].set_marker(<span class="st">'o'</span>)</span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>        ax.lines[<span class="dv">0</span>].set_markersize(<span class="dv">5</span>)</span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a>        ax.lines[<span class="dv">0</span>].set_alpha(<span class="fl">0.7</span>)</span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Reference line</span></span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(ax.lines) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>            ax.lines[<span class="dv">1</span>].set_color(<span class="st">'red'</span>)</span>
+<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a>            ax.lines[<span class="dv">1</span>].set_linestyle(<span class="st">'--'</span>)</span>
+<span id="cb38-37"><a href="#cb38-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-38"><a href="#cb38-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Configure labels and title</span></span>
+<span id="cb38-39"><a href="#cb38-39" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Gráfico Q-Q Normal de los Residuos studentized"</span>, fontsize <span class="op">=</span> <span class="dv">18</span>, loc <span class="op">=</span> <span class="st">'center'</span>, fontweight <span class="op">=</span> <span class="st">'bold'</span>)</span>
+<span id="cb38-40"><a href="#cb38-40" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Cuantiles Teóricos Normales"</span>, fontsize <span class="op">=</span> <span class="dv">14</span>)</span>
+<span id="cb38-41"><a href="#cb38-41" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Residuos studentized"</span>, fontsize <span class="op">=</span> <span class="dv">14</span>)</span>
+<span id="cb38-42"><a href="#cb38-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-43"><a href="#cb38-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjust tick and label sizes</span></span>
+<span id="cb38-44"><a href="#cb38-44" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">'x'</span>, labelsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb38-45"><a href="#cb38-45" aria-hidden="true" tabindex="-1"></a>plt.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb38-46"><a href="#cb38-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-47"><a href="#cb38-47" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Display the plot</span></span>
+<span id="cb38-48"><a href="#cb38-48" aria-hidden="true" tabindex="-1"></a>plt.tight_layout() <span class="co"># Adjust layout to prevent labels from being cut off</span></span>
+<span id="cb38-49"><a href="#cb38-49" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_01_OLSR_py_files/figure-html/cell-30-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="shapiro-wilk-normality-test" class="level4">
+<h4 class="anchored" data-anchor-id="shapiro-wilk-normality-test">Shapiro-Wilk normality test</h4>
+<p>El <strong>Test de Normalidad de Shapiro-Wilk</strong> es una prueba estadística que se utiliza para determinar si una muestra de datos procede de una población con distribución normal. Es una de las pruebas de normalidad más potentes y ampliamente recomendadas, especialmente para tamaños de muestra pequeños a moderados.</p>
+<p>Es una prueba estadística que evalúa si los datos provienen de una distribución normal.</p>
+<ul>
+<li><strong>Hipótesis nula (H₀)</strong>: los datos siguen una distribución normal.</li>
+<li><strong>Hipótesis alternativa (H₁)</strong>: los datos <strong>no</strong> siguen una distribución normal.</li>
+</ul>
+<div id="227f02e7" class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> shapiro <span class="co"># Importa la función shapiro</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener los residuos del modelo entrenado</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Este es el equivalente de modelo_step$residuals en R</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>residuos <span class="op">=</span> final_modelo_ols_py.resid</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizar el Test de Shapiro-Wilk para normalidad</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co"># La función shapiro() devuelve dos valores: el estadístico W y el valor p</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>statistic, p_value <span class="op">=</span> shapiro(residuos)</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Resultado del Test de Shapiro-Wilk ---"</span>)</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estadístico W: </span><span class="sc">{</span>statistic<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Valor p: </span><span class="sc">{</span>p_value<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Interpretar el resultado (convencionalmente con alpha = 0.05)</span></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> p_value <span class="op">&gt;</span> alpha:</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Dado que el valor p (</span><span class="sc">{</span>p_value<span class="sc">:.4f}</span><span class="ss">) es mayor que </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">, no se puede rechazar la hipótesis nula."</span>)</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Por lo tanto, los residuos parecen seguir una distribución normal."</span>)</span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Dado que el valor p (</span><span class="sc">{</span>p_value<span class="sc">:.4f}</span><span class="ss">) es menor o igual que </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">, se rechaza la hipótesis nula."</span>)</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Por lo tanto, los residuos no parecen seguir una distribución normal."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>--- Resultado del Test de Shapiro-Wilk ---
+Estadístico W: 0.9537
+Valor p: 0.3030
+Dado que el valor p (0.3030) es mayor que 0.05, no se puede rechazar la hipótesis nula.
+Por lo tanto, los residuos parecen seguir una distribución normal.</code></pre>
+</div>
+</div>
+<ul>
+<li><strong>p = 0.3030 &gt; 0.05</strong> → <strong>no se rechaza H₀</strong>
+<ul>
+<li><strong>Conclusión</strong>: <strong>los residuos del modelo pueden considerarse normalmente distribuidos</strong>.</li>
+</ul></li>
+</ul>
+<section id="evaluación-de-los-residuos-de-un-modelo-lineal" class="level5">
+<h5 class="anchored" data-anchor-id="evaluación-de-los-residuos-de-un-modelo-lineal">Evaluación de los residuos de un modelo lineal</h5>
+<div id="2c688664" class="cell" data-message="false" data-results="as-is" data-execution_count="31">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove the problematic import:</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.graphics.regressionplots <span class="im">import</span> plot_leverage_resid2 <span class="co"># Keep only plot_leverage_resid2</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Configurar el estilo de seaborn para una apariencia similar</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"white"</span>)</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Crear una figura con dos subplots (1 fila, 2 columnas)</span></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">6</span>))</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Gráfico 1: Scale-Location (o Spread-Location) ---</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener los residuos estandarizados y los valores ajustados del modelo</span></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir a Series de Pandas con el índice correcto para usar .nlargest()</span></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a>standardized_residuals <span class="op">=</span> pd.Series(</span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>    final_modelo_ols_py.get_influence().resid_std,</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>train_data_selected_model.index <span class="co"># IMPORTANT: Use the index of your training data</span></span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a>fitted_values <span class="op">=</span> pd.Series(</span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>    final_modelo_ols_py.fittedvalues,</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>train_data_selected_model.index <span class="co"># IMPORTANT: Use the index of your training data</span></span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la raíz cuadrada del valor absoluto de los residuos estandarizados</span></span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a>sqrt_abs_standardized_residuals <span class="op">=</span> np.sqrt(np.<span class="bu">abs</span>(standardized_residuals))</span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar en el primer subplot (axes[0])</span></span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].scatter(fitted_values, sqrt_abs_standardized_residuals, edgecolors<span class="op">=</span><span class="st">'black'</span>, facecolors<span class="op">=</span><span class="st">'none'</span>)</span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Añadir la línea de LOESS</span></span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a>sns.regplot(</span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>fitted_values,</span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>sqrt_abs_standardized_residuals,</span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a>    lowess<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a>    scatter<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">'red'</span>,</span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a>    ax<span class="op">=</span>axes[<span class="dv">0</span>]</span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Etiquetas para puntos influyentes</span></span>
+<span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Ahora standardized_residuals es un Series de Pandas, así que .nlargest() funcionará.</span></span>
+<span id="cb41-48"><a href="#cb41-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Aseguramos que los índices de fitted_values y sqrt_abs_standardized_residuals también sean Series con los mismos índices.</span></span>
+<span id="cb41-49"><a href="#cb41-49" aria-hidden="true" tabindex="-1"></a>top_residuals_indices <span class="op">=</span> np.<span class="bu">abs</span>(standardized_residuals).nlargest(<span class="dv">3</span>).index</span>
+<span id="cb41-50"><a href="#cb41-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-51"><a href="#cb41-51" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx <span class="kw">in</span> top_residuals_indices:</span>
+<span id="cb41-52"><a href="#cb41-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Estos accesos son ahora seguros porque 'fitted_values' y 'sqrt_abs_standardized_residuals'</span></span>
+<span id="cb41-53"><a href="#cb41-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># también son Series con los mismos índices que 'standardized_residuals'.</span></span>
+<span id="cb41-54"><a href="#cb41-54" aria-hidden="true" tabindex="-1"></a>    x_val <span class="op">=</span> fitted_values.loc[idx]</span>
+<span id="cb41-55"><a href="#cb41-55" aria-hidden="true" tabindex="-1"></a>    y_val <span class="op">=</span> sqrt_abs_standardized_residuals.loc[idx]</span>
+<span id="cb41-56"><a href="#cb41-56" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].annotate(<span class="bu">str</span>(idx), (x_val, y_val),</span>
+<span id="cb41-57"><a href="#cb41-57" aria-hidden="true" tabindex="-1"></a>                     xytext<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>), textcoords<span class="op">=</span><span class="st">'offset points'</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb41-58"><a href="#cb41-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-59"><a href="#cb41-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-60"><a href="#cb41-60" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Scale-Location'</span>)</span>
+<span id="cb41-61"><a href="#cb41-61" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">'Fitted values'</span>)</span>
+<span id="cb41-62"><a href="#cb41-62" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="vs">r'</span><span class="dv">$\s</span><span class="vs">qrt{</span><span class="cf">|</span><span class="vs">Standardized</span><span class="ch">\ </span><span class="vs">residuals</span><span class="cf">|</span><span class="vs">}</span><span class="dv">$</span><span class="vs">'</span>)</span>
+<span id="cb41-63"><a href="#cb41-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-64"><a href="#cb41-64" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Gráfico 2: Residuals vs Leverage (con Distancia de Cook) ---</span></span>
+<span id="cb41-65"><a href="#cb41-65" aria-hidden="true" tabindex="-1"></a>sm.graphics.plot_leverage_resid2(final_modelo_ols_py, ax<span class="op">=</span>axes[<span class="dv">1</span>],</span>
+<span id="cb41-66"><a href="#cb41-66" aria-hidden="true" tabindex="-1"></a>                                 line_kwargs<span class="op">=</span>{<span class="st">'color'</span>: <span class="st">'red'</span>, <span class="st">'alpha'</span>: <span class="fl">0.8</span>})</span>
+<span id="cb41-67"><a href="#cb41-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-68"><a href="#cb41-68" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'Residuals vs Leverage'</span>)</span>
+<span id="cb41-69"><a href="#cb41-69" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">'Leverage'</span>)</span>
+<span id="cb41-70"><a href="#cb41-70" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">'Standardized residuals'</span>)</span>
+<span id="cb41-71"><a href="#cb41-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-72"><a href="#cb41-72" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb41-73"><a href="#cb41-73" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+</section>
+<section id="validación-cruzada" class="level3">
+<h3 class="anchored" data-anchor-id="validación-cruzada">Validación cruzada</h3>
+<p>La <strong>validación cruzada</strong> es una técnica estadística esencial utilizada en el aprendizaje automático y la modelización para <strong>evaluar la capacidad de un modelo para generalizar a un conjunto de datos independiente</strong>, es decir, a datos que no se han visto durante el entrenamiento. Su objetivo principal es obtener una estimación más robusta y menos sesgada del rendimiento predictivo del modelo, ayudando a evitar el <strong>sobreajuste (overfitting)</strong>.</p>
+<p>Cuando se construye un modelo, y se entrena con un conjunto de datos. Se evalúa el rendimiento del modelo en esos mismos datos de entrenamiento, a menudo se obtendrá una métrica de rendimiento inflada (por ejemplo, un <span class="math inline">\(R^2\)</span> muy alto o un MAE/RMSE muy bajo). Esto se debe a que el modelo ha “memorizado” los datos de entrenamiento, incluyendo el ruido y las particularidades de esa muestra específica. Sin embargo, un modelo sobreajustado no funcionará bien con datos nuevos y reales.</p>
+<section id="tipos-comunes-de-validación-cruzada" class="level4">
+<h4 class="anchored" data-anchor-id="tipos-comunes-de-validación-cruzada">Tipos Comunes de Validación Cruzada:</h4>
+<p>Aunque hay varias variaciones, las más comunes son:</p>
+</section>
+<section id="beneficios-de-la-validación-cruzada" class="level4">
+<h4 class="anchored" data-anchor-id="beneficios-de-la-validación-cruzada">Beneficios de la Validación Cruzada:</h4>
+<ul>
+<li><strong>Estimación Robusta del Rendimiento:</strong> Proporciona una métrica de rendimiento más fiable y menos sesgada de cómo se comportará el modelo con datos nuevos.</li>
+<li><strong>Detección de Sobreajuste:</strong> Ayuda a identificar si un modelo está sobreajustado, ya que un modelo sobreajustado tendrá un rendimiento mucho peor en los folds de validación que en los de entrenamiento.</li>
+<li><strong>Selección de Modelos y Ajuste de Hiperparámetros:</strong> Es fundamental para comparar y seleccionar entre diferentes modelos (ej., regresión lineal vs.&nbsp;árboles de decisión) o para encontrar los mejores <strong>hiperparámetros</strong> para un modelo (ej., la profundidad máxima de un árbol de decisión). Esto se logra a menudo mediante técnicas como la <strong>búsqueda de rejilla (Grid Search)</strong> o la <strong>búsqueda aleatoria (Random Search)</strong> combinadas con validación cruzada.</li>
+</ul>
+<section id="validaciones-cruzadas-recomendadas-para-olsr" class="level5">
+<h5 class="anchored" data-anchor-id="validaciones-cruzadas-recomendadas-para-olsr">Validaciones cruzadas recomendadas para OLSR</h5>
+<p>En modelos de <strong>regresión lineal OLS (Ordinary Least Squares Regression)</strong>, la <strong>validación cruzada (cross-validation)</strong> es clave para estimar la capacidad de generalización del modelo.</p>
+<section id="validación-cruzada-k-fold-k-fold-cross-validation" class="level6">
+<h6 class="anchored" data-anchor-id="validación-cruzada-k-fold-k-fold-cross-validation"><strong>Validación Cruzada K-Fold (K-Fold Cross-Validation):</strong></h6>
+<ul>
+<li>Es el tipo más popular. El conjunto de datos se divide en <span class="math inline">\(k\)</span> folds. .</li>
+<li><strong>Elección de</strong> <span class="math inline">\(k\)</span>: Los valores comunes para <span class="math inline">\(k\)</span> son 5 o 10. Un <span class="math inline">\(k\)</span> más alto (por ejemplo, 10) proporciona una estimación más precisa del rendimiento pero es computacionalmente más costoso. Un <span class="math inline">\(k\)</span> más bajo (por ejemplo, 5) es más rápido pero la estimación puede ser más variable.</li>
+</ul>
+<p align="center">
+<img src="../../img/K-Fold (Cross Validation).png" alt="Machine Learning Steps" width="80%">
+</p>
+<pre><code>```python
+cv_splitter = KFold(n_splits = 10, shuffle = True, random_state = 123)
+```</code></pre>
+<ul>
+<li><strong>Más usada</strong> y recomendada para regresión lineal.</li>
+<li>Divide los datos en <em>k</em> grupos (folds), entrena el modelo en <em>k-1</em> y valida en el restante, repitiendo <em>k</em> veces.</li>
+<li><ul>
+<li>En Python, esto se traduce al argumento <code>n_splits=10</code> en <code>KFold</code>.</li>
+</ul></li>
+<li><strong>Configuración de <code>shuffle</code> y <code>random_state</code>:</strong>
+<ul>
+<li><code>shuffle=True</code>: Es una buena práctica para mezclar los datos antes de dividirlos, asegurando que los folds sean aleatorios y representativos.</li>
+</ul></li>
+<li><code>random_state</code>: Asegura que si <code>shuffle=True</code>, las divisiones sean siempre las mismas cada vez que ejecutes el código, lo que es crucial para la reproducibilidad de tus resultados.</li>
+</ul>
+</section>
+<section id="validación-cruzada-de-dejar-uno-fuera-leave-one-out-cross-validation---loocv" class="level6">
+<h6 class="anchored" data-anchor-id="validación-cruzada-de-dejar-uno-fuera-leave-one-out-cross-validation---loocv"><strong>Validación Cruzada de Dejar Uno Fuera (Leave-One-Out Cross-Validation - LOOCV):</strong></h6>
+<ul>
+<li>Es un caso especial de K-Fold donde <span class="math inline">\(k\)</span> es igual al número de observaciones (<span class="math inline">\(n\)</span>) en el conjunto de datos.</li>
+<li>En cada iteración, una sola observación se usa como conjunto de validación, y las <span class="math inline">\(n-1\)</span> observaciones restantes se usan para entrenar el modelo.</li>
+<li><strong>Ventaja:</strong> Proporciona una estimación casi insesgada del rendimiento.</li>
+<li><strong>Desventaja:</strong> Es computacionalmente muy costoso, especialmente para grandes conjuntos de datos, ya que se ajusta el modelo <span class="math inline">\(n\)</span> veces.</li>
+</ul>
+<p align="center">
+<img src="../../img/LOOCV (Cross Validation).png" alt="Machine Learning Steps" width="80%">
+</p>
+<pre><code>```r
+trainControl(method = "LOOCV")
+```</code></pre>
+<ul>
+<li>Cada observación se deja fuera una vez (es como <code>k = n</code>).</li>
+<li>Proporciona una evaluación <strong>menos sesgada</strong>, pero puede ser <strong>computacionalmente costosa</strong>.</li>
+<li>En modelos lineales como OLS, es factible y a veces preferido si tienes pocos datos.</li>
+</ul>
+</section>
+<section id="validación-cruzada-de-repeated-k-fold-cross-validation" class="level6">
+<h6 class="anchored" data-anchor-id="validación-cruzada-de-repeated-k-fold-cross-validation"><strong>Validación Cruzada de Repeated k-fold cross-validation</strong></h6>
+<p>La <strong>validación cruzada repetida k-fold</strong> (<code>Repeated k-Fold Cross-Validation</code>) es una extensión del método k-fold cross-validation y se utiliza para obtener una <strong>estimación más estable</strong> y <strong>confiable del desempeño de un modelo</strong>, especialmente cuando el conjunto de datos es pequeño o tiene mucha variabilidad.</p>
+<p align="center">
+<img src="../../img/Repeated k-fold cross-validation.png" alt="Machine Learning Steps" width="50%">
+</p>
+<pre><code>```r
+trainControl(method = "repeatedcv", number = 10, repeats = 5)
+```</code></pre>
+<ul>
+<li>Repite el proceso de k-fold varias veces con diferentes particiones aleatorias.</li>
+<li>Ofrece una <strong>estimación más estable</strong> del error de generalización.</li>
+<li>Útil si los datos tienen mucha variabilidad o ruido.</li>
+</ul>
+</section>
+</section>
 </section>
 </section>
 </section>

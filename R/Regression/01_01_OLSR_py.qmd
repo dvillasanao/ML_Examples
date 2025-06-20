@@ -1570,6 +1570,7 @@ Los gráficos Q-Q normales son esenciales para verificar uno de los supuestos cl
 
 ```{python}
 #| echo: true
+#| eval: false
 #| message: false
 #| warning: false
 #| results: as-is
@@ -1658,7 +1659,7 @@ plt.show()
 
 ```{python}
 #| echo: true
-#| eval: false
+#| eval: true
 #| message: false
 #| warning: false
 #| results: as-is
@@ -1668,23 +1669,24 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import statsmodels.api as sm # Import statsmodels.api for qqplot
+import statsmodels.api as sm
+import statsmodels.formula.api as smf # Asegúrate de que esto esté importado si lo necesitas para final_modelo_ols_py
 
 # Get the studentized residuals from the fitted model
-# This is the direct equivalent of rstudent(modelo_step) in R
 residuos_studentized_py = final_modelo_ols_py.get_influence().resid_studentized_external
 
-# 1. Create the Normal Q-Q Plot
-# sm.qqplot automatically calculates theoretical and observed quantiles
-# and draws the reference line.
-# 'line="45"' draws the y=x line (slope 1, intercept 0)
-fig = sm.qqplot(residuos_studentized_py, line = '45', fit = True, plot_type = 'qq', ax = None)
-
-# 2. Configure styles and customize the plot
-fig, ax = plt.subplots(figsize = (12, 6)) # Se crea una figura y ejes explícitamente
-sm.qqplot(residuos_studentized_py, line='45', fit = True)
+# 1. Configure plotting style first (apply globally)
 sns.set_style("whitegrid") # Sets a nice background with a grid
 
+# 2. Create the Figure and Axes explicitly and ONLY ONCE
+fig, ax = plt.subplots(figsize=(10, 6)) # Create a figure and axes with desired size
+
+# 3. Draw the Q-Q plot onto the created axes (ax)
+# IMPORTANT: Only ONE sm.qqplot call, and it MUST use 'ax=ax' and NOT 'plot_type'
+sm.qqplot(residuos_studentized_py,
+          line = '45',
+          fit = True,
+          ax = ax) # <-- This is the correct and only sm.qqplot call
 
 # Customize point and line appearance
 for ax in fig.get_axes():
@@ -1762,6 +1764,7 @@ else:
 
 ```{python}
 #| echo: true
+#| eval: false
 #| message: false
 #| warning: false
 #| results: as-is
@@ -1773,26 +1776,28 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
-from statsmodels.graphics.regressionplots import plot_leverage_resid2, plot_homoscedasticity
+# Remove the problematic import:
+from statsmodels.graphics.regressionplots import plot_leverage_resid2 # Keep only plot_leverage_resid2
 
 # Configurar el estilo de seaborn para una apariencia similar
-sns.set_style("white") # Un fondo blanco, similar al default de R para estos plots
+sns.set_style("white")
 
 # 1. Crear una figura con dos subplots (1 fila, 2 columnas)
-# Esto es el equivalente a par(mfrow = c(1,2)) en R
-fig, axes = plt.subplots(1, 2, figsize = (14, 6)) # figsize ajusta el tamaño total de la figura
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
 # --- Gráfico 1: Scale-Location (o Spread-Location) ---
-# Este gráfico evalúa la homoscedasticidad (varianza constante de los residuos).
-# En statsmodels, puedes obtener los residuos estandarizados (studentized residuals)
-# y los valores ajustados para graficarlos.
-# La raíz cuadrada de los residuos estandarizados absolutos vs. los valores ajustados.
 
 # Obtener los residuos estandarizados y los valores ajustados del modelo
-# Los residuos estandarizados son muy similares a los studentized residuals que usaste antes,
-# pero a menudo los residuos estandarizados (con varianza 1) son los que se usan aquí.
-standardized_residuals = final_modelo_ols_py.get_influence().resid_std # studentized residuals from get_influence() are also often called standardized
-fitted_values = final_modelo_ols_py.fittedvalues
+# Convertir a Series de Pandas con el índice correcto para usar .nlargest()
+standardized_residuals = pd.Series(
+    final_modelo_ols_py.get_influence().resid_std,
+    index=train_data_selected_model.index # IMPORTANT: Use the index of your training data
+)
+fitted_values = pd.Series(
+    final_modelo_ols_py.fittedvalues,
+    index=train_data_selected_model.index # IMPORTANT: Use the index of your training data
+)
+
 
 # Calcular la raíz cuadrada del valor absoluto de los residuos estandarizados
 sqrt_abs_standardized_residuals = np.sqrt(np.abs(standardized_residuals))
@@ -1800,60 +1805,124 @@ sqrt_abs_standardized_residuals = np.sqrt(np.abs(standardized_residuals))
 # Graficar en el primer subplot (axes[0])
 axes[0].scatter(fitted_values, sqrt_abs_standardized_residuals, edgecolors='black', facecolors='none')
 
-# Añadir la línea de LOESS (Locally Estimated Scatterplot Smoothing)
-# Esto se hace manualmente con seaborn o statsmodels si quieres ser preciso,
-# o simplemente se dibuja una línea suavizada si es solo para visualización.
-# Aquí usaremos sns.regplot para la línea LOESS, pero lo hacemos sobre los mismos datos
-# y luego eliminamos los puntos para que solo quede la línea.
+# Añadir la línea de LOESS
 sns.regplot(
     x=fitted_values,
     y=sqrt_abs_standardized_residuals,
-    lowess=True, # Esto es clave para la línea suavizada (LOESS)
-    scatter=False, # No dibuja los puntos (ya los dibujamos con scatter)
+    lowess=True,
+    scatter=False,
     color='red',
     ax=axes[0]
 )
 
-# Etiquetas para puntos influyentes (como Chrysler Imperial, Fiat 128, Datsun 710)
-# Esto requiere un poco más de trabajo ya que statsmodels no lo hace automáticamente en todos los plots.
-# Necesitas identificar los nombres de las filas de los outliers.
-# Ejemplo muy básico: Si conoces los índices o tienes un método para identificarlos
-# (e.g., por un umbral de residuo alto)
-# Aquí lo haremos con un ejemplo, si tus datos tienen nombres de índice:
-if hasattr(train_data_selected_model, 'index'):
-    # Identifica algunos puntos con residuos estandarizados altos para etiquetarlos
-    # Esto es una simplificación; en un análisis real usarías métricas de influencia.
-    top_indices = np.abs(standardized_residuals).nlargest(3).index
-    for i, txt in enumerate(top_indices):
-        axes[0].annotate(txt, (fitted_values[txt], sqrt_abs_standardized_residuals[txt]),
-                         xytext=(5, 5), textcoords='offset points')
+# Etiquetas para puntos influyentes
+# Ahora standardized_residuals es un Series de Pandas, así que .nlargest() funcionará.
+# Aseguramos que los índices de fitted_values y sqrt_abs_standardized_residuals también sean Series con los mismos índices.
+top_residuals_indices = np.abs(standardized_residuals).nlargest(3).index
+
+for idx in top_residuals_indices:
+    # Estos accesos son ahora seguros porque 'fitted_values' y 'sqrt_abs_standardized_residuals'
+    # también son Series con los mismos índices que 'standardized_residuals'.
+    x_val = fitted_values.loc[idx]
+    y_val = sqrt_abs_standardized_residuals.loc[idx]
+    axes[0].annotate(str(idx), (x_val, y_val),
+                     xytext=(5, 5), textcoords='offset points', fontsize=9)
 
 
 axes[0].set_title('Scale-Location')
 axes[0].set_xlabel('Fitted values')
-axes[0].set_ylabel(r'$\sqrt{|Standardized\ residuals|}$') # LaTeX para la raíz cuadrada
+axes[0].set_ylabel(r'$\sqrt{|Standardized\ residuals|}$')
 
 # --- Gráfico 2: Residuals vs Leverage (con Distancia de Cook) ---
-# plot_leverage_resid2 es una función de statsmodels que hace exactamente este gráfico.
-# fit_result.get_influence() es lo que proporciona los valores de leverage y los residuos.
-sm.graphics.plot_leverage_resid2(final_modelo_ols_py, ax=axes[1], # Dibuja en el segundo subplot
-                                 # Configuración para la distancia de Cook
-                                 line_kwargs={'color': 'red', 'alpha': 0.8}, # Estilo de la línea LOESS
-                                 # Etiquetar puntos influyentes (lo hace sm.graphics.plot_leverage_resid2 por defecto)
-                                 # El argumento 'alpha' para los contornos de Cook está dentro de la función.
-                                )
+sm.graphics.plot_leverage_resid2(final_modelo_ols_py, ax=axes[1],
+                                 line_kwargs={'color': 'red', 'alpha': 0.8})
 
-# Customize the title and labels for the second plot
 axes[1].set_title('Residuals vs Leverage')
 axes[1].set_xlabel('Leverage')
-axes[1].set_ylabel('Standardized residuals') # Nota: plot_leverage_resid2 usa residuos estandarizados
+axes[1].set_ylabel('Standardized residuals')
 
-# Puedes ajustar los límites si es necesario para que se parezca más al gráfico de R
-#axes[1].set_xlim(0, 0.5)
-#axes[1].set_ylim(-2, 3)
-
-# Asegurarse de que el diseño sea ajustado y que los subplots no se superpongan
 plt.tight_layout()
 plt.show()
 ```
 
+### Validación cruzada
+
+La **validación cruzada** es una técnica estadística esencial utilizada en el aprendizaje automático y la modelización para **evaluar la capacidad de un modelo para generalizar a un conjunto de datos independiente**, es decir, a datos que no se han visto durante el entrenamiento. Su objetivo principal es obtener una estimación más robusta y menos sesgada del rendimiento predictivo del modelo, ayudando a evitar el **sobreajuste (overfitting)**.
+
+Cuando se construye un modelo, y se entrena con un conjunto de datos. Se evalúa el rendimiento del modelo en esos mismos datos de entrenamiento, a menudo se obtendrá una métrica de rendimiento inflada (por ejemplo, un $R^2$ muy alto o un MAE/RMSE muy bajo). Esto se debe a que el modelo ha "memorizado" los datos de entrenamiento, incluyendo el ruido y las particularidades de esa muestra específica. Sin embargo, un modelo sobreajustado no funcionará bien con datos nuevos y reales.
+
+#### Tipos Comunes de Validación Cruzada:
+
+Aunque hay varias variaciones, las más comunes son:
+
+#### Beneficios de la Validación Cruzada:
+
+-   **Estimación Robusta del Rendimiento:** Proporciona una métrica de rendimiento más fiable y menos sesgada de cómo se comportará el modelo con datos nuevos.
+-   **Detección de Sobreajuste:** Ayuda a identificar si un modelo está sobreajustado, ya que un modelo sobreajustado tendrá un rendimiento mucho peor en los folds de validación que en los de entrenamiento.
+-   **Selección de Modelos y Ajuste de Hiperparámetros:** Es fundamental para comparar y seleccionar entre diferentes modelos (ej., regresión lineal vs. árboles de decisión) o para encontrar los mejores **hiperparámetros** para un modelo (ej., la profundidad máxima de un árbol de decisión). Esto se logra a menudo mediante técnicas como la **búsqueda de rejilla (Grid Search)** o la **búsqueda aleatoria (Random Search)** combinadas con validación cruzada.
+
+##### Validaciones cruzadas recomendadas para OLSR
+
+En modelos de **regresión lineal OLS (Ordinary Least Squares Regression)**, la **validación cruzada (cross-validation)** es clave para estimar la capacidad de generalización del modelo.
+
+###### **Validación Cruzada K-Fold (K-Fold Cross-Validation):**
+
+-   Es el tipo más popular. El conjunto de datos se divide en $k$ folds. .
+-   **Elección de** $k$: Los valores comunes para $k$ son 5 o 10. Un $k$ más alto (por ejemplo, 10) proporciona una estimación más precisa del rendimiento pero es computacionalmente más costoso. Un $k$ más bajo (por ejemplo, 5) es más rápido pero la estimación puede ser más variable.
+
+<p align="center">
+<img src="../../img/K-Fold (Cross Validation).png" alt="Machine Learning Steps" width="80%"/>
+</p>
+
+````         
+```python
+cv_splitter = KFold(n_splits = 10, shuffle = True, random_state = 123)
+```
+````
+
+-   **Más usada** y recomendada para regresión lineal.
+-   Divide los datos en *k* grupos (folds), entrena el modelo en *k-1* y valida en el restante, repitiendo *k* veces.
+-   * En Python, esto se traduce al argumento `n_splits=10` en `KFold`.
+* **Configuración de `shuffle` y `random_state`:**
+  * `shuffle=True`: Es una buena práctica para mezclar los datos antes de dividirlos, asegurando que los folds sean aleatorios y representativos.
+* `random_state`: Asegura que si `shuffle=True`, las divisiones sean siempre las mismas cada vez que ejecutes el código, lo que es crucial para la reproducibilidad de tus resultados.
+
+
+###### **Validación Cruzada de Dejar Uno Fuera (Leave-One-Out Cross-Validation - LOOCV):**
+
+-   Es un caso especial de K-Fold donde $k$ es igual al número de observaciones ($n$) en el conjunto de datos.
+-   En cada iteración, una sola observación se usa como conjunto de validación, y las $n-1$ observaciones restantes se usan para entrenar el modelo.
+-   **Ventaja:** Proporciona una estimación casi insesgada del rendimiento.
+-   **Desventaja:** Es computacionalmente muy costoso, especialmente para grandes conjuntos de datos, ya que se ajusta el modelo $n$ veces.
+
+<p align="center">
+<img src="../../img/LOOCV (Cross Validation).png" alt="Machine Learning Steps" width="80%"/>
+</p>
+
+````         
+```r
+trainControl(method = "LOOCV")
+```
+````
+
+-   Cada observación se deja fuera una vez (es como `k = n`).
+-   Proporciona una evaluación **menos sesgada**, pero puede ser **computacionalmente costosa**.
+-   En modelos lineales como OLS, es factible y a veces preferido si tienes pocos datos.
+
+###### **Validación Cruzada de Repeated k-fold cross-validation**
+
+La **validación cruzada repetida k-fold** (`Repeated k-Fold Cross-Validation`) es una extensión del método k-fold cross-validation y se utiliza para obtener una **estimación más estable** y **confiable del desempeño de un modelo**, especialmente cuando el conjunto de datos es pequeño o tiene mucha variabilidad.
+
+<p align="center">
+<img src="../../img/Repeated k-fold cross-validation.png" alt="Machine Learning Steps" width="50%"/>
+</p>
+
+````         
+```r
+trainControl(method = "repeatedcv", number = 10, repeats = 5)
+```
+````
+
+-   Repite el proceso de k-fold varias veces con diferentes particiones aleatorias.
+-   Ofrece una **estimación más estable** del error de generalización.
+-   Útil si los datos tienen mucha variabilidad o ruido.
