@@ -586,6 +586,10 @@ plot(regfit, scale = "adjr2")  # O usar "bic" o "Cp" para otros criterios
 ```
 
 ```{r, class.source = "fold-hide"}
+
+regfit <- regsubsets(mpg ~ ., data = train_data, nvmax = 10)
+summary(regfit)
+
 require(ggplot2)
 # Crear un data frame con las métricas para ggplot2
 reg_summary <- summary(regfit)
