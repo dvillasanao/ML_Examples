@@ -129,7 +129,7 @@ knitr::opts_knit$set(root.dir = here::here())
 setwd(here::here())
 ```
 
-```{r,echo=FALSE, eval=FALSE, }
+```{r, echo=FALSE}
 rm(list = ls())
 ```
 
@@ -144,8 +144,286 @@ windowsFonts()
 ```{r, echo = FALSE}
 # 1. Cargar librerías necesarias
 library(tidyverse)
+require(knitr)
 library(caret)     # Para dividir datos y evaluación
 library(broom)     # Para tidy modelos
 library(Metrics)   # Para métricas como RMSE, MAE
 require(tibble)
+require(gt)
 ```
+
+
+
+```{r echo=FALSE, fig.show="hold", out.width="48%", eval = FALSE}
+knitr::include_graphics(paste0(here::here(), "/img/Regression/LOESS.png"))
+knitr::include_graphics(paste0(here::here(), "/img/Regression/LOESS_1.png"))
+```
+
+## LOESS (Locally Estimated Scatterplot Smoothing)
+
+LOESS, o *Locally Estimated Scatterplot Smoothing* (Suavizado de Diagramas de Dispersión Estimado Localmente), es un método de regresión no paramétrico que se utiliza para **ajustar una curva suave a través de un diagrama de dispersión de datos**. A diferencia de los métodos de regresión paramétricos (como la regresión lineal o polinomial simple), LOESS no asume una forma funcional predefinida para la relación entre las variables. En su lugar, construye la curva ajustada calculando múltiples regresiones locales.  
+
+```{r, echo = FALSE}
+criterios <- c(
+  "Tipo de modelo",
+  "Variable respuesta",
+  "Variables predictoras",
+  "Relación entre variables",
+  "Normalidad de residuos",
+  "Independencia de errores",
+  "Homoscedasticidad",
+  "Sensible a outliers",
+  "Multicolinealidad entre predictores",
+  "Interpretabilidad",
+  "Velocidad y eficiencia",
+  "Validación cruzada",
+  "No funciona bien si..."
+)
+aplica <- c(
+  "✅ Supervisado",
+  "✅ Continua",
+  "✅ Numéricas (usualmente 1 o 2 predictores)",
+  "✅ No lineal y suave",
+  "❌ No necesaria",
+  "✅ Deseable",
+  "✅ Deseable",
+  "⚠️ Muy sensible",
+  "❌ No aplica (pocos predictores)",
+  "✅ Muy interpretable gráficamente",
+  "⚠️ Lento en grandes volúmenes de datos",
+  "✅ Puede usarse para elegir 'span'",
+  "❌ Datos grandes o con ruido fuerte"
+)
+detalles <- c(
+  "Modelo no paramétrico local",
+  "Regresión para valores continuos",
+  "Generalmente 1 o 2 variables numéricas",
+  "Ajuste por vecindad, suaviza la curva",
+  "No asume distribución específica",
+  "Supuesto deseable si hay dependencias temporales",
+  "Ideal si la varianza no cambia mucho localmente",
+  "Altamente afectado por outliers locales",
+  "No es una técnica multivariable compleja",
+  "La curva ajustada se interpreta visualmente",
+  "Computacionalmente costoso con datos grandes",
+  "Ayuda a seleccionar el mejor 'span'",
+  "Poco eficaz en alta dimensión o datos muy dispersos"
+)
+
+tabla_loess <- data.frame(Criterio = criterios, Aplica = aplica, Detalles = detalles)
+
+require(gt) 
+
+tabla_loess %>%
+ gt() %>%
+  tab_header(title = "Guía rápida para elegir LOESS",
+             subtitle = "Locally Estimated Scatterplot Smoothing (LOESS)") %>%
+   tab_footnote(footnote = "Fuente: Elaboración propia") %>%
+     tab_options(heading.title.font.size = 14,
+                 heading.subtitle.font.size = 12,
+                 table.font.names = "Century Gothic",
+                 table.font.size = 10,
+                 data_row.padding = px(1)) %>%
+      tab_style(style = list(cell_text(align = "left",
+                                       weight = 'bold')),
+                locations = list(cells_title(groups = c("title")))) %>%
+       tab_style(style = list(cell_text(align = "left")),
+                 locations = list(cells_title(groups = c("subtitle")))) %>%
+        cols_width(starts_with("Detalles") ~ px(500),
+                   everything() ~ px(200)) %>%
+         as_raw_html()
+```
+
+</>
+
+El principio central de LOESS es la **suavización local ponderada**. Para estimar el valor suavizado en un punto específico, el algoritmo:
+  
+  1.  Identifica un subconjunto de puntos de datos cercanos a ese punto.
+2.  Asigna pesos a esos puntos cercanos, dando más peso a los puntos más próximos.
+3.  Ajusta un polinomio de bajo grado (típicamente lineal o cuadrático) a esos puntos ponderados.
+4.  El valor estimado para el punto de interés es el valor predicho por este polinomio local.
+
+Este proceso se repite para múltiples puntos a lo largo del rango de la variable predictora para construir la curva suave completa. El parámetro más importante en LOESS es el **`span` (o ancho de banda)**, que controla la proporción de puntos utilizados en cada ajuste local y, por lo tanto, la suavidad de la curva resultante. Un `span` más pequeño resulta en una curva más "ondulada" que se ajusta más a los datos locales, mientras que un `span` más grande produce una curva más suave y generalizada.
+
+## ¿Cuándo usar LOESS?
+
+LOESS es particularmente útil en las siguientes situaciones:
+  
+  1.  **Análisis Exploratorio de Datos (EDA):** Es una excelente herramienta para visualizar las relaciones subyacentes entre dos variables (o una variable de respuesta y un predictor) sin imponer una forma funcional. Permite identificar tendencias no lineales y patrones complejos que podrían pasarse por alto con la regresión lineal simple.
+2.  **Relaciones No Lineales:** Cuando sospechas o sabes que la relación entre tus variables no es lineal, pero no tienes una base teórica para especificar una función no lineal particular (exponencial, logarítmica, etc.). LOESS se adapta a la forma de los datos.
+3.  **Identificación de Patrones Locales:** Si crees que la relación entre las variables puede cambiar a lo largo del rango de la variable predictora. LOESS puede capturar estos cambios locales.
+4.  **Detección de Valores Atípicos:** La versión robusta de LOESS (cuando se usa `family = "symmetric"`) puede ser útil para identificar valores atípicos, ya que les da menos peso en el ajuste.
+5.  **Suavizado de Series Temporales (no estacionales):** Aunque existen métodos específicos para series temporales, LOESS puede usarse para suavizar la tendencia en datos de series temporales que no tienen un componente estacional pronunciado.
+6.  **Interpolación:** Para estimar valores de la variable de respuesta para valores de la variable predictora que se encuentran dentro del rango de los datos observados.
+
+## Ventajas de LOESS
+
+1.  **Flexibilidad y Adaptabilidad:** Es su mayor fortaleza. No requiere que el usuario especifique la forma funcional de la relación entre las variables. Se adapta a formas no lineales arbitrarias.
+2.  **No Paramétrico:** Al no hacer suposiciones fuertes sobre la distribución de los datos o la forma de la relación, es muy robusto frente a violaciones de las suposiciones de los modelos paramétricos.
+3.  **Captura Tendencias Locales:** Puede identificar cambios en la relación entre las variables a lo largo del rango del predictor.
+4.  **Visualización Intuitiva:** La curva LOESS es fácil de interpretar visualmente, proporcionando una representación clara de la tendencia general de los datos.
+5.  **Robustez (opcional):** La opción de ajuste robusto (`family = "symmetric"`) lo hace menos sensible a la influencia de los valores atípicos en el conjunto de datos.
+
+## Desventajas de LOESS
+
+1.  **Costo Computacional:** Puede ser computacionalmente intensivo, especialmente con grandes conjuntos de datos, ya que requiere múltiples ajustes de regresión locales para cada punto.
+2.  **Dificultad con Múltiples Predictores:** Aunque teóricamente puede manejar múltiples predictores, su rendimiento y facilidad de interpretación disminuyen rápidamente a medida que aumenta el número de predictores (lo que se conoce como la "maldición de la dimensionalidad"). Es más adecuado para uno o dos predictores.
+3.  **Falta de Modelo Explícito:** Al no tener una ecuación matemática subyacente, no proporciona un modelo paramétrico que pueda ser interpretado en términos de coeficientes o efectos específicos de los predictores. Esto puede limitar la inferencia estadística o la generalización más allá de los datos observados.
+4.  **Parámetro `span`:** La selección del `span` óptimo puede ser subjetiva y a menudo requiere experimentación visual o métodos de validación cruzada, lo que añade complejidad.
+5.  **Extrapolación Pobre:** LOESS es muy deficiente para la extrapolación (predicciones fuera del rango de los datos observados). Como el ajuste es local, no hay información en la periferia de los datos para realizar un ajuste fiable en puntos lejanos.
+6.  **Dependencia de la Densidad de Datos:** Funciona mejor cuando los datos están distribuidos de manera relativamente uniforme. En áreas con pocos puntos de datos, el ajuste puede ser inestable o menos fiable.
+
+
+
+## Algoritmo de LOESS (Locally Estimated Scatterplot Smoothing)  
+
+El algoritmo `LOESS` (**Locally Estimated Scatterplot Smoothing**) es un método de regresión no paramétrico que se utiliza para ajustar una curva suave a través de un diagrama de dispersión. Su principal ventaja es que no requiere que se especifique una función matemática previa para la relación entre las variables, lo que lo hace muy flexible para capturar patrones no lineales y complejos en los datos.   
+
+**1. Parámetros de entrada:**
+  
+  * **Datos:** Un conjunto de puntos $(x_i, y_i)$, donde $x_i$ es la variable predictora e $y_i$ es la variable de respuesta.
+* **Span (parámetro de suavizado o ancho de banda):** Es un valor entre 0 y 1 que determina la proporción de puntos del conjunto de datos que se utilizarán para cada ajuste local.
+* Un `span` pequeño (cerca de 0) utiliza menos puntos y produce una curva que se ajusta más a las fluctuaciones locales (menos suavizada, potencialmente más propensa al sobreajuste).
+* Un `span` grande (cerca de 1) utiliza más puntos y produce una curva más suave que generaliza más (más suavizada, potencialmente más propensa al subajuste).
+* **Grado del polinomio local:** Generalmente se utiliza un polinomio de grado 1 (lineal) o 2 (cuadrático) para los ajustes locales.
+* **Función de ponderación:** La función más común es la función de ponderación tricúbica.
+
+**2. Proceso para cada punto de estimación ($x_0$):**
+  
+  El objetivo de LOESS es estimar un valor suavizado $\hat{y}_0$ para cada punto $x_0$ (o para una rejilla de puntos $x_0$ para visualizar la curva). Para cada $x_0$:
+  
+  a. **Seleccionar los vecinos más cercanos:**
+  * Identifica los $k$ puntos más cercanos a $x_0$, donde $k$ se determina por el `span` ($k = \text{round}(\text{span} \times N)$, siendo $N$ el número total de puntos en el conjunto de datos).
+* Estos puntos forman el "subconjunto local" para el ajuste en $x_0$.
+
+b. **Calcular las ponderaciones:**
+  * Para cada punto $(x_i, y_i)$ en el subconjunto local, calcula su distancia $d_i = |x_0 - x_i|$.
+* Encuentra la distancia máxima $D_{max}$ entre $x_0$ y cualquier punto en el subconjunto local.
+* Normaliza las distancias: $d_i^* = \frac{d_i}{D_{max}}$.
+* Aplica la función de ponderación tricúbica para obtener la ponderación $w_i$ para cada punto $i$:
+
+ Esta función determina el peso de cada punto vecino:
+  
+  $$w_j = \left(1 - \left( \frac{|x_j - x_i|}{d_{\text{max}}} \right)^3 \right)^3 \quad \text{si } |x_j - x_i| < d_{\text{max}}$$
+
+  $$w_i = (1 - (d_i^*)^3)^3 \quad \text{si } d_i^* < 1$$      
+  
+  $$w_i = 0 \quad \text{si } d_i^* \ge 1$$
+  
+  Esta función asigna mayores pesos a los puntos más cercanos a $x_0$ y pesos decrecientes a los puntos más alejados, hasta llegar a cero para los puntos fuera del rango definido por el `span`.
+
+c. **Realizar una regresión por mínimos cuadrados ponderados:**
+  * Utiliza los puntos del subconjunto local y sus ponderaciones calculadas ($w_i$) para ajustar un polinomio (de grado 1 o 2) por mínimos cuadrados ponderados.  
+  
+* Es decir, se minimiza la suma de los errores cuadrados, donde cada error se multiplica por su peso correspondiente:
+  $$\sum_{i \in \text{subconjunto local}} w_i (y_i - \hat{y}_i)^2$$
+  
+  Donde $\hat{y}_i$ es el valor predicho por el polinomio local para $x_i$.
+
+d. **Estimar el valor suavizado:**
+  * Una vez que el polinomio local ha sido ajustado, se utiliza para predecir el valor $\hat{y}_0$ evaluando el polinomio en $x_0$.
+
+**3. Repetir para todos los puntos:**
+  
+  Estos pasos se repiten para cada punto $x_0$ para el cual se desea obtener un valor suavizado. Si se desea una curva suave para la visualización, se suelen seleccionar una serie de puntos equiespaciados a lo largo del rango de $x$.
+
+**Consideraciones adicionales (robustez):**
+  
+  LOESS también puede incorporar un paso de robustificación para manejar valores atípicos (outliers). Esto implica una iteración adicional:
+  
+  1.  Después de la primera pasada del LOESS, se calculan los residuos para cada punto.
+2.  Se asignan nuevos pesos a los puntos basándose en la magnitud de sus residuos (los puntos con residuos grandes reciben pesos más pequeños).
+3.  El algoritmo LOESS se ejecuta nuevamente utilizando estos nuevos pesos, lo que reduce la influencia de los valores atípicos en el ajuste final.
+
+
+## Valores predictivos   
+
+Una vez que el modelo LOESS ha sido "entrenado" o ajustado a tus datos existentes, el predictor se usa de una manera muy intuitiva para obtener valores suavizados o predicciones para nuevos puntos de la variable predictora.
+
+**1. El Proceso de Predicción en LOESS**
+
+A diferencia de los modelos paramétricos (como la regresión lineal) donde tienes una ecuación de forma fija para la predicción, LOESS es un método **local**. Esto significa que para predecir un valor de $y$ para un nuevo $x$ (digamos $x_{nuevo}$), el algoritmo realiza un ajuste local **en el momento de la predicción**.
+
+Los pasos son esencialmente los mismos que los del ajuste inicial, pero enfocados en el punto $x_{nuevo}$:
+
+a. **Identificar el punto de interés ($x_{nuevo}$):** Este es el valor de la variable predictora para el cual quieres obtener una estimación suavizada o una predicción.
+
+b. **Seleccionar los vecinos más cercanos:**
+   * El algoritmo busca los $k$ puntos más cercanos a $x_{nuevo}$ en el conjunto de datos **original** (los datos que se usaron para "entrenar" el LOESS). El valor de $k$ sigue siendo determinado por el `span` que se definió al construir el modelo.
+   * Estos puntos son los que influirán en la predicción para $x_{nuevo}$.
+
+c. **Calcular las ponderaciones:**
+   * Para cada uno de esos $k$ puntos vecinos, se calcula una ponderación utilizando la misma función de ponderación tricúbica que se usó en el ajuste inicial.
+   * Las ponderaciones dependen de la distancia de cada vecino a $x_{nuevo}$. Los puntos más cercanos a $x_{nuevo}$ reciben ponderaciones más altas.
+
+d. **Realizar una regresión por mínimos cuadrados ponderados local:**
+   * Con los $k$ puntos vecinos y sus ponderaciones, se ajusta un polinomio (del mismo grado que se usó en el ajuste inicial, típicamente lineal o cuadrático) utilizando mínimos cuadrados ponderados.
+   * Este polinomio es *específico* para la predicción de $x_{nuevo}$.
+
+e. **Evaluar el polinomio para obtener la predicción ($\hat{y}_{nuevo}$):**
+   * Finalmente, se evalúa el polinomio local recién ajustado en $x_{nuevo}$ para obtener el valor predicho $\hat{y}_{nuevo}$.
+
+**2. Diferencia Clave con Modelos Paramétricos**
+
+* **Sin Ecuación Única:** En LOESS, no hay una única ecuación global que puedas "escribir" y usar para enchufar cualquier $x_{nuevo}$ y obtener una $\hat{y}$. Cada predicción para un $x_{nuevo}$ implica un nuevo ajuste local.
+* **Dependencia del Conjunto de Datos Original:** El predictor LOESS siempre necesita acceso al conjunto de datos original porque necesita encontrar los vecinos más cercanos para cada nueva predicción. No "aprende" un conjunto fijo de coeficientes o parámetros.
+
+**3. ¿Cuándo se usa el predictor LOESS?**
+
+* **Suavizado de Datos Existentes:** La aplicación más común del "predictor" LOESS es para generar la curva suave en el rango de los datos ya observados. Para cada $x_i$ en tu conjunto de datos, o para una rejilla de $x$ a lo largo de tu rango de datos, el LOESS calcula un $\hat{y}_i$ suavizado. Esto te permite visualizar la tendencia subyacente.
+* **Imputación de Valores Faltantes (con precaución):** Si tienes un $x$ para el cual falta su $y$, podrías usar LOESS para estimar ese $y$ basándose en los $x$ y $y$ circundantes.
+* **Predicción para Nuevos Puntos (extrapolación limitada):** Aunque LOESS es excelente para interpolar (predecir dentro del rango de tus datos observados), es **extremadamente cauteloso y generalmente no recomendado para la extrapolación** (predecir fuera del rango de tus datos). Si $x_{nuevo}$ está muy lejos de tus datos observados, no habrá vecinos cercanos en el conjunto de datos original para realizar un ajuste local significativo, y las predicciones serán muy poco fiables.
+
+
+## Parámetros   
+
+```{r, eval = FALSE}
+loess(formula, data, weights, subset, na.action, model = FALSE,
+      span = 0.75, enp.target, degree = 2,
+      parametric = FALSE, drop.square = FALSE, normalize = TRUE,
+      family = c("gaussian", "symmetric"),
+      method = c("loess", "model.frame"),
+      control = loess.control(…), …)
+```
+
+
+La función `loess()` en R se utiliza para ajustar modelos de regresión local (Local Polynomial Regression). Acepta varios parámetros que permiten controlar el comportamiento del ajuste. A continuación, te detallo cada uno de ellos:
+
+</b>
+
+**Parámetros principales de `loess()`**
+
+| Parámetro       | Descripción                                                                        |
+| --------------- | ---------------------------------------------------------------------------------- |
+| **`formula`**   | Fórmula del modelo a ajustar, típicamente `y ~ x`.                                 |
+| **`data`**      | Data frame que contiene las variables usadas en la fórmula.                        |
+| **`weights`**   | Vector de pesos opcional para ponderar las observaciones.                          |
+| **`subset`**    | Vector lógico o de índices para seleccionar un subconjunto de los datos.           |
+| **`na.action`** | Función para manejar valores faltantes (por ejemplo, `na.omit`).                   |
+| **`model`**     | Si es `TRUE`, incluye el modelo completo en el resultado (útil para predicciones). |
+
+</b>
+
+**Parámetros de control del suavizado**
+
+| Parámetro        | Descripción                                                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **`span`**       | Proporción de datos usados para el suavizado local (default = 0.75). Valores menores producen curvas más sensibles al ruido. |
+| **`enp.target`** | Número efectivo de parámetros objetivo; alternativa a `span`.                                                                |
+| **`degree`**     | Grado del polinomio local (1 = lineal, 2 = cuadrático). Default = 2.                                                         |
+
+</b>
+
+**Otras opciones de configuración**
+
+| Parámetro         | Descripción                                                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **`parametric`**  | Vector lógico indicando qué predictores deben tratarse paramétricamente.                                                       |
+| **`drop.square`** | Para modelos cuadráticos, si se deben omitir términos cuadrados de ciertos predictores.                                        |
+| **`normalize`**   | Si se debe escalar (normalizar) los predictores antes del ajuste (default = `TRUE`).                                           |
+| **`family`**      | Familia de funciones de pérdida: `"gaussian"` (default, sin robustez) o `"symmetric"` (usa M-estimadores para mayor robustez). |
+| **`method`**      | Método para usar: `"loess"` para ajuste completo, `"model.frame"` solo evalúa la fórmula sin ajuste.                           |
+| **`control`**     | Objeto `loess.control()` para ajustes adicionales (como tolerancias, iteraciones, etc.).                                       |
+| **`...`**         | Argumentos adicionales pasados a funciones internas.                                                                           |
+
+</b>
