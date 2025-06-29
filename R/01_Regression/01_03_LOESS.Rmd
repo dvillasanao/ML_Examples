@@ -427,3 +427,257 @@ La función `loess()` en R se utiliza para ajustar modelos de regresión local (
 | **`...`**         | Argumentos adicionales pasados a funciones internas.                                                                           |
 
 </b>
+
+## **Pasos generales de los modelos Machine Learning supervisado**
+
+1.  **Importar y explorar los datos**
+2.  **Preprocesamiento**
+3.  **División de los datos (train/test)**
+4.  **Entrenamiento del modelo**
+5.  **Evaluación del modelo**
+6.  **Ajustes o validación cruzada (si aplica)**
+7.  **Predicción con nuevos datos**
+8.  **Interpretación de resultados**
+
+<p align="center">
+<img src="../../img/ML_Steps.png" alt="Machine Learning Steps" width="100%"/>
+</p>
+
+## Base de datos
+
+La base de datos `mtcars` es un conjunto de datos clásico en R que contiene información sobre **32 automóviles** (modelos de 1973–74), y fue extraído de la revista *Motor Trend US*. Incluye **variables técnicas** del desempeño de los autos.
+
+Aquí está una descripción de cada columna:
+
+| Variable | Significado | Tipo de dato |
+|-------------------|-----------------------------------|-------------------|
+| `mpg` | Miles per gallon (millas por galón) | Numérica |
+| `cyl` | Número de cilindros | Entero |
+| `disp` | Desplazamiento del motor (en pulgadas cúbicas) | Numérica |
+| `hp` | Caballos de fuerza | Entero |
+| `drat` | Relación del eje trasero (rear axle ratio) | Numérica |
+| `wt` | Peso del auto (en miles de libras) | Numérica |
+| `qsec` | Tiempo en 1/4 de milla (segundos) | Numérica |
+| `vs` | Tipo de motor: 0 = V-shaped, 1 = straight (en línea) | Binaria (factor) |
+| `am` | Tipo de transmisión: 0 = automática, 1 = manual | Binaria (factor) |
+| `gear` | Número de velocidades (marchas) adelante | Entero |
+| `carb` | Número de carburadores | Entero |
+
+```{r}
+# 2. Cargar y se exploran los datos
+data("mtcars")
+```
+
+```{r, echo = FALSE}
+require(gt)
+
+mtcars %>% 
+ gt() %>%
+  tab_header(title = "mtcars data") %>%
+   tab_options(heading.title.font.size = 14, 
+                 heading.subtitle.font.size = 12,
+                 table.font.names = "Century Gothic",
+                 table.font.size = 10,
+                 data_row.padding = px(1)) %>%
+      tab_style(style = list(cell_text(align = "left",
+                                       weight = 'bold')),
+                locations = list(cells_title(groups = c("title")))) %>%
+       tab_style(style = list(cell_text(align = "left")),
+                 locations = list(cells_title(groups = c("subtitle")))) %>%
+        cols_width(starts_with("Cuando_") ~ px(300),
+                   everything() ~ px(50)) %>%
+         as_raw_html() 
+
+```
+
+
+## Análisis exploratorio de los datos (`EDA`) 
+
+  El **Análisis Exploratorio de Datos (EDA)** es una fase crítica en cualquier proyecto de ciencia de datos, machine learning o estadística. Su propósito principal es **entender los datos** antes de realizar cualquier modelado complejo. No es solo un paso preliminar; es un proceso iterativo de investigación, visualización y resumen que ayuda a descubrir patrones, detectar anomalías y probar hipótesis.
+
+
+### Comprensión de la Estructura de los Datos
+  
+   * **Dimensiones:** ¿Cuántas filas (observaciones) y cuántas columnas (variables) hay? Esto te da una idea del tamaño del dataset.
+* **Nombres de las Variables:** Identificar cada columna y su significado. ¿Qué representa `mpg`, `hp`, `wt` en el caso de `mtcars`?
+  * **Tipos de Datos:** ¿Son numéricas (enteros, decimales), categóricas (factores, cadenas de texto), booleanas? El tipo de dato determina qué análisis y visualizaciones puedes aplicar.
+* **Formato y Codificación:** Asegurarte de que los datos estén en un formato utilizable y, si hay texto, que la codificación sea correcta.
+
+### Detección y Manejo de Datos Faltantes
+
+Los datos del mundo real rara vez son perfectos. Los valores faltantes (`NA`, `NaN`, `null`, etc.) son comunes y pueden sesgar tus análisis o hacer que los modelos fallen. Lo fundamental aquí es:
+  
+  * **Identificar la presencia de datos faltantes:** ¿Hay valores faltantes en alguna variable? ¿Cuántos?
+  * **Entender el patrón:** ¿Son aleatorios o hay un patrón en los datos faltantes? (e.g., ¿faltan valores solo en ciertas condiciones o para ciertos grupos?)
+* **Decidir una estrategia:** ¿Imputar los valores (reemplazarlos), eliminar las filas/columnas con datos faltantes, o tratarlos de alguna manera especial en el modelado?
+  
+Utilizando la función `complete.cases(mtcars)` retorna un vector lógico que indica si cada fila **no tiene valores NA** (completamente observada).
+
+```{r}
+# Detección si hay alguna fila incompleta
+any(!complete.cases(mtcars))
+```
+Esto indica que **no hay filas incompletas** en `mtcars`.
+
+En el siguiente código sirve para contar el número de valores ausentes (`NA`) en cada columna del conjunto de datos `mtcars`.    
+
+```{r}
+require(purrr)
+
+# Número de datos ausentes por variable
+map_dbl(mtcars, .f = function(x){sum(is.na(x))})
+```
+
+### Análisis de Correlaciones  
+
+```{r, class.source = "fold-hide", fig.show='hold'}
+require(corrplot)
+
+corrplot(cor(mtcars),
+         type = "upper",
+          method = "color",
+           order = "hclust",
+            tl.col = "blue4",
+             tl.offset = 0.1,
+              tl.cex = 1,
+               tl.srt = 90,
+                cl.align.text = "c",
+                 number.cex = .5,
+                  cl.cex = ,
+                   addCoef.col = "white", # Add coefficient of correlation 
+                    mar = c(0, 0, 2.5, 0))
+```
+
+
+```{r, class.source = "fold-hide", fig.height=8, fig.width=10}
+require(GGally)
+
+ggpairs(mtcars,
+         aes(fill = mpg, color = as.factor(cyl), alpha = 0.5),
+          columns = 1:10, 
+           upper = list(continuous = wrap("cor", size = 2.5)),
+            lower = list(continuous = "smooth")) +
+             theme_bw() + 
+              theme(axis.text = element_text(family = "Montserrat", size = 5)) + 
+               scale_color_viridis_d(option = "A", begin = 0.3, end = 0.8) 
+```
+
+Se usa la función `findCorrelation()` está diseñada para **identificar y recomendar la eliminación de variables altamente correlacionadas** en un conjunto de datos. La idea es evitar la multicolinealidad, que puede ser un problema en muchos modelos estadísticos y de machine learning (como la regresión lineal), haciendo que los coeficientes sean inestables o difíciles de interpretar.
+
+
+```{r}
+require(caret)
+highCorr <- findCorrelation(cor(mtcars), .75)
+
+# Mostrar los nombres de las columnas a remover
+if(length(highCorr) > 0) {
+  print(names(mtcars)[highCorr])
+} else {
+  print("No se encontraron variables con alta correlación para el umbral dado.")
+}
+```
+
+### Varianzas cercanas a cero  
+
+La función `nearZeroVar()` identifica variables que tienen varianza cercana a cero. Estas variables son casi constantes (tienen muy poca o ninguna variabilidad) y, por lo tanto, no aportan mucha información para un modelo predictivo.  
+
+
+```{r}
+library(caret)
+
+# Identificar variables con varianza cercana a cero
+# `saveMetrics = TRUE` para obtener un data frame con los detalles
+nzv_results <- nearZeroVar(mtcars, saveMetrics = TRUE)
+print(nzv_results)
+```
+
+## Skewness 
+
+```{r}
+require(e1071) 
+
+skewValues = apply(mtcars, 2, skewness)
+skewValues
+```
+
+### Variable númericas  
+
+```{r, class.source = "fold-hide", fig.height=6, fig.width=8}
+require(tidyverse)
+
+p <- mtcars%>%
+      gather(key = "Variables", value = "Value") %>%
+       ggplot(aes(x = Value, fill = Variables)) +
+        geom_bar(alpha = 0.9) +
+         geom_density(aes(y = ..count..), stat = "density", alpha = 0.5) +
+          theme_minimal() +
+           theme(axis.text.x = element_text(size = 10, angle = 90),
+                 axis.text.y = element_text(size = 7),
+                 legend.position = "none"
+                 ) +
+             scale_fill_viridis_d(option = "A", begin = 0.3, end = 0.8) +
+             labs(y = "",
+                  x = "") + 
+              facet_wrap(.~Variables, scales = "free") 
+p
+```
+
+
+
+## Entrenamiento de los datos (train/test)
+
+La división de datos en conjuntos de **entrenamiento (train)** y **prueba (test)** es una práctica fundamental en el aprendizaje automático y la modelización predictiva. Su importancia radica en la necesidad de obtener una evaluación **realista y no sesgada** del rendimiento de un modelo, y de asegurar que el modelo sea capaz de **generalizar** a datos nuevos y no vistos.
+
+-   Se usa la función `createDataPartition()` del paquete `caret` para **dividir los datos**.
+-   Se crea un **índice** con el 80% de las filas del `mtcars`, **estratificado** según la variable `mpg` (la variable objetivo).
+-   El argumento `p = 0.8` significa que el 80% se usará para **entrenamiento** y el 20% restante para **prueba**.
+-   `list = FALSE` devuelve los índices como un vector, no como una lista.
+
+```{r}
+# Se quiere predecir `mpg` (millas por galón) usando otras variables
+# mpg será la variable dependiente (target)
+
+# 3. Se dividen losdatos en entrenamiento y prueba
+set.seed(123)  # Para reproducibilidad
+train_index <- createDataPartition(mtcars$mpg, p = 0.8, list = FALSE)
+train_data <- mtcars[train_index, ]
+test_data <- mtcars[-train_index, ]
+```
+
+-   Particionar los datos, evita el **overfitting** (cuando el modelo memoriza los datos de entrenamiento).
+-   Permite una **evaluación honesta** del modelo al probarlo en datos que no vio durante el entrenamiento.
+-   Es una práctica estándar en cualquier pipeline de aprendizaje automático.
+
+## Entrenamiento del modelo
+
+El **entrenamiento de un modelo** es el paso más importante en el aprendizaje automático. Usando un conjunto de datos de entrenamiento (`train_data`), el modelo aprende a reconocer patrones para hacer predicciones confiables con datos nuevos. Este proceso es esencial por estas razones:
+
+-   Durante el entrenamiento, el modelo **identifica patrones específicos** en los datos.
+-   Separamos los datos en grupos de entrenamiento y prueba para asegurar que el modelo funcione bien no solo con datos conocidos, sino también con **datos nuevos y no vistos**.
+-   Después del entrenamiento con `train_data`, usamos el **conjunto de prueba (`test_data`)** para medir el rendimiento. Las métricas (MAE, RMSE, $R^2$) nos muestran qué tan bien el modelo **maneja datos nuevos**.
+-   Un rendimiento peor en `test_data` que en `train_data` indica que el modelo está sobreajustado.
+-   Con estos resultados, podemos decidir si el modelo está listo para usar o necesita ajustes.
+
+
+## Referencias
+
+loess function - RDocumentation. (n.d.). Retrieved June 26, 2025, from https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/loess
+
+W. S. Cleveland, E. Grosse and W. M. Shyu (1992) Local regression models. Chapter 8 of Statistical Models in S eds J.M. Chambers and T.J. Hastie, Wadsworth & Brooks/Cole.
+
+Librerias que se usaron en el documento
+
+```{r, echo = FALSE, eval = TRUE}
+sesion_info <- devtools::session_info()
+require(knitr)
+require(kableExtra)
+kable(dplyr::select(tibble::as_tibble(sesion_info$packages %>% dplyr::filter(attached == TRUE)),
+                    c(package, loadedversion, source))) %>%
+ kable_styling(font_size = 10, 
+               bootstrap_options = c("condensed", "responsive", "bordered")) %>%
+  kable_classic(full_width = TRUE, html_font = "montserrat") %>% 
+   scroll_box(width = "100%", height = "400px") %>%  
+    gsub("font-size: initial !important;", "font-size: 10pt !important;", .)
+```
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img src="https://i.creativecommons.org/l/by/4.0/88x31.png" alt="Creative Commons Licence" style="border-width:0"/></a><br />This work by [**Diana Villasana Ocampo**]{xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName"} is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
