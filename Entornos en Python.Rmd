@@ -286,3 +286,6 @@ Guarda el .yml en el path de getwd()
 env_req <- base::system('conda list -n r-reticulate', intern = TRUE)
 ```
 
+
+
+

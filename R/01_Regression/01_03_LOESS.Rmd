@@ -591,7 +591,7 @@ nzv_results <- nearZeroVar(mtcars, saveMetrics = TRUE)
 print(nzv_results)
 ```
 
-## Skewness 
+### Skewness 
 
 ```{r}
 require(e1071) 
@@ -622,6 +622,17 @@ p <- mtcars%>%
 p
 ```
 
+## 
+
+```{r}
+require(MASS)
+require(caret)
+
+segPP <- preProcess(mtcars, method = "BoxCox")
+
+## segPP$bc<-Box-Cox tranformation values 
+names(segPP$bc)
+```
 
 
 ## Entrenamiento de los datos (train/test)
