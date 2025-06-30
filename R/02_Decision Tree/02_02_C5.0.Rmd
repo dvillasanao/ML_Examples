@@ -1,5 +1,5 @@
 ---
-title: "C4.5"
+title: "C5.0"
 subtitle: "Apuntes y anotaciones personales"
 author: "Diana Villasana Ocampo"
 knit: (function(inputFile, encoding) {

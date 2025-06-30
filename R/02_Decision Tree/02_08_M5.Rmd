@@ -3,7 +3,7 @@ title: "M5 (Model Tree)"
 subtitle: "Apuntes y anotaciones personales"
 author: "Diana Villasana Ocampo"
 knit: (function(inputFile, encoding) {
-       rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../Output/Regression")
+       rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../Output/Decision Tree")
   })
 output:
    html_document:

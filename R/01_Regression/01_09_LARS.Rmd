@@ -1,9 +1,9 @@
 ---
-title: "C4.5"
+title: "Least Angle Regression (LARS)"
 subtitle: "Apuntes y anotaciones personales"
 author: "Diana Villasana Ocampo"
 knit: (function(inputFile, encoding) {
-       rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../Output/Decision Tree")
+       rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../Output/Regression")
   })
 output:
    html_document:

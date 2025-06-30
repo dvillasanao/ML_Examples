@@ -1,5 +1,5 @@
 ---
-title: "C4.5"
+title: "Conditional Inference Trees (`CITs`)"
 subtitle: "Apuntes y anotaciones personales"
 author: "Diana Villasana Ocampo"
 knit: (function(inputFile, encoding) {

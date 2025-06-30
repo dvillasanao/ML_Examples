@@ -1,5 +1,5 @@
 ---
-title: "C4.5"
+title: "Oblique Decision Trees"
 subtitle: "Apuntes y anotaciones personales"
 author: "Diana Villasana Ocampo"
 knit: (function(inputFile, encoding) {
