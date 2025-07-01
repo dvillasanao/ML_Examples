@@ -1,5 +1,5 @@
 ---
-title: "Multidimensional Scaling (MDS)"
+title: "Kernel PCA (KPCA)"
 subtitle: "Apuntes y anotaciones personales"
 author: "Diana Villasana Ocampo"
 knit: (function(inputFile, encoding) {
