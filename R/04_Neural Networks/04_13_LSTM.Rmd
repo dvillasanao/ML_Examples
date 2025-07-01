@@ -1,5 +1,5 @@
 ---
-title: "Hopfield Network"
+title: "Long Short-Term Memory (LSTM)"
 subtitle: "Apuntes y anotaciones personales"
 author: "Diana Villasana Ocampo"
 knit: (function(inputFile, encoding) {
@@ -149,3 +149,4 @@ library(broom)     # Para tidy modelos
 library(Metrics)   # Para métricas como RMSE, MAE
 require(tibble)
 ```
+

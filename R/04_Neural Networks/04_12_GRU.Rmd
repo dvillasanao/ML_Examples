@@ -1,5 +1,5 @@
 ---
-title: "Hopfield Network"
+title: "Gated Recurrent Unit (GRU)"
 subtitle: "Apuntes y anotaciones personales"
 author: "Diana Villasana Ocampo"
 knit: (function(inputFile, encoding) {
