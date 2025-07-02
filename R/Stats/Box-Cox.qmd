@@ -159,3 +159,35 @@ ggplot(plot_data, aes(x = x, y = transformed_x, color = lambda_value)) +
     scale_color_viridis_d(option = "plasma", end = 0.9) + 
      facet_wrap(.~lambda_value, scales = "free")
 ```
+
+
+### 📦 En Python con `scipy.stats`:   
+
+```{python}
+#| eval: false
+# pip install scipy
+
+from scipy.stats import boxcox
+from scipy import stats
+
+#Encontrar el lambda óptimo y aplicar la transformación usando boxcox()
+# boxcox() de scipy.stats devuelve una tupla: (datos_transformados, lambda_optimo)
+
+datos_transformados, lambda_optimo = boxcox(y)
+```
+
+
+### 📦 En R con `MASS::boxcox()`: 
+
+
+```{r, eval = FALSE}
+library(MASS)
+
+#Encontrar el lambda óptimo usando boxcox()
+# boxcox() requiere un objeto de clase 'lm' (modelo lineal) o una fórmula.
+# Una forma sencilla es usar un modelo que solo predice una constante (lm(y ~ 1)).
+
+boxcox_result <- boxcox(y ~ 1, plotit = TRUE, lambda = seq(-2, 2, 0.1))
+```
+
+

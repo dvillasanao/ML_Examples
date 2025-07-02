@@ -112,7 +112,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#encontrar-lambda" id="toc-encontrar-lambda" class="nav-link active" data-scroll-target="#encontrar-lambda">Encontrar <span class="math inline">\(\lambda\)</span></a></li>
+  <li><a href="#encontrar-lambda" id="toc-encontrar-lambda" class="nav-link active" data-scroll-target="#encontrar-lambda">Encontrar <span class="math inline">\(\lambda\)</span></a>
+  <ul class="collapse">
+  <li><a href="#en-python-con-scipy.stats" id="toc-en-python-con-scipy.stats" class="nav-link" data-scroll-target="#en-python-con-scipy.stats">📦 En Python con <code>scipy.stats</code>:</a></li>
+  <li><a href="#en-r-con-massboxcox" id="toc-en-r-con-massboxcox" class="nav-link" data-scroll-target="#en-r-con-massboxcox">📦 En R con <code>MASS::boxcox()</code>:</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -284,6 +288,32 @@ window.Quarto = {
 </div>
 </div>
 </div>
+<section id="en-python-con-scipy.stats" class="level3">
+<h3 class="anchored" data-anchor-id="en-python-con-scipy.stats">📦 En Python con <code>scipy.stats</code>:</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pip install scipy</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> boxcox</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Encontrar el lambda óptimo y aplicar la transformación usando boxcox()</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># boxcox() de scipy.stats devuelve una tupla: (datos_transformados, lambda_optimo)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>datos_transformados, lambda_optimo <span class="op">=</span> boxcox(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="en-r-con-massboxcox" class="level3">
+<h3 class="anchored" data-anchor-id="en-r-con-massboxcox">📦 En R con <code>MASS::boxcox()</code>:</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Encontrar el lambda óptimo usando boxcox()</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># boxcox() requiere un objeto de clase 'lm' (modelo lineal) o una fórmula.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Una forma sencilla es usar un modelo que solo predice una constante (lm(y ~ 1)).</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>boxcox_result <span class="ot">&lt;-</span> <span class="fu">boxcox</span>(y <span class="sc">~</span> <span class="dv">1</span>, <span class="at">plotit =</span> <span class="cn">TRUE</span>, <span class="at">lambda =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="fl">0.1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 </section>
 
 </main>
