@@ -14,113 +14,9 @@ output:
       toc_depth: 3
       toc_float:
         collapsed: yes
+      css: ../../R/style.css
 ---
 
-```{=html}
-<style type="text/css">
-body {
-text-align: justify;
-font-style: normal;
-font-family: "Montserrat";
-font-size: 12px
-}
-h1.title {
-  font-size: 40px;
-  color: #000D3B;
-}
-h1 {
-  font-size: 35px;
-  color: #B6854D;
-}
-h2 {
-  font-size: 30px;
-  color: #172984;
-}
-h3 {
-  font-size: 25px;
-  color: #172984;
-}
-h4 {
-  font-size: 22px;
-  color: #172984;
-}
-h5 {
-  ont-size: 20px;
-  color: #172984;
-}
-h6{
-  ont-size: 18px;
-  color: #1864cb;
-}
-</style>
-```
-
-```{=html}
-<style>
-.nav>li>a {
-    position: relative;
-    display: block;
-    padding: 10px 15px;
-    color: #1C3BA4
-}
-.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li>a:focus {
-    color: #ffffff;
-    background-color: #09C2BC
-}
-</style>
-```
-
-```{=html}
-<style>
-.tile1-text {
-    position: relative;
-    display: block;
-    padding: 10px 15px;
-    color: #0A6A87;
-    list-style: none;
-}
-.top1-tiles a:nth-of-type(1):hover, .top-tiles1 a:nth-of-type(1):focus{
-    color: #ffffff;
-    background: #0A6A87
-}
-</style>
-```
-
-```{=html}
-<style>
-.tile2-text {
-    position: relative;
-    display: block;
-    padding: 10px 15px;
-    color: #0A6CC8;
-    list-style: none;
-}
-.top2-tiles a:nth-of-type(1):hover, .top2-tiles a:nth-of-type(1):focus{
-    color: #ffffff;
-    background: #0A6CC8
-}
-</style>
-
-
-```
-
-```{=html}
-<style>
-.math {
-  font-size: 15px;
-  color: #1e42ab;
-}
-
-.rmdwarning {
-  border: 1px solid red; /* Yellow border */
-  background-color: lightgrey; /* Light yellow background */
-  padding: 15px;
-  margin-bottom: 15px;
-  border-left: 5px solid #ffcc00; /* Stronger left border */
-}
-
-</style>
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, cache = TRUE, 
@@ -630,16 +526,24 @@ El paquete `MASS` contiene la función `boxcox()`, que es la base matemática pa
   Transformación Box - Cox (Calculo)
 </a>
 
-
 ```{r}
 require(MASS)
 require(caret)
 
-segPP <- preProcess(mtcars, method = "BoxCox")
+T.BCox <- preProcess(mtcars, method = "BoxCox")
 
 ## segPP$bc<-Box-Cox tranformation values 
-names(segPP$bc)
+names(T.BCox$bc) # Muestra los nombres de las variables transformadas
+
+
+T.BCox$bc$mpg  #Se muestran los detalles específicos de la transformación para la variable "mpg"
 ```
+
+* La transformación de Box-Cox para `mpg` seleccionó $\lambda = 0$, por lo tanto **se aplicará logaritmo natural a los valores de `mpg`** para hacerlos más simétricos y adecuados para modelos que asumen normalidad.
+
+$$y^{(\lambda=0)} = \log(y)$$
+* **Sample Skewness: 0.611**: `mpg` tiene una **asimetría moderada positiva**.
+ * **Fudge factor**: Se utiliza a veces para estabilizar la transformación numéricamente cuando $\lambda = 0$, pero no cambia el hecho de que se esté usando logaritmo.
 
 
 ## Entrenamiento de los datos (train/test)

@@ -1720,6 +1720,7 @@ margin-right: -30px;
 
 
 
+<style type="text/css">body {text-align: justify;font-style: normal;font-family: "Montserrat";font-size: 12px;}h1.title {font-size: 40px;color: #000d3b;}h1 {font-size: 35px;color: #b6854d;}h2 {font-size: 30px;color: #172984;}h3 {font-size: 25px;color: #172984;}h4 {font-size: 22px;color: #172984;}h5 {font-size: 20px;color: #172984;}h6 {font-size: 18px;color: #1864cb;}.nav > li > a {position: relative;display: block;padding: 10px 15px;color: #1c3ba4;}.nav-pills > li.active > a,.nav-pills > li.active > a:hover,.nav-pills > li > a:focus {color: #ffffff;background-color: #09c2bc;}.tile1-text {position: relative;display: block;padding: 10px 15px;color: #0a6a87;list-style: none;}.top1-tiles a:nth-of-type(1):hover,.top-tiles1 a:nth-of-type(1):focus {color: #ffffff;background: #0a6a87;}.tile2-text {position: relative;display: block;padding: 10px 15px;color: #0a6cc8;list-style: none;}.top2-tiles a:nth-of-type(1):hover,.top2-tiles a:nth-of-type(1):focus {color: #ffffff;background: #0a6cc8;}.math {font-size: 15px;color: #1e42ab;}.rmdwarning {border: 1px solid red; background-color: lightgrey; padding: 15px;margin-bottom: 15px;border-left: 5px solid #ffcc00; }</style>
 
 
 
@@ -1896,95 +1897,6 @@ border-radius: 0px;
 </div>
 
 
-<style type="text/css">
-body {
-text-align: justify;
-font-style: normal;
-font-family: "Montserrat";
-font-size: 12px
-}
-h1.title {
-font-size: 40px;
-color: #000D3B;
-}
-h1 {
-font-size: 35px;
-color: #B6854D;
-}
-h2 {
-font-size: 30px;
-color: #172984;
-}
-h3 {
-font-size: 25px;
-color: #172984;
-}
-h4 {
-font-size: 22px;
-color: #172984;
-}
-h5 {
-ont-size: 20px;
-color: #172984;
-}
-h6{
-ont-size: 18px;
-color: #1864cb;
-}
-</style>
-<style>
-.nav>li>a {
-position: relative;
-display: block;
-padding: 10px 15px;
-color: #1C3BA4
-}
-.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li>a:focus {
-color: #ffffff;
-background-color: #09C2BC
-}
-</style>
-<style>
-.tile1-text {
-position: relative;
-display: block;
-padding: 10px 15px;
-color: #0A6A87;
-list-style: none;
-}
-.top1-tiles a:nth-of-type(1):hover, .top-tiles1 a:nth-of-type(1):focus{
-color: #ffffff;
-background: #0A6A87
-}
-</style>
-<style>
-.tile2-text {
-position: relative;
-display: block;
-padding: 10px 15px;
-color: #0A6CC8;
-list-style: none;
-}
-.top2-tiles a:nth-of-type(1):hover, .top2-tiles a:nth-of-type(1):focus{
-color: #ffffff;
-background: #0A6CC8
-}
-</style>
-
-
-<style>
-.math {
-font-size: 15px;
-color: #1e42ab;
-}
-.rmdwarning {
-border: 1px solid red; 
-background-color: lightgrey; 
-padding: 15px;
-margin-bottom: 15px;
-border-left: 5px solid #ffcc00; 
-}
-</style>
 <div id="loess-locally-estimated-scatterplot-smoothing" class="section level2">
 <h2>LOESS (Locally Estimated Scatterplot Smoothing)</h2>
 <p>LOESS, o <em>Locally Estimated Scatterplot Smoothing</em> (Suavizado
@@ -3177,11 +3089,37 @@ Transformación Box - Cox (Calculo) </a></p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">require</span>(MASS)</span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">require</span>(caret)</span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>segPP <span class="ot">&lt;-</span> <span class="fu">preProcess</span>(mtcars, <span class="at">method =</span> <span class="st">&quot;BoxCox&quot;</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>T.BCox <span class="ot">&lt;-</span> <span class="fu">preProcess</span>(mtcars, <span class="at">method =</span> <span class="st">&quot;BoxCox&quot;</span>)</span>
 <span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a></span>
 <span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="do">## segPP$bc&lt;-Box-Cox tranformation values </span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="fu">names</span>(segPP<span class="sc">$</span>bc)</span></code></pre></div>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="fu">names</span>(T.BCox<span class="sc">$</span>bc) <span class="co"># Muestra los nombres de las variables transformadas</span></span></code></pre></div>
 <pre><code>## [1] &quot;mpg&quot;  &quot;cyl&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;gear&quot; &quot;carb&quot;</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>T.BCox<span class="sc">$</span>bc<span class="sc">$</span>mpg  <span class="co">#Se muestran los detalles específicos de la transformación para la variable &quot;mpg&quot;</span></span></code></pre></div>
+<pre><code>## Box-Cox Transformation
+## 
+## 32 data points used to estimate Lambda
+## 
+## Input data summary:
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   10.40   15.43   19.20   20.09   22.80   33.90 
+## 
+## Largest/Smallest: 3.26 
+## Sample Skewness: 0.611 
+## 
+## Estimated Lambda: 0 
+## With fudge factor, Lambda = 0 will be used for transformations</code></pre>
+<ul>
+<li>La transformación de Box-Cox para <code>mpg</code> seleccionó <span class="math inline">\(\lambda = 0\)</span>, por lo tanto <strong>se
+aplicará logaritmo natural a los valores de <code>mpg</code></strong>
+para hacerlos más simétricos y adecuados para modelos que asumen
+normalidad.</li>
+</ul>
+<p><span class="math display">\[y^{(\lambda=0)} = \log(y)\]</span> *
+<strong>Sample Skewness: 0.611</strong>: <code>mpg</code> tiene una
+<strong>asimetría moderada positiva</strong>. * <strong>Fudge
+factor</strong>: Se utiliza a veces para estabilizar la transformación
+numéricamente cuando <span class="math inline">\(\lambda = 0\)</span>,
+pero no cambia el hecho de que se esté usando logaritmo.</p>
 </div>
 </div>
 <div id="entrenamiento-de-los-datos-traintest" class="section level2">
@@ -3205,14 +3143,14 @@ datos nuevos y no vistos.</p>
 <li><code>list = FALSE</code> devuelve los índices como un vector, no
 como una lista.</li>
 </ul>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Se quiere predecir `mpg` (millas por galón) usando otras variables</span></span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co"># mpg será la variable dependiente (target)</span></span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co"># 3. Se dividen losdatos en entrenamiento y prueba</span></span>
-<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># Para reproducibilidad</span></span>
-<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>train_index <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(mtcars<span class="sc">$</span>mpg, <span class="at">p =</span> <span class="fl">0.8</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> mtcars[train_index, ]</span>
-<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> mtcars[<span class="sc">-</span>train_index, ]</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># Se quiere predecir `mpg` (millas por galón) usando otras variables</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co"># mpg será la variable dependiente (target)</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="co"># 3. Se dividen losdatos en entrenamiento y prueba</span></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># Para reproducibilidad</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>train_index <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(mtcars<span class="sc">$</span>mpg, <span class="at">p =</span> <span class="fl">0.8</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> mtcars[train_index, ]</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> mtcars[<span class="sc">-</span>train_index, ]</span></code></pre></div>
 <ul>
 <li>Particionar los datos, evita el <strong>overfitting</strong> (cuando
 el modelo memoriza los datos de entrenamiento).</li>

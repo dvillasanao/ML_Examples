@@ -20,7 +20,6 @@ execute:
 editor: visual
 ---
 
-
 La Transformación Box-Cox es una técnica estadística utilizada para **transformar datos no normales para que se aproximen a una distribución normal**. Esto es crucial en muchas técnicas estadísticas que asumen que los datos (o los errores del modelo) se distribuyen normalmente, como la regresión lineal, el análisis de varianza (ANOVA) y algunas gráficas de control.
 
 [![](images/clipboard-727757847.png)](https://www.google.com/url?sa=i&url=https%3A%2F%2Fstats.libretexts.org%2FBookshelves%2FIntroductory_Statistics%2FIntroductory_Statistics_%2528Lane%2529%2F16%253A_Transformations%2F16.04%253A_Box-Cox_Transformations&psig=AOvVaw31K0uoHwKaZBWg7ek5npO1&ust=1751516962766000&source=images&cd=vfe&opi=89978449&ved=0CBgQjhxqFwoTCJDQkKernY4DFQAAAAAdAAAAABAE)
@@ -160,8 +159,7 @@ ggplot(plot_data, aes(x = x, y = transformed_x, color = lambda_value)) +
      facet_wrap(.~lambda_value, scales = "free")
 ```
 
-
-### 📦 En Python con `scipy.stats`:   
+### 📦 En Python con `scipy.stats`:
 
 ```{python}
 #| eval: false
@@ -176,9 +174,7 @@ from scipy import stats
 datos_transformados, lambda_optimo = boxcox(y)
 ```
 
-
-### 📦 En R con `MASS::boxcox()`: 
-
+### 📦 En R con `MASS::boxcox()`:
 
 ```{r, eval = FALSE}
 library(MASS)
@@ -189,5 +185,3 @@ library(MASS)
 
 boxcox_result <- boxcox(y ~ 1, plotit = TRUE, lambda = seq(-2, 2, 0.1))
 ```
-
-
