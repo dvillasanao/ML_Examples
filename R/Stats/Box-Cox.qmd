@@ -1,0 +1,51 @@
+---
+title: "Transformación Box-Cox"
+subtitle: "Apuntes y anotaciones personales"
+author: "Diana Villasana Ocampo"
+format:
+  html:
+    code-fold: false
+    highlight-style: tango
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    toc-location: left
+execute:
+  echo: true      
+  message: false   # Suprimir mensajes generados por R/Python
+  warning: false   # Suprimir advertencias generadas por R/Python
+  error: false     # Suprimir errores (muestra la ejecución, pero no los errores)
+  execute-dir: project
+editor: visual
+---
+
+La Transformación Box-Cox es una técnica estadística utilizada para **transformar datos no normales para que se aproximen a una distribución normal**. Esto es crucial en muchas técnicas estadísticas que asumen que los datos (o los errores del modelo) se distribuyen normalmente, como la regresión lineal, el análisis de varianza (ANOVA) y algunas gráficas de control.
+
+[![](images/clipboard-727757847.png)](https://www.google.com/url?sa=i&url=https%3A%2F%2Fstats.libretexts.org%2FBookshelves%2FIntroductory_Statistics%2FIntroductory_Statistics_%2528Lane%2529%2F16%253A_Transformations%2F16.04%253A_Box-Cox_Transformations&psig=AOvVaw31K0uoHwKaZBWg7ek5npO1&ust=1751516962766000&source=images&cd=vfe&opi=89978449&ved=0CBgQjhxqFwoTCJDQkKernY4DFQAAAAAdAAAAABAE)
+
+**Principales usos**
+
+**1. Normalización de los datos:**
+
+-   Muchos modelos estadísticos, especialmente los paramétricos, asumen que los datos siguen una distribución normal. Si los datos están sesgados (es decir, no son simétricos, con una "cola" más larga hacia un lado) o presentan una distribución no normal, aplicar la transformación Box-Cox puede ayudar a que se parezcan más a una campana de Gauss.
+
+-   Esto permite que las pruebas de hipótesis y los intervalos de confianza derivados de estos modelos sean más válidos y precisos.
+
+**2. Estabilización de la varianza (Homocedasticidad):**
+
+-   En muchos análisis, como la regresión lineal, se asume que la varianza de los errores es constante en todos los niveles de las variables predictoras (homocedasticidad).
+
+-   Si la varianza cambia a medida que los valores de la variable aumentan o disminuyen (heterocedasticidad), los resultados del modelo pueden ser ineficientes o sesgados.
+
+-   La transformación Box-Cox puede ayudar a estabilizar esta varianza, haciendo que el modelo sea más robusto y sus estimaciones más confiables.
+
+**3. Mejora de la linealidad:**\
+
+-   En la regresión lineal, se asume una relación lineal entre la variable dependiente y las variables independientes. Si la relación no es lineal, transformar la variable dependiente (o incluso las independientes, con la transformación Box-Tidwell) puede ayudar a establecer una relación más lineal, mejorando el ajuste del modelo.
+
+**4. Facilita la interpretación y el análisis:**\
+
+-   Al normalizar y estabilizar los datos, los patrones subyacentes se vuelven más discernibles y fáciles de analizar.
+-   También puede reducir la influencia de valores atípicos y extremos, lo que puede distorsionar los resultados.
+
+## Encontrar $\lambda$
