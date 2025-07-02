@@ -10,6 +10,7 @@ format:
     toc: true
     toc-depth: 3
     toc-location: left
+    css: style.css
 execute:
   echo: true      
   message: false   # Suprimir mensajes generados por R/Python

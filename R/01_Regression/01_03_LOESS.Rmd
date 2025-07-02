@@ -622,7 +622,14 @@ p <- mtcars%>%
 p
 ```
 
-## 
+### Transformación Box-Cox  
+
+El paquete `MASS` contiene la función `boxcox()`, que es la base matemática para la **Transformación Box-Cox**. Aunque `caret` tiene su propia implementación para aplicar la transformación, a menudo se basa en funciones de `MASS` para los cálculos subyacentes o para ofrecer una funcionalidad más completa en ciertos contextos de `preProcess`. Es una buena práctica asegurar que esté cargado si se va a usar esta transformación.
+
+<a href="https://dvillasanao.github.io/ML_Examples/Output/R/Stats/Box-Cox.html" style="color: blue;">
+  Transformación Box - Cox (Calculo)
+</a>
+
 
 ```{r}
 require(MASS)
