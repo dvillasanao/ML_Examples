@@ -570,6 +570,43 @@ test_data <- mtcars[-train_index, ]
 -   Permite una **evaluación honesta** del modelo al probarlo en datos que no vio durante el entrenamiento.
 -   Es una práctica estándar en cualquier pipeline de aprendizaje automático.
 
+## Preprocesamiento de los datos  
+
+El **preprocesamiento de datos** es una fase fundamental en análisis de datos y machine learning. La calidad de los datos de entrada determina directamente la calidad de los resultados de los modelos. Es decir, es una **etapa indispensable** que asegura que los datos estén óptimos para el aprendizaje efectivo. Una buena preparación se traduce en **modelos más robustos, precisos y fiables**. 
+
+### Aspectos Clave del Preprocesamiento
+
+1. **Mejora la calidad del modelo**: Siguiendo el principio "Garbage In, Garbage Out", datos limpios permiten que el modelo aprenda patrones más precisos y reducen sesgos.
+2. **Optimiza el rendimiento**: Acelera la convergencia de algoritmos iterativos y mejora la eficiencia computacional.
+3. **Maneja datos faltantes** mediante imputación o eliminación.
+4. **Trata valores atípicos** que pueden distorsionar estadísticas y afectar modelos sensibles.
+5. **Normaliza y escala características** para que todas contribuyan equitativamente al modelo.
+6. **Codifica variables categóricas** en formato numérico mediante técnicas como One-Hot Encoding.
+7. **Reduce la dimensionalidad** para simplificar el modelo y prevenir sobreajuste.
+8. **Transforma datos** para mejorar distribuciones y linealizar relaciones.
+
+### Libería `recipes` 
+
+El paquete **`recipes`** (parte del ecosistema **tidymodels**) te permite construir **pipelines de preprocesamiento** de datos **estructurados y reproducibles**. Es muy útil porque:   
+  
+  * Puedes **encadenar pasos** como normalización, imputación, transformación Box-Cox, codificación, etc.
+* El preprocesamiento queda separado del modelo.
+* Es muy compatible con flujos modernos de `tidymodels`.  
+
+<a href="https://dvillasanao.github.io/ML_Examples/Output/R/Stats/Recipes_Functions.html" style="color: blue;">
+  `Recipes` Function in R
+</a>
+
+```{r}
+require(recipes)
+
+datos_recipes <- rec <- recipe(mpg ~ ., data = mtcars) %>%
+                         step_BoxCox(wt) %>%     # Transformar wt si es necesario
+                          step_center(all_predictors()) %>% 
+                           step_scale(all_predictors()) 
+```
+  
+
 ## Entrenamiento del modelo
 
 El **entrenamiento de un modelo** es el paso más importante en el aprendizaje automático. Usando un conjunto de datos de entrenamiento (`train_data`), el modelo aprende a reconocer patrones para hacer predicciones confiables con datos nuevos. Este proceso es esencial por estas razones:

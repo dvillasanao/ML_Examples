@@ -3160,6 +3160,60 @@ probarlo en datos que no vio durante el entrenamiento.</li>
 automático.</li>
 </ul>
 </div>
+<div id="preprocesamiento-de-los-datos" class="section level2">
+<h2>Preprocesamiento de los datos</h2>
+<p>El <strong>preprocesamiento de datos</strong> es una fase fundamental
+en análisis de datos y machine learning. La calidad de los datos de
+entrada determina directamente la calidad de los resultados de los
+modelos. Es decir, es una <strong>etapa indispensable</strong> que
+asegura que los datos estén óptimos para el aprendizaje efectivo. Una
+buena preparación se traduce en <strong>modelos más robustos, precisos y
+fiables</strong>.</p>
+<div id="aspectos-clave-del-preprocesamiento" class="section level3">
+<h3>Aspectos Clave del Preprocesamiento</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Mejora la calidad del modelo</strong>: Siguiendo el
+principio “Garbage In, Garbage Out”, datos limpios permiten que el
+modelo aprenda patrones más precisos y reducen sesgos.</li>
+<li><strong>Optimiza el rendimiento</strong>: Acelera la convergencia de
+algoritmos iterativos y mejora la eficiencia computacional.</li>
+<li><strong>Maneja datos faltantes</strong> mediante imputación o
+eliminación.</li>
+<li><strong>Trata valores atípicos</strong> que pueden distorsionar
+estadísticas y afectar modelos sensibles.</li>
+<li><strong>Normaliza y escala características</strong> para que todas
+contribuyan equitativamente al modelo.</li>
+<li><strong>Codifica variables categóricas</strong> en formato numérico
+mediante técnicas como One-Hot Encoding.</li>
+<li><strong>Reduce la dimensionalidad</strong> para simplificar el
+modelo y prevenir sobreajuste.</li>
+<li><strong>Transforma datos</strong> para mejorar distribuciones y
+linealizar relaciones.</li>
+</ol>
+</div>
+<div id="libería-recipes" class="section level3">
+<h3>Libería <code>recipes</code></h3>
+<p>El paquete <strong><code>recipes</code></strong> (parte del
+ecosistema <strong>tidymodels</strong>) te permite construir
+<strong>pipelines de preprocesamiento</strong> de datos
+<strong>estructurados y reproducibles</strong>. Es muy útil porque:</p>
+<ul>
+<li>Puedes <strong>encadenar pasos</strong> como normalización,
+imputación, transformación Box-Cox, codificación, etc.</li>
+<li>El preprocesamiento queda separado del modelo.</li>
+<li>Es muy compatible con flujos modernos de
+<code>tidymodels</code>.</li>
+</ul>
+<p><a href="https://dvillasanao.github.io/ML_Examples/Output/R/Stats/Recipes_Functions.html" style="color: blue;">
+<code>Recipes</code> Function in R </a></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">require</span>(recipes)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>datos_recipes <span class="ot">&lt;-</span> rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(mpg <span class="sc">~</span> ., <span class="at">data =</span> mtcars) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>                         <span class="fu">step_BoxCox</span>(wt) <span class="sc">%&gt;%</span>     <span class="co"># Transformar wt si es necesario</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>                          <span class="fu">step_center</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>                           <span class="fu">step_scale</span>(<span class="fu">all_predictors</span>()) </span></code></pre></div>
+</div>
+</div>
 <div id="entrenamiento-del-modelo" class="section level2">
 <h2>Entrenamiento del modelo</h2>
 <p>El <strong>entrenamiento de un modelo</strong> es el paso más
