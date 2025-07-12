@@ -24,80 +24,72 @@ La paquetería **`recipes`** es muy poderosa para realizar preprocesamiento **mo
 
 ## 🧰 1. Creación y preparación de recetas
 
-| Función    | Descripción                                                            |
-| ---------- | ---------------------------------------------------------------------- |
-| `recipe()` | Crea una receta base: fórmula + data.                                  |
-| `step_*()` | Añade un paso de preprocesamiento a la receta.                         |
-| `prep()`   | Ajusta (entrena) la receta con los datos.                              |
-| `bake()`   | Aplica la receta a los datos (como `predict`).                         |
-| `juice()`  | Extrae los datos transformados del `prep()` sin necesidad de `bake()`. |
+| Función | Descripción |
+|-----------------|-------------------------------------------------------|
+| `recipe()` | Crea una receta base: fórmula + data. |
+| `step_*()` | Añade un paso de preprocesamiento a la receta. |
+| `prep()` | Ajusta (entrena) la receta con los datos. |
+| `bake()` | Aplica la receta a los datos (como `predict`). |
+| `juice()` | Extrae los datos transformados del `prep()` sin necesidad de `bake()`. |
 
-
-
-## 🛠️ 2. Funciones comunes por tipo de preprocesamiento     
+## 🛠️ 2. Funciones comunes por tipo de preprocesamiento
 
 ### 📏 A. **Escalado y normalización**
 
 | Función            | Propósito                                     |
-| ------------------ | --------------------------------------------- |
+|--------------------|-----------------------------------------------|
 | `step_center()`    | Centrar variables (restar la media).          |
 | `step_scale()`     | Escalar (dividir por la desviación estándar). |
 | `step_normalize()` | Centrar y escalar en un solo paso.            |
 | `step_range()`     | Escalado min-max (0 a 1).                     |
 
----
+------------------------------------------------------------------------
 
-### 🧼 B. Tratamiento de datos faltantes
+### 🧼 B. Tratamiento de datos faltantes 
 
-| Función                                                            | Propósito                                    |
-| ------------------------------------------------------------------ | -------------------------------------------- |
-| `step_naomit()`                                                    | Elimina filas con `NA`.                      |
+La imputación es un proceso complejo que debe de realizarse con detenimiento, identificando cuidadosamente qué variables son las adecuadas para cada imputación.   
+
+| Función | Propósito |
+|-------------------------------------------|-----------------------------|
+| `step_naomit()` | Elimina filas con `NA`. |
 | `step_impute_mean()`, `step_impute_median()`, `step_impute_mode()` | Imputación básica por media, mediana o moda. |
-| `step_impute_knn()`                                                | Imputación por vecinos más cercanos.         |
+| `step_impute_knn()` | Imputación por K-Nearest Neighbors. |
+| `step_bagimpute()` | Imputación por Bagged Trees. |   
 
+### 🔍 C. Transformaciones
 
-
-### 🔍 C. Transformaciones    
-
-| Función                     | Propósito                                                 |
-| --------------------------- | --------------------------------------------------------- |
-| `step_log()`                | Aplica logaritmo (natural).                               |
-| `step_BoxCox()`             | Aplica transformación Box-Cox.                            |
-| `step_YeoJohnson()`         | Alternativa a Box-Cox que funciona con ceros y negativos. |
-| `step_sqrt()`, `step_inv()` | Otras transformaciones matemáticas.                       |
-
-
+| Función | Propósito |
+|------------------------|-----------------------------------------------|
+| `step_log()` | Aplica logaritmo (natural). |
+| `step_BoxCox()` | Aplica transformación Box-Cox. |
+| `step_YeoJohnson()` | Alternativa a Box-Cox que funciona con ceros y negativos. |
+| `step_sqrt()`, `step_inv()` | Otras transformaciones matemáticas. |
 
 ### 🧮 D. Codificación de variables categóricas
 
-| Función          | Propósito                                                   |
-| ---------------- | ----------------------------------------------------------- |
-| `step_dummy()`   | One-hot encoding (convierte factores a variables binarias). |
-| `step_other()`   | Agrupa niveles poco frecuentes en un factor.                |
-| `step_unknown()` | Añade una categoría "desconocido" para niveles nuevos.      |
+| Función | Propósito |
+|------------------|------------------------------------------------------|
+| `step_dummy()` | One-hot encoding (convierte factores a variables binarias). |
+| `step_other()` | Agrupa niveles poco frecuentes en un factor. |
+| `step_unknown()` | Añade una categoría "desconocido" para niveles nuevos. |
 
-
-
-### 📊 E. Reducción de dimensionalidad y selección 
+### 📊 E. Reducción de dimensionalidad y selección
 
 | Función          | Propósito                                    |
-| ---------------- | -------------------------------------------- |
+|------------------|----------------------------------------------|
 | `step_pca()`     | Análisis de componentes principales (PCA).   |
 | `step_corr()`    | Elimina variables altamente correlacionadas. |
 | `step_nzv()`     | Elimina variables con varianza casi cero.    |
 | `step_lincomb()` | Elimina combinaciones lineales exactas.      |
 
-
-
 ### ⚙️ F. Otras funciones útiles
 
-| Función                | Propósito                                                  |
-| ---------------------- | ---------------------------------------------------------- |
-| `step_interact()`      | Crea términos de interacción entre variables.              |
-| `step_poly()`          | Crea términos polinomiales.                                |
-| `step_dummy_extract()` | Convierte códigos dummy a factor (inverso de dummy).       |
-| `step_mutate()`        | Permite crear nuevas variables (como `mutate` en `dplyr`). |
-
+| Función | Propósito |
+|---------------------|---------------------------------------------------|
+| `step_interact()` | Crea términos de interacción entre variables. |
+| `step_poly()` | Crea términos polinomiales. |
+| `step_dummy_extract()` | Convierte códigos dummy a factor (inverso de dummy). |
+| `step_mutate()` | Permite crear nuevas variables (como `mutate` en `dplyr`). |
 
 ## 🔄 Flujo típico con `recipes`
 
@@ -112,5 +104,3 @@ rec <- recipe(y ~ ., data = datos) %>%
 rec_prep <- prep(rec)
 datos_listos <- bake(rec_prep, new_data = NULL)
 ```
-
-

@@ -3209,14 +3209,22 @@ imputación, transformación Box-Cox, codificación, etc.</li>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">require</span>(recipes)</span>
 <span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>datos_recipes <span class="ot">&lt;-</span> rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(mpg <span class="sc">~</span> ., <span class="at">data =</span> mtcars) <span class="sc">%&gt;%</span></span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>                         <span class="fu">step_BoxCox</span>(wt) <span class="sc">%&gt;%</span>     <span class="co"># Transformar wt si es necesario</span></span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>                          <span class="fu">step_center</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>                           <span class="fu">step_scale</span>(<span class="fu">all_predictors</span>()) </span></code></pre></div>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>                          <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>                          <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>                           <span class="fu">step_nzv</span>(<span class="fu">all_predictors</span>())</span></code></pre></div>
+<div class="rmdnote">
+<p>Historically, the number of epochs was determined by early stopping;
+a separate validation set determined the length of training based on the
+error rate, since re-predicting the training set led to overfitting. In
+our case, the use of a weight decay penalty should prohibit overfitting,
+and there is little harm in tuning the penalty and the number of
+epochs.</p>
+</div>
 </div>
 </div>
 <div id="entrenamiento-del-modelo" class="section level2">
 <h2>Entrenamiento del modelo</h2>
-<p>El <strong>entrenamiento de un modelo</strong> es el paso más
+<p>z El <strong>entrenamiento de un modelo</strong> es el paso más
 importante en el aprendizaje automático. Usando un conjunto de datos de
 entrenamiento (<code>train_data</code>), el modelo aprende a reconocer
 patrones para hacer predicciones confiables con datos nuevos. Este
