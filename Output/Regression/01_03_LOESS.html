@@ -3206,17 +3206,42 @@ imputación, transformación Box-Cox, codificación, etc.</li>
 </ul>
 <p><a href="https://dvillasanao.github.io/ML_Examples/Output/R/Stats/Recipes_Functions.html" style="color: blue;">
 <code>Recipes</code> Function in R </a></p>
+<ul>
+<li><strong><code>recipe()</code></strong>: Es la función principal para
+crear un objeto de receta.<br />
+</li>
+<li><strong><code>step_normalize()</code></strong>: Esta función le
+indica a la receta que debe <strong>normalizar (estandarizar)</strong>
+las variables especificadas. La normalización en <code>recipes</code>
+generalmente significa <strong>centrar y escalar</strong> las variables
+para que tengan una media de 0 y una desviación estándar de 1 (similar a
+la estandarización Z-score).</li>
+<li><strong><code>step_dummy()</code></strong>: Esta función le indica a
+la receta que debe crear <strong>variables <em>dummy</em></strong>
+(también conocidas como variables indicadoras o <em>one-hot
+encoding</em>) a partir de las variables categóricas. Para cada variable
+categórica con <span class="math inline">\(k\)</span> niveles, se
+crearán <span class="math inline">\(k-1\)</span> nuevas columnas
+binarias (0 o 1).<br />
+</li>
+<li><strong><code>step_nzv()</code></strong>: Esta función se utiliza
+para identificar y potencialmente <strong>eliminar variables con
+varianza cercana a cero (near-zero variance)</strong>. Estas son
+variables que tienen muy poca variabilidad o que tienen un solo valor
+predominante, lo que las hace poco informativas para la mayoría de los
+modelos.</li>
+</ul>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">require</span>(recipes)</span>
 <span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>datos_recipes <span class="ot">&lt;-</span> rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(mpg <span class="sc">~</span> ., <span class="at">data =</span> mtcars) <span class="sc">%&gt;%</span></span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>                          <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>                          <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>                           <span class="fu">step_nzv</span>(<span class="fu">all_predictors</span>())</span></code></pre></div>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>objeto_recipes <span class="ot">&lt;-</span> <span class="fu">recipe</span>(mpg <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>                   <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>                   <span class="co"># step_dummy(all_nominal_predictors()) %&gt;% </span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>                     <span class="fu">step_nzv</span>(<span class="fu">all_predictors</span>())</span></code></pre></div>
 </div>
 </div>
 <div id="entrenamiento-del-modelo" class="section level2">
 <h2>Entrenamiento del modelo</h2>
-<p>z El <strong>entrenamiento de un modelo</strong> es el paso más
+<p>El <strong>entrenamiento de un modelo</strong> es el paso más
 importante en el aprendizaje automático. Usando un conjunto de datos de
 entrenamiento (<code>train_data</code>), el modelo aprende a reconocer
 patrones para hacer predicciones confiables con datos nuevos. Este
@@ -3236,6 +3261,29 @@ el rendimiento. Las métricas (MAE, RMSE, <span class="math inline">\(R^2\)</spa
 <li>Con estos resultados, podemos decidir si el modelo está listo para
 usar o necesita ajustes.</li>
 </ul>
+<p>Una vez que se ha creado el objeto recipe con todas las
+transformaciones de preprocesado, se aprenden con los datos de
+entrenamiento y se aplican a los dos conjuntos.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># Se entrena el objeto recipe</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>trained_recipe <span class="ot">&lt;-</span> <span class="fu">prep</span>(objeto_recipes, <span class="at">training =</span> train_data)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r fold-show"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co"># Se aplican las transformaciones al conjunto de entrenamiento y de test</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>datos_train_prep <span class="ot">&lt;-</span> <span class="fu">bake</span>(trained_recipe, <span class="at">new_data =</span> train_data)</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>datos_test_prep  <span class="ot">&lt;-</span> <span class="fu">bake</span>(trained_recipe, <span class="at">new_data =</span> test_data)</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="fu">glimpse</span>(datos_train_prep)</span></code></pre></div>
+<pre><code>## Rows: 28
+## Columns: 11
+## $ cyl  &lt;dbl&gt; -0.07938842, -1.19082628, -0.07938842, 1.03204944, -0.07938842, -…
+## $ disp &lt;dbl&gt; -0.56524053, -0.98491938, 0.22569268, 1.04890887, -0.04064198, -0…
+## $ hp   &lt;dbl&gt; -0.5112856, -0.7729758, -0.5112856, 0.4892948, -0.5882533, -1.250…
+## $ drat &lt;dbl&gt; 0.6420815, 0.5490262, -0.8840252, -0.7537478, -1.4795790, 0.25124…
+## $ wt   &lt;dbl&gt; -0.64256741, -0.94008512, -0.05249062, 0.17064766, 0.19048217, -0…
+## $ qsec &lt;dbl&gt; -0.902603317, 0.360453858, 0.848052675, -0.573620983, 1.306278068…
+## $ vs   &lt;dbl&gt; -0.9141741, 1.0548163, 1.0548163, -0.9141741, 1.0548163, 1.054816…
+## $ am   &lt;dbl&gt; 1.3174651, 1.3174651, -0.7319251, -0.7319251, -0.7319251, -0.7319…
+## $ gear &lt;dbl&gt; 0.4885536, 0.4885536, -0.8793964, -0.8793964, -0.8793964, 0.48855…
+## $ carb &lt;dbl&gt; 0.7589062, -1.0624686, -1.0624686, -0.4553437, -1.0624686, -0.455…
+## $ mpg  &lt;dbl&gt; 21.0, 22.8, 21.4, 18.7, 18.1, 24.4, 22.8, 19.2, 17.8, 16.4, 17.3,…</code></pre>
 </div>
 <div id="referencias" class="section level2">
 <h2>Referencias</h2>
@@ -3454,6 +3502,17 @@ readr
 </td>
 <td style="text-align:left;">
 2.1.4
+</td>
+<td style="text-align:left;">
+CRAN (R 4.3.1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+recipes
+</td>
+<td style="text-align:left;">
+1.0.8
 </td>
 <td style="text-align:left;">
 CRAN (R 4.3.1)

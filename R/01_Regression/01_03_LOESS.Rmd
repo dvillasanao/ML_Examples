@@ -597,26 +597,48 @@ El paquete **`recipes`** (parte del ecosistema **tidymodels**) te permite constr
   `Recipes` Function in R
 </a>
 
+* **`recipe()`**: Es la función principal para crear un objeto de receta.  
+* **`step_normalize()`**: Esta función le indica a la receta que debe **normalizar (estandarizar)** las variables especificadas. La normalización en `recipes` generalmente significa **centrar y escalar** las variables para que tengan una media de 0 y una desviación estándar de 1 (similar a la estandarización Z-score).
+* **`step_dummy()`**: Esta función le indica a la receta que debe crear **variables *dummy*** (también conocidas como variables indicadoras o *one-hot encoding*) a partir de las variables categóricas. Para cada variable categórica con $k$ niveles, se crearán $k-1$ nuevas columnas binarias (0 o 1).   
+* **`step_nzv()`**: Esta función se utiliza para identificar y potencialmente **eliminar variables con varianza cercana a cero (near-zero variance)**. Estas son variables que tienen muy poca variabilidad o que tienen un solo valor predominante, lo que las hace poco informativas para la mayoría de los modelos.
+
+
 ```{r}
 require(recipes)
 
-datos_recipes <- rec <- recipe(mpg ~ ., data = mtcars) %>%
-                          step_normalize(all_numeric_predictors()) %>%
-                          step_dummy(all_nominal_predictors()) %>% 
-                           step_nzv(all_predictors())
+objeto_recipes <- recipe(mpg ~ ., data = train_data) %>%
+                   step_normalize(all_numeric_predictors()) %>%
+                   # step_dummy(all_nominal_predictors()) %>% 
+                     step_nzv(all_predictors())
 ```
   
 
 ## Entrenamiento del modelo
-z
+
 El **entrenamiento de un modelo** es el paso más importante en el aprendizaje automático. Usando un conjunto de datos de entrenamiento (`train_data`), el modelo aprende a reconocer patrones para hacer predicciones confiables con datos nuevos. Este proceso es esencial por estas razones:
 
 -   Durante el entrenamiento, el modelo **identifica patrones específicos** en los datos.
 -   Separamos los datos en grupos de entrenamiento y prueba para asegurar que el modelo funcione bien no solo con datos conocidos, sino también con **datos nuevos y no vistos**.
 -   Después del entrenamiento con `train_data`, usamos el **conjunto de prueba (`test_data`)** para medir el rendimiento. Las métricas (MAE, RMSE, $R^2$) nos muestran qué tan bien el modelo **maneja datos nuevos**.
 -   Un rendimiento peor en `test_data` que en `train_data` indica que el modelo está sobreajustado.
--   Con estos resultados, podemos decidir si el modelo está listo para usar o necesita ajustes.
+-   Con estos resultados, podemos decidir si el modelo está listo para usar o necesita ajustes.  
 
+
+Una vez que se ha creado el objeto recipe con todas las transformaciones de preprocesado, se aprenden con los datos de entrenamiento y se aplican a los dos conjuntos.
+
+```{r}
+# Se entrena el objeto recipe
+trained_recipe <- prep(objeto_recipes, training = train_data)
+```
+
+
+```{r}
+# Se aplican las transformaciones al conjunto de entrenamiento y de test
+datos_train_prep <- bake(trained_recipe, new_data = train_data)
+datos_test_prep  <- bake(trained_recipe, new_data = test_data)
+
+glimpse(datos_train_prep)
+```
 
 ## Referencias
 
