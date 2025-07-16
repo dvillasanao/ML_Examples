@@ -607,10 +607,6 @@ datos_recipes <- rec <- recipe(mpg ~ ., data = mtcars) %>%
 ```
   
 
-:::rmdnote
-Historically, the number of epochs was determined by early stopping; a separate validation set determined the length of training based on the error rate, since re-predicting the training set led to overfitting. In our case, the use of a weight decay penalty should prohibit overfitting, and there is little harm in tuning the penalty and the number of epochs. 
-:::
-
 ## Entrenamiento del modelo
 z
 El **entrenamiento de un modelo** es el paso más importante en el aprendizaje automático. Usando un conjunto de datos de entrenamiento (`train_data`), el modelo aprende a reconocer patrones para hacer predicciones confiables con datos nuevos. Este proceso es esencial por estas razones:

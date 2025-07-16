@@ -3212,14 +3212,6 @@ imputación, transformación Box-Cox, codificación, etc.</li>
 <span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>                          <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>                          <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span> </span>
 <span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>                           <span class="fu">step_nzv</span>(<span class="fu">all_predictors</span>())</span></code></pre></div>
-<div class="rmdnote">
-<p>Historically, the number of epochs was determined by early stopping;
-a separate validation set determined the length of training based on the
-error rate, since re-predicting the training set led to overfitting. In
-our case, the use of a weight decay penalty should prohibit overfitting,
-and there is little harm in tuning the penalty and the number of
-epochs.</p>
-</div>
 </div>
 </div>
 <div id="entrenamiento-del-modelo" class="section level2">
