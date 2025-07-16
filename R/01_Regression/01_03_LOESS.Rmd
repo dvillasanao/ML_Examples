@@ -608,10 +608,11 @@ require(recipes)
 
 objeto_recipes <- recipe(mpg ~ ., data = train_data) %>%
                    step_normalize(all_numeric_predictors()) %>%
-                   # step_dummy(all_nominal_predictors()) %>% 
-                     step_nzv(all_predictors())
+                    step_corr(all_numeric_predictors(), threshold = 0.7) %>%
+                     # step_dummy(all_nominal_predictors()) %>% 
+                      step_nzv(all_predictors())
 ```
-  
+
 
 ## Entrenamiento del modelo
 
@@ -634,10 +635,51 @@ trained_recipe <- prep(objeto_recipes, training = train_data)
 
 ```{r}
 # Se aplican las transformaciones al conjunto de entrenamiento y de test
-datos_train_prep <- bake(trained_recipe, new_data = train_data)
+datos_train_prep <- bake(trained_recipe, new_data = train_data) %>% 
+                     as.data.frame()
 datos_test_prep  <- bake(trained_recipe, new_data = test_data)
+```
 
-glimpse(datos_train_prep)
+
+
+```{r}
+# --- Configurar el Control de Entrenamiento (Resampling) ---
+# Usaremos validación cruzada para evaluar el modelo y ajustar los hiperparámetros
+ctrl <- trainControl(
+                      method = "cv",          # Usar validación cruzada (Cross-Validation)
+                      number = 10             # 10 pliegues (folds) para la validación cruzada
+                      # summaryFunction = defaultSummary, # Puedes especificar una función para resumir las métricas (por defecto, RMSE y R-squared para regresión)
+                      # verboseIter = TRUE    # Muestra el progreso de cada iteración
+)
+```
+
+
+```{r}
+# Definir un grid de tuning para `span` y `degree`
+# Aquí, probaremos dos grados (1 y 2) y varios valores de span
+loess_grid <- expand.grid(
+                          span = seq(0.1, 1, by = 0.01), # Probar span de 0.5 a 1.0 en incrementos de 0.1
+                          degree = c(1)              # Probar grado 1 (lineal) y 2 (cuadrático)
+)
+
+```
+
+  
+```{r}
+require(caret)
+require(gam)
+
+# Aplicar el modelo LOESS
+modelo_loess <- train(mpg ~ .,
+                      data = datos_train_prep,
+                      method = "gamLoess",
+                      trControl = ctrl,
+                      tuneGrid = loess_grid, # Aquí le pasamos nuestro grid de hiperparámetros
+                      metric = "RMSE"       # Por defecto, caret para regresión usa RMSE y R-squared
+                      )
+
+ggplot(modelo_loess, highlight = TRUE) + 
+ theme_bw()
 ```
 
 ## Referencias
