@@ -682,6 +682,8 @@ ggplot(modelo_loess, highlight = TRUE) +
  theme_bw()
 ```
 
+
+
 ## Referencias
 
 loess function - RDocumentation. (n.d.). Retrieved June 26, 2025, from https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/loess
