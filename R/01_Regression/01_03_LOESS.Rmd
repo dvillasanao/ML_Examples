@@ -625,7 +625,10 @@ El **entrenamiento de un modelo** es el paso más importante en el aprendizaje a
 -   Con estos resultados, podemos decidir si el modelo está listo para usar o necesita ajustes.  
 
 
-Una vez que se ha creado el objeto recipe con todas las transformaciones de preprocesado, se aprenden con los datos de entrenamiento y se aplican a los dos conjuntos.
+Una vez que se ha creado el objeto recipe con todas las transformaciones de preprocesado, se aprenden con los datos de entrenamiento y se aplican a los dos conjuntos. 
+
+- **`prep()`**: Esta es la función clave del paquete `recipes`. Su propósito es **aplicar los pasos de preprocesamiento definidos en tu `objeto_recipes` a tus datos de entrenamiento (`train_data`) y aprender cualquier parámetro necesario**.
+
 
 ```{r}
 # Se entrena el objeto recipe
@@ -637,7 +640,8 @@ trained_recipe <- prep(objeto_recipes, training = train_data)
 # Se aplican las transformaciones al conjunto de entrenamiento y de test
 datos_train_prep <- bake(trained_recipe, new_data = train_data) %>% 
                      as.data.frame()
-datos_test_prep  <- bake(trained_recipe, new_data = test_data)
+datos_test_prep  <- bake(trained_recipe, new_data = test_data) %>% 
+                     as.data.frame()
 ```
 
 
@@ -682,6 +686,9 @@ ggplot(modelo_loess, highlight = TRUE) +
  theme_bw()
 ```
 
+```{r}
+modelo_loess$bestTune
+```
 
 
 ## Referencias
